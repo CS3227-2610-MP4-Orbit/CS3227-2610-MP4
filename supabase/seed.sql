@@ -1,0 +1,2 @@
+-- Local development seed data. Applied by `npx supabase db reset`; never pushed to dev or prod.
+-- Feature specs add their own demo rows here.
