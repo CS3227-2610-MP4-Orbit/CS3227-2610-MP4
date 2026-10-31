@@ -51,8 +51,9 @@ if (!project) {
 } else ok(`found ${project.name}`);
 
 // Graders and teammates must open the development site without a Vercel login.
-await vercel("PATCH", `/v9/projects/${project.id}`, { ssoProtection: null });
-ok("deployment protection off, so the dev alias is publicly reachable");
+// Node must match the version GitHub Actions builds with (.nvmrc).
+await vercel("PATCH", `/v9/projects/${project.id}`, { ssoProtection: null, nodeVersion: "24.x" });
+ok("Node 24.x; deployment protection off, so the dev alias is publicly reachable");
 
 const prodUrl = env.PROD_SITE_URL || `https://${env.VERCEL_PROJECT_NAME}.vercel.app`;
 const devUrl = `https://${env.VERCEL_DEV_ALIAS}`;
