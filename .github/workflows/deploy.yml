@@ -26,6 +26,8 @@ jobs:
 
   deploy:
     needs: ci
+    # A manual run from any other branch must not reach the development secrets.
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     environment:
       name: ${{ github.ref_name == 'master' && 'production' || 'development' }}

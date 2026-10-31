@@ -116,16 +116,26 @@ const reviewers = env.PROD_REVIEWERS.split(",")
   .filter(Boolean)
   .map((login) => ({ type: "User", id: Number(gh(["api", `users/${login}`, "--jq", ".id"])) }));
 
-gh(["api", "-X", "PUT", `repos/${repo}/environments/development`]);
+// Each environment's secrets are released only to its own branch, so a workflow run from a
+// feature branch (even an edited workflow) cannot read them.
+const branchOnly = { protected_branches: false, custom_branch_policies: true };
+gh(["api", "-X", "PUT", `repos/${repo}/environments/development`, "--input", "-"], {
+  deployment_branch_policy: branchOnly,
+});
 gh(["api", "-X", "PUT", `repos/${repo}/environments/production`, "--input", "-"], {
   reviewers,
-  deployment_branch_policy: { protected_branches: false, custom_branch_policies: true },
+  deployment_branch_policy: branchOnly,
 });
-const policies = JSON.parse(gh(["api", `repos/${repo}/environments/production/deployment-branch-policies`]));
-if (!policies.branch_policies.some((p) => p.name === "master")) {
-  gh(["api", "-X", "POST", `repos/${repo}/environments/production/deployment-branch-policies`, "-f", "name=master"]);
+for (const [name, branch] of [
+  ["development", "develop"],
+  ["production", "master"],
+]) {
+  const policies = JSON.parse(gh(["api", `repos/${repo}/environments/${name}/deployment-branch-policies`]));
+  if (!policies.branch_policies.some((p) => p.name === branch)) {
+    gh(["api", "-X", "POST", `repos/${repo}/environments/${name}/deployment-branch-policies`, "-f", `name=${branch}`]);
+  }
 }
-ok(`production: ${reviewers.length} reviewer(s), master only`);
+ok(`development: develop only; production: master only, ${reviewers.length} reviewer(s)`);
 
 for (const [prefix, name] of [
   ["DEV", "development"],
