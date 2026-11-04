@@ -1,3 +1,9 @@
+# Project transition: AI-powered bug tracking
+
+The team plan and initial spec are in [workflow/](workflow/README.md). The existing HackHub app, schema, deployment configuration and instructions below are **legacy starter code** and do not implement the planned Reporter / Developer / QA product. Do not deploy them as the new product. Start with `workflow/specs/001-bug-lifecycle/spec.md` and its task plan; resolve the shared decisions before replacing the schema and app. The workflow is initialized, while implementation and deployment remain pending.
+
+## Legacy starter notes
+
 # HackHub
 
 CS3227 MP4 — a hackathon platform for participants, judges and organisers, with AI features

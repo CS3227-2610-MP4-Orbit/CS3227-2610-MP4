@@ -7,3 +7,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## Project workflow
+
+This repository is transitioning from the HackHub starter to the three-role Python bug resolution product. For feature work, read `workflow/README.md`, the relevant numbered spec, and its tasks before editing. Treat `workflow/specs/001-bug-lifecycle/spec.md` as draft; do not present proposed behavior as implemented.
+
+Use specialized agents only when a task benefits from distinct ownership or independent review. The orchestrator records assignments and integrates handoffs. Explorers are read-only; generators own disjoint files; security review is required for auth, database access and AI boundaries; verification follows changes. Follow `workflow/agents/roles.md` and `workflow/agents/coordination.md`. Do not invent usage metrics or test outcomes. Summarize meaningful AI-assisted work in the appropriate member folder under `logs/`.

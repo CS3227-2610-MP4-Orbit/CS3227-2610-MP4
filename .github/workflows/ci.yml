@@ -23,6 +23,7 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - run: python3 workflow/scripts/check_workflow.py
       # CI never holds real credentials; the build only needs the variables to exist.
       - run: npm run build
         env:
