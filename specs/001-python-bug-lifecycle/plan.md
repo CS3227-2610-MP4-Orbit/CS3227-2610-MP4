@@ -6,7 +6,7 @@
 
 ## Summary
 
-Retain the Next.js/Supabase stack, replace the legacy HackHub domain with a three-role Python bug lifecycle, and provide one bounded SoC LLM assistance feature per role. Use authenticated server actions and database RLS for defense in depth. Keep user code inert. The shared AI gateway is configurable; official service limits and credentials must be verified before live release.
+Retain the Next.js/Supabase stack, build a three-role Python bug lifecycle, and provide one bounded SoC LLM assistance feature per role. Use authenticated server actions and database RLS for defense in depth. Keep user code inert. The shared AI gateway is configurable; official service limits and credentials must be verified before live release.
 
 ## Technical Context
 
@@ -38,7 +38,7 @@ Retain the Next.js/Supabase stack, replace the legacy HackHub domain with a thre
 | II. Specialized agents | `workflow/agents/coordination.md`, bounded research handoff, task ownership and verification evidence | Pass for design; implementation evidence pending |
 | III. Security | RLS plus action checks, inert code, AI injection/failure tests planned | Pass for design; tests pending |
 | IV. Context/resource | Minimal per-role context, gateway limits, usage metrics and explicit unknown provider values | Pass for design; live configuration pending |
-| V. Delivery | CI, separate dev/prod automation and guides are planned; legacy HackHub must be replaced | Pass for design; release pending |
+| V. Delivery | CI, separate dev/prod automation and guides are planned | Pass for design; release pending |
 
 ## Project Structure
 
@@ -75,7 +75,7 @@ supabase/migrations/
 supabase/tests/
 ```
 
-**Structure Decision**: One Next.js app with shared server-side validation and AI gateway. Reports are protected at action and query boundaries. The existing Supabase clients and CI/deploy workflow are adapted, not duplicated. An additive migration creates the new domain without touching potentially deployed HackHub data; legacy cleanup requires a separate verified migration.
+**Structure Decision**: One Next.js app with shared server-side validation and AI gateway. Reports are protected at action and query boundaries. The existing Supabase clients and CI/deploy workflow are adapted, not duplicated. The first product migration will create the bug-domain schema.
 
 ## Complexity Tracking
 

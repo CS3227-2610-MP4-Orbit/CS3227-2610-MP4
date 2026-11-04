@@ -128,5 +128,5 @@ Each role can request relevant AI advice: a Reporter gets a code explanation or 
 - Assignment is made by a controlled team process; an unassigned Developer or QA Tester cannot act on a report.
 - The initial product handles Python snippets as text and does not run them.
 - The MVP AI feature choice is code explanation for Reporter, debugging advice for Developer, and test suggestion for QA. Additional proposed AI features can follow later.
-- The existing application stack may be retained, but the HackHub domain model is not part of this feature.
+- The existing application stack may be retained. The new bug-domain data model must be created during implementation.
 - Exact provider quotas and field limits are set during planning using verified service constraints.

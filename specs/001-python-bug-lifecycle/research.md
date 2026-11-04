@@ -10,7 +10,7 @@
 
 ## Legacy data
 
-**Decision**: Add the new bug domain in a new migration and leave the existing HackHub tables untouched until remote data status is known. **Rationale**: A GitHub remote exists and remote database contents could not be verified; an additive migration is reversible and avoids accidental data loss. **Alternative**: Rewrite the initial migration, rejected until the team confirms every target environment is disposable. Legacy tables remain unused by the new app and must be reviewed before release.
+**Decision**: The previous unused migration has been removed. The bug-domain schema will be created in the first product migration. **Rationale**: The team confirmed the starter has never been deployed or used with data.
 
 ## AI provider
 

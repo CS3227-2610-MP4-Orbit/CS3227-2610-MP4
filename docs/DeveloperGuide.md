@@ -2,7 +2,7 @@
 
 ## Current state
 
-The repository is a HackHub starter being transitioned to the planned Python bug resolution product. The Reporter, Developer and QA lifecycle, SoC LLM integration and their security tests are **not implemented**. The authoritative draft requirements and task breakdown are in `workflow/specs/001-bug-lifecycle/`.
+The repository is a minimal Next.js/Supabase starter for the planned Python bug resolution product. The Reporter, Developer and QA lifecycle, SoC LLM integration and their security tests are **not implemented**. The requirements and task breakdown are in `workflow/specs/001-bug-lifecycle/`.
 
 ## Planned design
 
@@ -14,4 +14,4 @@ Start at `workflow/README.md`. `.agents/skills/agent-coordination` and `agent-ha
 
 ## Acknowledgements
 
-The project requirements and three-role feature plan came from the team's supplied assignment text. The agent roles and resource-aware ideas were adapted from the supplied workflow PDF. The repository already contained a Next.js/Supabase/Vercel HackHub starter; its origin and any reused code must be cited by the team before release. GitHub Spec Kit is an optional toolkit; installation instructions are in `workflow/SpecKit.md`.
+The project requirements and three-role feature plan came from the team's supplied assignment text. The agent roles and resource-aware ideas were adapted from the supplied workflow PDF. The repository already contained a Next.js/Supabase/Vercel starter; its origin and any reused code must be cited by the team before release. GitHub Spec Kit is an optional toolkit; installation instructions are in `workflow/SpecKit.md`.

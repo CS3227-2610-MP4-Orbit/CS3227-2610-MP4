@@ -1,6 +1,6 @@
 # Spec 001: Python bug resolution lifecycle
 
-Status: team approved on 2026-11-04. The implementation decisions listed below remain open.
+Status: team approved on 2026-11-04. Role ownership was confirmed afterward; the remaining implementation decisions are listed below.
 
 ## Goal and scope
 
@@ -21,12 +21,11 @@ Three authenticated roles collaborate on Python snippet bugs: Reporter submits a
 
 ## Shared design decisions to resolve
 
-- Confirm the three team members and one primary role owner each.
+- Confirmed owners: Joseph — Reporter; Jordan — Developer; Johanssen — QA tester.
 - Decide account provisioning and whether a person may hold multiple roles.
 - Decide developer/QA assignment and who can access unassigned reports.
-- Set field sizes, AI quotas, retention and model budget from the SoC LLM limits.
-- Define the actual SoC LLM endpoint, credentials and allowed models from official guidance; keep secrets server-side.
-- Decide how to replace the existing HackHub schema and deployment names safely. Do not apply its hackathon migrations to a new production database for this app.
+- Starting application limits: title 120 characters; Python snippet 20,000 characters; each other report text field 2,000 characters. Send at most 8,000 characters of relevant code and 4,000 characters of other context per AI request; cap model output at 700 tokens. Allow a burst of up to five requests per user per minute and 50 per day, subject to the SoC service's actual quota.
+- Use the SoC service's default supported chat model, configured through `SOCLAAS_MODEL` when credentials are issued. Keep endpoint and credentials server-side. Verify the provider's exact model ID and limits before enabling live AI.
 
 ## Out of scope for MVP
 

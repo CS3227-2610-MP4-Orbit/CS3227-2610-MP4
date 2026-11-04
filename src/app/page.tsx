@@ -4,11 +4,11 @@ import { createClient } from "@/lib/supabase/server";
 
 import { signOut } from "./login/actions";
 
-// Placeholder home page; the role dashboards replace it.
+// Placeholder home page; the role dashboards are future work.
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-      <h1 className="text-2xl font-semibold">HackHub</h1>
+      <h1 className="text-2xl font-semibold">Python Bug Workflow</h1>
       <Suspense fallback={<p className="text-sm text-gray-600">Loading…</p>}>
         <SignedInAs />
       </Suspense>
