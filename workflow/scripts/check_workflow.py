@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from agent_workflow import BOARD, RUNS, validate_board, validate_run
+
 
 ROOT = Path(__file__).resolve().parents[2]
 REQUIRED_HANDOFF = {
@@ -60,6 +62,18 @@ def main() -> int:
         errors.append("workflow/specs: no specs found")
     for path in sorted((ROOT / "workflow/evidence").glob("*.json")):
         errors.extend(check_handoff(path))
+    try:
+        validate_board(json.loads(BOARD.read_text(encoding="utf-8")))
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        errors.append(f"{BOARD}: {error}")
+    if RUNS.exists():
+        for number, line in enumerate(RUNS.read_text(encoding="utf-8").splitlines(), start=1):
+            if not line.strip():
+                continue
+            try:
+                validate_run(json.loads(line))
+            except (ValueError, json.JSONDecodeError) as error:
+                errors.append(f"{RUNS}:{number}: {error}")
     for error in errors:
         print(error)
     if errors:

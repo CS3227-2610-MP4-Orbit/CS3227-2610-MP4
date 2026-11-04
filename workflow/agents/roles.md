@@ -5,6 +5,7 @@
 | Orchestrator | Current spec, task list, handoffs | Assign disjoint ownership, resolve conflicts, integrate decisions | Updated plan and decision log |
 | Explorer | Narrow question and relevant paths | Read-only investigation; identify unknowns and evidence | Findings with file references |
 | Generator | Approved task and acceptance criteria | Implement assigned code/docs and self-check | Patch summary and tests run |
+| Code reviewer | Spec, patch and shared interfaces | Independently review correctness and maintainability | Findings with file references |
 | Security reviewer | Changed auth, data or AI boundaries | Check RBAC/RLS, injection, leakage, quotas and unsafe output | Findings with severity and reproduction |
 | Verifier | Spec, patch and test results | Independently check criteria and regression risk | Pass/fail handoff with evidence |
 

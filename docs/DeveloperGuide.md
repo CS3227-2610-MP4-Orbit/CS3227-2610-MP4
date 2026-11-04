@@ -10,7 +10,7 @@ Three authenticated roles share reports, revision history, test cases, decisions
 
 ## Development process
 
-Start at `workflow/README.md`. `workflow/agents/roles.md` and `workflow/agents/coordination.md` define agent ownership and handoffs; `workflow/templates/` holds the JSON handoff and log format; `workflow/scripts/check_workflow.py` checks handoff structure and spec references; `workflow/experiments.md` defines measurements. The existing `.github/workflows/` contains CI and deployment automation for the legacy starter and must be reviewed when the domain migration is implemented. Development and production must use separate configuration and data.
+Start at `workflow/README.md`. `.agents/skills/agent-coordination` and `agent-handoff` provide reusable Codex instructions. `workflow/config.json` defines role budgets; `workflow/agents/prompts/` defines specialist boundaries; `workflow/scripts/agent_workflow.py` plans routes, packs bounded context, records real usage and exports a CSV table. `workflow/templates/` holds task, handoff, memory and log formats; `workflow/scripts/check_workflow.py` validates structure and evidence; `workflow/experiments.md` defines comparisons. The existing `.github/workflows/` contains CI and deployment automation for the legacy starter and must be reviewed when the domain migration is implemented. Development and production must use separate configuration and data.
 
 ## Acknowledgements
 

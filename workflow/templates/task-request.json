@@ -1,0 +1,14 @@
+{
+  "task_id": "T001",
+  "goal": "A bounded outcome from an approved specification",
+  "owner": "joseph",
+  "owned_paths": ["workflow/specs/001-bug-lifecycle/spec.md"],
+  "spec": "workflow/specs/001-bug-lifecycle/spec.md",
+  "complexity": "standard",
+  "security_sensitive": false,
+  "needs_exploration": false,
+  "acceptance_criteria": ["A verifiable result"],
+  "context_refs": [
+    { "path": "workflow/specs/001-bug-lifecycle/spec.md", "start_line": 1, "end_line": 12 }
+  ]
+}

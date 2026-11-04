@@ -1,6 +1,6 @@
 # Spec 001: Python bug resolution lifecycle
 
-Status: draft. Product direction from the team's plan; details below are initial proposals requiring team review.
+Status: team approved on 2026-11-04. The implementation decisions listed below remain open.
 
 ## Goal and scope
 

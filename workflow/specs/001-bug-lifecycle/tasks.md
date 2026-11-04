@@ -4,7 +4,7 @@ Status legend: TODO, BLOCKED, DONE. Assign named owners at the team kickoff.
 
 | ID | Status | Suggested owner | Task | Dependency | Evidence required |
 | --- | --- | --- | --- | --- | --- |
-| T01 | TODO | Team | Review spec; settle role, assignment, limits and SoC LLM decisions | None | Approved decisions in spec |
+| T01 | TODO | Team | Settle role ownership, assignment, limits and SoC LLM decisions | None | Recorded decisions in spec |
 | T02 | TODO | Team/shared | Replace HackHub domain schema with reports, assignments, revisions, tests, decisions and audit trail | T01 | Migration and RLS tests |
 | T03 | TODO | Reporter owner | Report creation/edit/list/detail and status/feedback | T02 | UI and authorization tests |
 | T04 | TODO | Developer owner | Assignment, investigation, versioned fixes and diff | T02 | Lifecycle tests |
