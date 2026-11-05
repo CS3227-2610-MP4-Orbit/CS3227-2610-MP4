@@ -29,7 +29,7 @@ async function ReporterReport({ params, searchParams }: {
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "reporter") notFound();
   const { data: report, error } = await supabase.from("bug_reports")
-    .select("id,reporter_id,title,python_code,error_message,expected_behavior,actual_behavior,reproduction_steps,status,created_at")
+    .select("id,reporter_id,title,python_code:code,error_message,expected_behavior,actual_behavior,reproduction_steps,status,created_at")
     .eq("id", id).eq("reporter_id", user.id).maybeSingle();
   if (error || !report) notFound();
   const values: ReportValues = {
