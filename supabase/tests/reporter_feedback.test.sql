@@ -11,7 +11,7 @@ values
 update public.profiles set role = 'developer' where id = '10000000-0000-0000-0000-000000000003';
 update public.profiles set role = 'qa' where id = '10000000-0000-0000-0000-000000000004';
 
-insert into public.bug_reports (id, reporter_id, title, python_code, error_message, expected_behavior, actual_behavior, reproduction_steps, status)
+insert into public.bug_reports (id, reporter_id, title, code, error_message, expected_behavior, actual_behavior, reproduction_steps, status)
 values
   ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', 'First', 'print(1)', 'error', 'works', 'fails', 'run', 'closed'),
   ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002', 'Second', 'print(2)', 'error', 'works', 'fails', 'run', 'open');

@@ -1,0 +1,52 @@
+{
+  "task_id": "C005-database-merge",
+  "goal": "Resolve PR #5 database CI migration collision against develop while preserving Reporter authorization and app data mapping",
+  "owner": "joseph",
+  "owned_paths": [
+    "supabase/migrations/20261104000100_bug_reports.sql",
+    "supabase/migrations/20261105000100_reporter_edit.sql",
+    "supabase/migrations/20261105000300_reporter_role_access.sql",
+    "supabase/tests/bug_reports.test.sql",
+    "supabase/tests/reporter_feedback.test.sql",
+    "src/app/reports/new/actions.ts",
+    "src/app/reports/[id]/actions.ts",
+    "src/app/reports/[id]/page.tsx"
+  ],
+  "spec": "specs/001-python-bug-lifecycle/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Fresh CI-style database applies all develop and feature migrations",
+    "All pgTAP tests and database lint pass",
+    "Reporter create/edit/detail map python_code form field to canonical code column without weakening role or ownership checks",
+    "No existing local database reset or data deletion"
+  ],
+  "context_refs": [
+    {
+      "path": "specs/001-python-bug-lifecycle/spec.md",
+      "start_line": 10,
+      "end_line": 36
+    },
+    {
+      "path": "supabase/migrations/20261104000000_bug_lifecycle.sql",
+      "start_line": 1,
+      "end_line": 80
+    },
+    {
+      "path": "supabase/migrations/20261105000300_reporter_role_access.sql",
+      "start_line": 1,
+      "end_line": 39
+    },
+    {
+      "path": "src/app/reports/new/actions.ts",
+      "start_line": 20,
+      "end_line": 34
+    },
+    {
+      "path": "src/app/reports/[id]/actions.ts",
+      "start_line": 20,
+      "end_line": 32
+    }
+  ]
+}

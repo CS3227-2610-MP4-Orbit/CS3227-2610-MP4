@@ -24,8 +24,9 @@ export async function updateReport(id: string, _previous: ReportState, form: For
   if (authError || !user) return { values, errors: {}, error: "Sign in to edit a report." };
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "reporter") return { values, errors: {}, error: "Could not update this report." };
+  const { python_code, ...details } = parsed.data;
   const { data, error } = await supabase.from("bug_reports")
-    .update(parsed.data).eq("id", id).eq("reporter_id", user.id).eq("status", "open")
+    .update({ ...details, code: python_code }).eq("id", id).eq("reporter_id", user.id).eq("status", "open")
     .select("id").maybeSingle();
   if (error || !data) return { values, errors: {}, error: "Could not update this report. It may no longer be open." };
   redirect(`/reports/${id}?saved=1`);

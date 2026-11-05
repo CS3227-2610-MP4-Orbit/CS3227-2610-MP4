@@ -28,7 +28,8 @@ export async function createReport(_previous: ReportState, form: FormData): Prom
     return { values, errors: {}, error: "Only reporters can submit a report." };
   }
 
-  const { error } = await supabase.from("bug_reports").insert({ ...parsed.data, reporter_id: user.id });
+  const { python_code, ...details } = parsed.data;
+  const { error } = await supabase.from("bug_reports").insert({ ...details, code: python_code, reporter_id: user.id });
   if (error) return { values, errors: {}, error: "Could not save the report. Please try again." };
   redirect("/reports?submitted=1");
 }

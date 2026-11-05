@@ -76,6 +76,21 @@
         "src/app/reports/python-editor.test.tsx"
       ],
       "status": "done"
+    },
+    {
+      "task_id": "C005-database-merge",
+      "owner": "joseph",
+      "owned_paths": [
+        "supabase/migrations/20261104000100_bug_reports.sql",
+        "supabase/migrations/20261105000100_reporter_edit.sql",
+        "supabase/migrations/20261105000300_reporter_role_access.sql",
+        "supabase/tests/bug_reports.test.sql",
+        "supabase/tests/reporter_feedback.test.sql",
+        "src/app/reports/new/actions.ts",
+        "src/app/reports/[id]/actions.ts",
+        "src/app/reports/[id]/page.tsx"
+      ],
+      "status": "done"
     }
   ]
 }
