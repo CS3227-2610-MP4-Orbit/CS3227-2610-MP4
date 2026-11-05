@@ -5,7 +5,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(38);
+select plan(39);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two of each role so cross-report and cross-assignment access can be checked.
@@ -168,6 +168,12 @@ select is(
   (select title from public.bug_reports where id = current_setting('test.report')::uuid),
   'avg() crashes on an empty list',
   'the developer cannot edit the report itself'
+);
+select throws_ok(
+  $$ insert into public.investigation_notes (report_id, author_id, body, created_at)
+     values (current_setting('test.report')::uuid, '00000000-0000-4000-8000-0000000000b1', 'old', '2020-01-01') $$,
+  '42501', null,
+  'history entries cannot be backdated'
 );
 select lives_ok(
   $$ select public.submit_fix(current_setting('test.report')::uuid,

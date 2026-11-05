@@ -454,8 +454,12 @@ grant update (title, code, error_message, expected_behavior, actual_behavior, re
 revoke update on public.profiles from authenticated;
 grant update (full_name) on public.profiles to authenticated;
 
--- History tables are append-only for everyone except the service role.
-revoke update, delete on public.investigation_notes, public.test_cases from authenticated;
+-- History tables are append-only for everyone except the service role, and users cannot
+-- choose ids or timestamps, so history entries cannot be backdated.
+revoke insert, update, delete on public.investigation_notes, public.test_cases from authenticated;
+grant insert (report_id, author_id, body) on public.investigation_notes to authenticated;
+grant insert (revision_id, qa_id, description, expected_result, actual_result, outcome)
+  on public.test_cases to authenticated;
 revoke insert, update, delete on public.fix_revisions, public.qa_decisions, public.status_events
   from authenticated;
 revoke delete on public.bug_reports from authenticated;
