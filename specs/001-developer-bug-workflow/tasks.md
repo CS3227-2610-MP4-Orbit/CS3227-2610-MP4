@@ -69,16 +69,16 @@ RLS, security, and acceptance evidence.
 
 ### Tests for User Story 2
 
-- [ ] T015 [P] [US2] Add server-action tests for start-work authorization, valid notes, empty notes, note editing, stale status, and post-handoff edits in `src/app/developer/[reportId]/actions.test.ts`
-- [ ] T016 [P] [US2] Add RLS/lifecycle coverage for assigned note insertion, author-only note updates, unauthorized note updates, and post-handoff note immutability in `supabase/tests/bug_lifecycle.test.sql`
+- [X] T015 [P] [US2] Add server-action tests for start-work authorization, valid notes, empty notes, note editing, stale status, and post-handoff edits in `src/app/developer/[reportId]/actions.test.ts`
+- [X] T016 [P] [US2] Add RLS/lifecycle coverage for assigned note insertion, author-only note updates, unauthorized note updates, and post-handoff note immutability in `supabase/tests/bug_lifecycle.test.sql`
 
 ### Implementation for User Story 2
 
-- [ ] T017 [US2] Implement the report detail read model and participant-safe report page in `src/app/developer/[reportId]/page.tsx`
-- [ ] T018 [US2] Implement start-work, add-investigation-note, and edit-investigation-note server actions with validation and lifecycle error mapping in `src/app/developer/[reportId]/actions.ts`
-- [ ] T019 [P] [US2] Implement report-detail loading state in `src/app/developer/[reportId]/loading.tsx`
-- [ ] T020 [P] [US2] Implement report-detail error and permission-denied handling in `src/app/developer/[reportId]/error.tsx`
-- [ ] T021 [US2] Implement the investigation note form, editable note entries, note history, and validation feedback in `src/app/developer/[reportId]/investigation-notes.tsx`
+- [X] T017 [US2] Implement the report detail read model and participant-safe report page in `src/app/developer/[reportId]/page.tsx`
+- [X] T018 [US2] Implement start-work, add-investigation-note, and edit-investigation-note server actions with validation and lifecycle error mapping in `src/app/developer/[reportId]/actions.ts`
+- [X] T019 [P] [US2] Implement report-detail loading state in `src/app/developer/[reportId]/loading.tsx`
+- [X] T020 [P] [US2] Implement report-detail error and permission-denied handling in `src/app/developer/[reportId]/error.tsx`
+- [X] T021 [US2] Implement the investigation note form, editable note entries, note history, and validation feedback in `src/app/developer/[reportId]/note-form.tsx`
 
 **Checkpoint**: User Story 2 is independently demonstrable with an assigned report and no fix revision required.
 
