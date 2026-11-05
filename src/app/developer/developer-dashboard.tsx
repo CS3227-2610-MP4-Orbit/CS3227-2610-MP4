@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import type { DeveloperReport } from "@/lib/developer/queries";
+import type { DeveloperReport } from "@/lib/developer/report-model";
 
 export function getDashboardState(reports: DeveloperReport[]) {
   return reports.length === 0 ? "empty" : "populated";

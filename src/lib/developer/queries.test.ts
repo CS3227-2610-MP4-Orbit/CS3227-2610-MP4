@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { mapDeveloperReports } from "./queries";
+import { mapDeveloperReports } from "./report-model";
 
 describe("assigned Developer report read model", () => {
   it("maps only the fields the dashboard needs", () => {
