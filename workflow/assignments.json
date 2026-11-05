@@ -33,6 +33,17 @@
         "src/lib/reports/validation.test.ts"
       ],
       "status": "done"
+    },
+    {
+      "task_id": "OBS001-usage-capture",
+      "owner": "joseph",
+      "owned_paths": [
+        "workflow/scripts/token_usage.py",
+        "workflow/scripts/test_token_usage.py",
+        "workflow/README.md",
+        "workflow/experiments.md"
+      ],
+      "status": "done"
     }
   ]
 }

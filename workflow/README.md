@@ -27,4 +27,22 @@ Track actual model, token, cache, latency, tool-call and retry data where the pr
 4. After actual work, fill `templates/run-record.json` with measured data and run `python3 workflow/scripts/agent_workflow.py record <run.json>`. Use `python3 workflow/scripts/agent_workflow.py export` for a CSV table. Null means unavailable, not zero.
 5. Run `python3 workflow/scripts/check_workflow.py` and `python3 workflow/scripts/test_agent_workflow.py`. Summarize the interaction in the initiating member's `logs/` folder. Compare routes and context choices using `experiments.md` before writing conclusions in `docs/Reflections.md`.
 
+## Capture development-agent token usage
+
+For the **next** bounded task, run this from the orchestrator before spawning agents (its environment supplies `CODEX_THREAD_ID`):
+
+```sh
+python3 workflow/scripts/token_usage.py start TASK-ID
+```
+
+After all agent turns and the orchestrator's turn have ended, run from a terminal:
+
+```sh
+python3 workflow/scripts/token_usage.py finish TASK-ID --run-file workflow/requests/TASK-ID-run.json
+```
+
+`finish` uses the root thread ID saved by `start`, so a terminal does not need `CODEX_THREAD_ID`. Create a valid draft run JSON from `templates/run-record.json` first; `--run-file` fills only token counts, model IDs, and the evidence path. Omit `--run-file` to write a usage summary without updating a draft. The summary is under `workflow/evidence/usage/`. Run `agent_workflow.py record` only after reviewing the draft and its quality/test evidence. A duplicate `start` or `finish` fails rather than overwriting evidence. If a snapshot or attribution fails, leave usage fields `null`.
+
+The collector reads local `~/.codex/sessions/` JSONL but writes only session IDs, agent paths, model IDs, timestamps and numeric usage. It never commits raw Codex logs, prompts, code snippets, tool output or credentials. It subtracts cumulative start counters from finish counters and includes spawned descendants with a `thread_spawn` source while excluding helper/guardian sessions. Model IDs are taken only from turn-context events inside the measured window; an empty model-ID list means the model is unknown for that window, not that no model ran. A child that appears at finish but predates start has unknown usage rather than an assumed zero baseline. Run one measured task per root thread at a time; do not claim attribution when tasks overlap. Usage may arrive after a turn ends, so finish after work has settled. Counts can include the cost of inherited agent context. Cached input is part of input and reasoning output is part of output; do not add those categories twice. Task quality, elapsed time and retries still require separate evidence.
+
 For official Spec Kit setup, see `SpecKit.md`.
