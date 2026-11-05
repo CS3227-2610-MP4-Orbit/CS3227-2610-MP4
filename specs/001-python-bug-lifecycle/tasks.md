@@ -22,6 +22,13 @@
 - [ ] T007 [US1] Implement reporter list and create form in `src/app/reports/page.tsx`
 - [ ] T008 [US1] Implement protected report detail and original/fix comparison in `src/app/reports/[id]/page.tsx`
 
+### Reporter list/edit increment against the current submission schema
+
+This increment implements the list/edit parts of US1 using the current `python_code` schema. The original T005-T008 describe the broader story and are not marked complete by this slice. Complete the following bounded tasks before claiming the broader story:
+
+- [x] T024 [US1] Implement owner/Reporter-only list and open-only edit against the existing submission schema: add a follow-on migration and pgTAP cases, `/reports` list, protected `/reports/[id]` detail/edit, shared six-field validation, and a server action that retains invalid input (depends on the implemented submission slice; owner Joseph). Evidence: `workflow/evidence/T024-reporter-list-edit-handoff.json`.
+- [x] T025 [US1] Independently review T024 authorization and verify unit, type, lint, database, and signed-in browser behavior; record a structured handoff and actual run metrics where available (depends on T024). Evidence: `workflow/evidence/T024-reporter-list-edit-handoff.json`.
+
 ## Phase 3: User Story 2 - Investigate and Revise a Fix (P1)
 
 **Goal**: Assigned Developer investigates and submits immutable fixes.
@@ -63,7 +70,7 @@
 
 ## Dependencies and execution order
 
-T001-T004 gate all user stories. Within each story, tests precede implementation. US1, US2 and US3 can be owned by different team members after foundation, but shared `actions.ts` and pages require sequential integration. US4 depends on report authorization and all role workflows. T019-T023 follow verified implementation. Suggested MVP is US1 plus foundation; the assignment's complete release requires all four stories.
+T001-T004 remain the full-lifecycle foundation gate for US2-US4. The reporter submission slice has its own applied schema and validation; T024-T025 extend that existing slice without claiming T001-T008 complete. Within each story, tests precede implementation. US1, US2 and US3 can be owned by different team members after the full foundation, but shared `actions.ts` and pages require sequential integration. US4 depends on report authorization and all role workflows. T019-T023 follow verified implementation. The assignment's complete release requires all four stories.
 
 ## Parallel opportunities
 

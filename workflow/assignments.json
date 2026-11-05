@@ -1,3 +1,38 @@
 {
-  "assignments": []
+  "assignments": [
+    {
+      "task_id": "T03-submission",
+      "owner": "joseph",
+      "owned_paths": [
+        "supabase/migrations/20261104000100_bug_reports.sql",
+        "supabase/tests/bug_reports.test.sql",
+        "src/app/page.tsx",
+        "src/app/reports/new/page.tsx",
+        "src/app/reports/new/report-form.tsx",
+        "src/app/reports/new/actions.ts",
+        "src/lib/reports/validation.ts",
+        "src/lib/reports/validation.test.ts"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "T024-reporter-list-edit",
+      "owner": "joseph",
+      "owned_paths": [
+        "supabase/migrations/20261105000100_reporter_edit.sql",
+        "supabase/tests/bug_reports.test.sql",
+        "src/app/page.tsx",
+        "src/app/reports/page.tsx",
+        "src/app/reports/[id]/page.tsx",
+        "src/app/reports/[id]/actions.ts",
+        "src/app/reports/report-form.tsx",
+        "src/app/reports/new/report-form.tsx",
+        "src/app/reports/new/page.tsx",
+        "src/app/reports/new/actions.ts",
+        "src/lib/reports/validation.ts",
+        "src/lib/reports/validation.test.ts"
+      ],
+      "status": "done"
+    }
+  ]
 }

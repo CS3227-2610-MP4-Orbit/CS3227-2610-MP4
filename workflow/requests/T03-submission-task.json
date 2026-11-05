@@ -1,0 +1,18 @@
+{
+  "task_id": "T03-submission",
+  "goal": "Allow an authenticated reporter to submit a Python bug report with all six required fields and preserve input on validation errors",
+  "owner": "joseph",
+  "owned_paths": ["supabase/migrations/20261104000100_bug_reports.sql", "supabase/tests/bug_reports.test.sql", "src/app/page.tsx", "src/app/reports/new/page.tsx", "src/app/reports/new/report-form.tsx", "src/app/reports/new/actions.ts", "src/lib/reports/validation.ts", "src/lib/reports/validation.test.ts"],
+  "spec": "workflow/specs/001-bug-lifecycle/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": ["Authenticated reporters can create a report with title, Python code, error message, expected behavior, actual behavior and reproduction steps", "Invalid or oversized fields fail validation without losing entered text", "Only a reporter can create a report, the server derives the owner from the session, and RLS enforces ownership"],
+  "context_refs": [
+    {"path":"workflow/specs/001-bug-lifecycle/spec.md","start_line":1,"end_line":30},
+    {"path":"workflow/specs/001-bug-lifecycle/tasks.md","start_line":1,"end_line":10},
+    {"path":"src/lib/supabase/server.ts","start_line":1,"end_line":34},
+    {"path":"src/app/login/actions.ts","start_line":1,"end_line":38},
+    {"path":"src/app/page.tsx","start_line":1,"end_line":27}
+  ]
+}

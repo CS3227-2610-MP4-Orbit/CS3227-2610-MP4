@@ -8,6 +8,10 @@
 
 Retain the Next.js/Supabase stack, build a three-role Python bug lifecycle, and provide one bounded SoC LLM assistance feature per role. Use authenticated server actions and database RLS for defense in depth. Keep user code inert. The shared AI gateway is configurable; official service limits and credentials must be verified before live release.
 
+### Reporter list/edit increment (2026-11-05)
+
+The submission slice already uses `src/app/reports/new/`, `src/lib/reports/validation.ts`, and `supabase/migrations/20261104000100_bug_reports.sql`. Extend that schema through a new migration: Reporter-only, owner-only SELECT and UPDATE policies; UPDATE granted only for the six editable content columns; the UPDATE policy requires the row to remain `open`. Do not rewrite the applied migration. Add `/reports` for an owner-scoped, newest-first list and `/reports/[id]` for protected detail/edit. Both server rendering and the edit action check the signed-in role and relationship; the action derives ownership from the session and validates the UUID and six fields. Normalize browser textarea CRLF to LF for Python code at form extraction so an unchanged save retains the same stored snippet. Keep request-time Supabase auth work inside a Suspense boundary to satisfy Next.js 16 Cache Components. Test owner access, cross-owner denial, role denial, closed-report denial, and malformed/oversized input in pgTAP and unit checks. The later lifecycle design remains planned; this increment does not implement fix comparison or QA feedback.
+
 ## Technical Context
 
 **Language/Version**: TypeScript 5, Next.js 16.4.2, React 19.3; SQL for PostgreSQL.

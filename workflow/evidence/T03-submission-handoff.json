@@ -1,0 +1,15 @@
+{
+  "task_id": "T03-submission",
+  "goal": "Authenticated reporter submission of a Python bug report with six required fields",
+  "owner": "joseph",
+  "status": "implemented; local database verification passed",
+  "spec": "workflow/specs/001-bug-lifecycle/spec.md",
+  "context_paths": ["workflow/requests/T03-submission-task.json", "workflow/specs/001-bug-lifecycle/spec.md", "src/lib/supabase/server.ts"],
+  "decisions": ["New accounts receive reporter role via database trigger; elevated-role provisioning remains a shared design decision.", "Python source is stored as text with its original whitespace."],
+  "findings": ["Code review found trimming of Python code in validation; generator fixed it and added a regression test.", "Security review found no high-severity issue in static inspection of server action, grants and RLS.", "The previously running local Supabase instance had older migration history and zero auth/public feature rows. Local database reset applied the reporter migration.", "Database test expected an exception for a blocked profile update; PostgreSQL updated zero rows under RLS, so the test now asserts the role remains reporter."],
+  "acceptance_criteria": ["Six required report fields can be submitted by an authenticated reporter.", "Invalid and oversized input returns field errors while retaining entered strings.", "Server derives reporter_id from authenticated user and migration defines owner-based insert/read RLS."],
+  "artifacts": ["supabase/migrations/20261104000100_bug_reports.sql", "supabase/tests/bug_reports.test.sql", "src/app/reports/new/page.tsx", "src/app/reports/new/report-form.tsx", "src/app/reports/new/actions.ts", "src/lib/reports/validation.ts", "src/lib/reports/validation.test.ts"],
+  "verification": ["Independent verifier: npm run typecheck passed.", "Independent verifier: npm run lint passed.", "Independent verifier: npm test passed, 4 tests.", "After local reset and assertion correction, npm run test:db passed: 2 files, 11 tests."],
+  "remaining_work": ["Restart the running Next development server to load the corrected .env.local public key, then complete a browser submission smoke test.", "Complete remaining T03 edit, list, detail, status and feedback behavior under separate tasks."],
+  "next_owner": "joseph"
+}

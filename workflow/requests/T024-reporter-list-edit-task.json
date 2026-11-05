@@ -1,0 +1,40 @@
+{
+  "task_id": "T024-reporter-list-edit",
+  "goal": "Implement Spec Kit T024: a reporter can list and view only their reports and edit the six fields of an own open report",
+  "owner": "joseph",
+  "owned_paths": [
+    "supabase/migrations/20261105000100_reporter_edit.sql",
+    "supabase/tests/bug_reports.test.sql",
+    "src/app/page.tsx",
+    "src/app/reports/page.tsx",
+    "src/app/reports/[id]/page.tsx",
+    "src/app/reports/[id]/actions.ts",
+    "src/app/reports/report-form.tsx",
+    "src/app/reports/new/report-form.tsx",
+    "src/app/reports/new/page.tsx",
+    "src/app/reports/new/actions.ts",
+    "src/lib/reports/validation.ts",
+    "src/lib/reports/validation.test.ts"
+  ],
+  "spec": "specs/001-python-bug-lifecycle/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Reporter list shows only own reports newest first with title, status and creation time; an empty state links to creation",
+    "Reporter can view own report and edit all six fields only while it is open; valid save retains owner and status",
+    "Invalid or oversized edits show field errors and preserve entered text; Python textarea line endings normalize to LF so unchanged saves do not alter the snippet",
+    "Other users and non-Reporters cannot read or edit a report through URL or direct mutation; RLS denies closed-report edits"
+  ],
+  "context_refs": [
+    {"path":"specs/001-python-bug-lifecycle/spec.md","start_line":13,"end_line":37},
+    {"path":"specs/001-python-bug-lifecycle/plan.md","start_line":8,"end_line":15},
+    {"path":"specs/001-python-bug-lifecycle/tasks.md","start_line":21,"end_line":31},
+    {"path":"supabase/migrations/20261104000100_bug_reports.sql","start_line":25,"end_line":50},
+    {"path":"src/app/reports/new/actions.ts","start_line":1,"end_line":34},
+    {"path":"src/app/reports/report-form.tsx","start_line":1,"end_line":41},
+    {"path":"src/app/reports/new/page.tsx","start_line":1,"end_line":23},
+    {"path":"src/lib/reports/validation.ts","start_line":1,"end_line":26},
+    {"path":"src/lib/supabase/server.ts","start_line":1,"end_line":34}
+  ]
+}

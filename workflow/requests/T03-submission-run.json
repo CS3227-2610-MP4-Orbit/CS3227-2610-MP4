@@ -1,0 +1,22 @@
+{
+  "task_id": "T03-submission",
+  "recorded_at": "2026-11-04T14:27:56Z",
+  "workflow": "task_based",
+  "planned_agents": ["orchestrator", "generator", "code_reviewer", "security_reviewer", "verifier"],
+  "actual_agents": ["orchestrator", "generator", "code_reviewer", "security_reviewer", "verifier"],
+  "model_tiers": {"orchestrator":"lightweight", "generator":"lightweight", "code_reviewer":"lightweight", "security_reviewer":"strong", "verifier":"lightweight"},
+  "model_ids": {},
+  "input_tokens": null,
+  "cached_tokens": null,
+  "reasoning_tokens": null,
+  "output_tokens": null,
+  "context_chars": 7261,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": null,
+  "retries": null,
+  "result": "blocked",
+  "evidence_paths": ["workflow/evidence/T03-submission-handoff.json"],
+  "notes": "Implementation and independent static/unit verification complete. Database/RLS tests could not run because local Postgres refused connections. Usage counters were unavailable."
+}

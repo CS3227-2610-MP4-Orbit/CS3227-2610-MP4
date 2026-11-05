@@ -1,0 +1,22 @@
+{
+  "task_id": "T03-submission",
+  "recorded_at": "2026-11-04T15:14:59Z",
+  "workflow": "task_based",
+  "planned_agents": ["orchestrator"],
+  "actual_agents": ["orchestrator"],
+  "model_tiers": {},
+  "model_ids": {},
+  "input_tokens": null,
+  "cached_tokens": null,
+  "reasoning_tokens": null,
+  "output_tokens": null,
+  "context_chars": null,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": null,
+  "retries": null,
+  "result": "pass",
+  "evidence_paths": ["workflow/evidence/T03-submission-handoff.json", "supabase/tests/bug_reports.test.sql"],
+  "notes": "Follow-up local database reset authorized after exact row counts confirmed zero. Corrected pgTAP expectation. npm run test:db passed: two files, 11 tests. Browser smoke test remains."
+}
