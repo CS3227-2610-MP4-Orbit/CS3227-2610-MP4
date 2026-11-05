@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "model_tiers": {
+    "lightweight": null,
+    "strong": null
+  },
+  "role_budgets": {
+    "orchestrator": { "max_output_tokens": 600, "max_iterations": 2, "max_tool_calls": 6, "max_retries": 0 },
+    "explorer": { "max_output_tokens": 500, "max_iterations": 2, "max_tool_calls": 8, "max_retries": 1 },
+    "generator": { "max_output_tokens": 1200, "max_iterations": 3, "max_tool_calls": 12, "max_retries": 1 },
+    "code_reviewer": { "max_output_tokens": 800, "max_iterations": 2, "max_tool_calls": 8, "max_retries": 1 },
+    "security_reviewer": { "max_output_tokens": 800, "max_iterations": 2, "max_tool_calls": 8, "max_retries": 1 },
+    "verifier": { "max_output_tokens": 600, "max_iterations": 2, "max_tool_calls": 8, "max_retries": 1 }
+  },
+  "context_limits": { "max_references": 12, "max_lines_per_reference": 80, "max_total_lines": 240, "max_chars_per_reference": 6000 }
+}
