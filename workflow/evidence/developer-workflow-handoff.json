@@ -1,0 +1,44 @@
+{
+  "task_id": "T001-T014",
+  "goal": "Implement and verify the first assigned-report Developer MVP slice.",
+  "owner": "JordanGoh4",
+  "status": "in_progress",
+  "spec": "specs/001-developer-bug-workflow/spec.md",
+  "context_paths": [
+    "specs/001-developer-bug-workflow/spec.md",
+    "specs/001-developer-bug-workflow/plan.md",
+    "specs/001-developer-bug-workflow/data-model.md",
+    "specs/001-developer-bug-workflow/contracts/developer-workflow.md",
+    "supabase/migrations/20261104000000_bug_lifecycle.sql",
+    "workflow/agents/coordination.md"
+  ],
+  "decisions": [
+    "Reuse the existing Supabase lifecycle schema and enforce a second author/status gate for note edits.",
+    "Use server-side Supabase access with an explicit profile-role check and assignment filter.",
+    "Do not add AI or code execution to this baseline slice."
+  ],
+  "findings": [
+    "The existing migration had no note updated_at or author/status update policy; the follow-up migration adds both.",
+    "The workflow checker cannot run on Windows because workflow/scripts/agent_workflow.py imports fcntl."
+  ],
+  "acceptance_criteria": [
+    "T001-T014 are implemented or have recorded verification evidence.",
+    "No user-controlled role, assignment, status, or revision mutation is introduced by the dashboard."
+  ],
+  "artifacts": [
+    "src/lib/developer/validation.ts",
+    "src/lib/developer/queries.ts",
+    "src/app/developer/page.tsx",
+    "src/app/developer/developer-dashboard.tsx",
+    "supabase/migrations/20261105000000_editable_investigation_notes.sql",
+    "workflow/evidence/developer-schema-review.md"
+  ],
+  "verification": [
+    "workflow JSON parsed successfully",
+    "git diff --check passed",
+    "npm test, npm run typecheck, and npm run lint are blocked because dependencies could not be installed in the environment",
+    "workflow/scripts/check_workflow.py is blocked by Windows-incompatible fcntl import"
+  ],
+  "remaining_work": ["T015-T045"],
+  "next_owner": "verifier"
+}

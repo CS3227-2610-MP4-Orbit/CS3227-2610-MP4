@@ -5,7 +5,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(39);
+select plan(42);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two of each role so cross-report and cross-assignment access can be checked.
@@ -163,6 +163,17 @@ select lives_ok(
              'len([]) is 0, so the division fails') $$,
   'the developer records an investigation note'
 );
+select lives_ok(
+  $$ update public.investigation_notes set body = 'len([]) is 0; guard the empty case'
+     where report_id = current_setting('test.report')::uuid
+       and author_id = '00000000-0000-4000-8000-0000000000b1' $$,
+  'the note author can edit before QA handoff'
+);
+select is(
+  (select body from public.investigation_notes where report_id = current_setting('test.report')::uuid),
+  'len([]) is 0; guard the empty case',
+  'the edited investigation note is stored'
+);
 update public.bug_reports set title = 'changed by dev' where id = current_setting('test.report')::uuid;
 select is(
   (select title from public.bug_reports where id = current_setting('test.report')::uuid),
@@ -179,6 +190,13 @@ select lives_ok(
   $$ select public.submit_fix(current_setting('test.report')::uuid,
        'def avg(xs):\n    return sum(xs) / len(xs) if xs else 0', 'Guard the empty case') $$,
   'the developer submits revision 1'
+);
+select throws_ok(
+  $$ update public.investigation_notes set body = 'late edit'
+     where report_id = current_setting('test.report')::uuid
+       and author_id = '00000000-0000-4000-8000-0000000000b1' $$,
+  '42501', null,
+  'notes are read-only after QA handoff'
 );
 select throws_ok(
   $$ insert into public.fix_revisions (report_id, revision_number, author_id, code)

@@ -27,6 +27,9 @@ workflow/*.lock
 .DS_Store
 *.pem
 
+# Personal presentation notes and Agentic SE reflection tracking
+/docs/developer-agentic-se/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

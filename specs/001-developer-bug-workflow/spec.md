@@ -261,7 +261,7 @@ feedback, submit a new revision, and resubmit it while the rejected revision rem
 ## Assumptions
 
 - The MVP supports Python snippets only, with the shared starting limits of 20,000 characters for
-  the snippet and 2,000 characters for each other report text field.
+  the snippet and 5,000 characters for each other report, note, and feedback text field.
 - Authentication and role information are provided by the existing application foundation.
 - A bug has at most one current assigned Developer for the MVP; reassignment rules can be expanded
   later.

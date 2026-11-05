@@ -19,9 +19,9 @@ RLS, security, and acceptance evidence.
 
 **Purpose**: Establish the bounded context and evidence files before application changes.
 
-- [ ] T001 Read `specs/001-developer-bug-workflow/spec.md`, `plan.md`, `data-model.md`, and `contracts/developer-workflow.md`; record approved scope and file ownership in `workflow/evidence/developer-workflow-scope.md`
-- [ ] T002 [P] Create the Developer task request with owner, acceptance criteria, security sensitivity, and bounded references in `workflow/requests/developer-workflow.json`
-- [ ] T003 [P] Create the implementation handoff record in `workflow/evidence/developer-workflow-handoff.json`
+- [X] T001 Read `specs/001-developer-bug-workflow/spec.md`, `plan.md`, `data-model.md`, and `contracts/developer-workflow.md`; record approved scope and file ownership in `workflow/evidence/developer-workflow-scope.md`
+- [X] T002 [P] Create the Developer task request with owner, acceptance criteria, security sensitivity, and bounded references in `workflow/requests/developer-workflow.json`
+- [X] T003 [P] Create the implementation handoff record in `workflow/evidence/developer-workflow-handoff.json`
 
 ---
 
@@ -31,11 +31,11 @@ RLS, security, and acceptance evidence.
 
 **Checkpoint**: Foundation ready; user-story work may proceed in dependency order.
 
-- [ ] T004 Inspect `supabase/migrations/20261104000000_bug_lifecycle.sql` and `supabase/tests/bug_lifecycle.test.sql`; document schema or RLS gaps against `specs/001-developer-bug-workflow/data-model.md` in `workflow/evidence/developer-schema-review.md`
-- [ ] T005 [P] Add shared Developer input schemas and error mapping for report IDs, note bodies, fixed code, and submission notes in `src/lib/developer/validation.ts`
-- [ ] T006 [P] Add the authenticated Developer query and assignment authorization boundary in `src/lib/developer/queries.ts`
-- [ ] T007 [P] Add application tests for Developer validation and authorization mapping in `src/lib/developer/validation.test.ts`
-- [ ] T008 Add `supabase/migrations/20261105000000_editable_investigation_notes.sql` for `investigation_notes.updated_at`, author-only note updates while reports are `open` or `in_progress`, and read-only notes after QA handoff; extend `supabase/tests/bug_lifecycle.test.sql` with direct original-code edits, direct revision inserts, and unauthorized lifecycle calls
+- [X] T004 Inspect `supabase/migrations/20261104000000_bug_lifecycle.sql` and `supabase/tests/bug_lifecycle.test.sql`; document schema or RLS gaps against `specs/001-developer-bug-workflow/data-model.md` in `workflow/evidence/developer-schema-review.md`
+- [X] T005 [P] Add shared Developer input schemas and error mapping for report IDs, note bodies, fixed code, and submission notes in `src/lib/developer/validation.ts`
+- [X] T006 [P] Add the authenticated Developer query and assignment authorization boundary in `src/lib/developer/queries.ts`
+- [X] T007 [P] Add application tests for Developer validation and authorization mapping in `src/lib/developer/validation.test.ts`
+- [X] T008 Add `supabase/migrations/20261105000000_editable_investigation_notes.sql` for `investigation_notes.updated_at`, author-only note updates while reports are `open` or `in_progress`, and read-only notes after QA handoff; extend `supabase/tests/bug_lifecycle.test.sql` with direct original-code edits, direct revision inserts, and unauthorized lifecycle calls
 
 ---
 
@@ -47,15 +47,15 @@ RLS, security, and acceptance evidence.
 
 ### Tests for User Story 1
 
-- [ ] T009 [P] [US1] Add assigned/unassigned report query coverage in `src/lib/developer/queries.test.ts`
-- [ ] T010 [P] [US1] Add dashboard acceptance tests for populated, empty, denied, and service-error states in `src/app/developer/page.test.tsx`
+- [X] T009 [P] [US1] Add assigned/unassigned report query coverage in `src/lib/developer/queries.test.ts`
+- [X] T010 [P] [US1] Add dashboard acceptance tests for populated, empty, denied, and service-error states in `src/app/developer/page.test.tsx`
 
 ### Implementation for User Story 1
 
-- [ ] T011 [US1] Implement the assigned-report dashboard query and page in `src/app/developer/page.tsx` using `src/lib/developer/queries.ts`
-- [ ] T012 [P] [US1] Implement the dashboard loading state in `src/app/developer/loading.tsx`
-- [ ] T013 [P] [US1] Implement the dashboard error and safe permission-denied state in `src/app/developer/error.tsx`
-- [ ] T014 [US1] Implement the assigned-report list and empty state in `src/app/developer/developer-dashboard.tsx`
+- [X] T011 [US1] Implement the assigned-report dashboard query and page in `src/app/developer/page.tsx` using `src/lib/developer/queries.ts`
+- [X] T012 [P] [US1] Implement the dashboard loading state in `src/app/developer/loading.tsx`
+- [X] T013 [P] [US1] Implement the dashboard error and safe permission-denied state in `src/app/developer/error.tsx`
+- [X] T014 [US1] Implement the assigned-report list and empty state in `src/app/developer/developer-dashboard.tsx`
 
 **Checkpoint**: User Story 1 is independently demonstrable without notes, revisions, or QA actions.
 
