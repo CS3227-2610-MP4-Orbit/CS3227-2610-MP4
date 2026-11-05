@@ -1,96 +1,84 @@
 <!--
-Sync Impact Report
-- Version change: scaffold → 1.0.0
-- Modified principles: replaced five template placeholders with HackHub project principles
-- Added sections: Security and Resource Constraints; Development Workflow and Quality Gates
-- Removed sections: none; all scaffold sections were concretised
-- Follow-up TODOs: none
+Sync Impact Report (remove before committing)
+Version change: template (unversioned) -> 1.0.0; initial project constitution.
+Modified principles: five template placeholders -> five project principles below.
+Added sections: Product and Delivery Constraints; Development Workflow and Evidence.
+Removed sections: none; placeholder sections were filled.
+Follow-up TODOs: team must confirm ownership, SoC LLM limits, and deployment details in feature specs.
 -->
-
-# HackHub Developer Constitution
+# CS3227 MP4 Bug Resolution Platform Constitution
 
 ## Core Principles
 
-### I. Specification Before Implementation
+### I. Spec-Driven Development
+Every feature MUST have a reviewed specification with user stories, acceptance criteria, role
+permissions, failure cases, and security requirements before implementation. Plans and tasks MUST
+trace to that specification; code, tests, and user documentation MUST match the released behavior.
+Changes to a shared schema or interface MUST be agreed and recorded before dependent role work.
+This makes the three members' work integrable and the final product testable.
 
-Every feature or bug fix MUST begin with an approved Spec Kit artifact. The specification MUST
-describe the user outcome, actors, permissions, state transitions, data changes, acceptance
-criteria, security risks, and tests before implementation begins. The active SDD is the source of
-truth for scope; implementation details belong in the plan and tasks artifacts.
+### II. Coordinated, Specialized Agent Work
+Development MUST use an explicit orchestrator for multi-agent tasks and distinct agent ownership
+for exploration, generation, security review, and verification when those roles are needed.
+Assignments MUST have bounded scope, relevant context, a handoff artifact, and a named next owner.
+The orchestrator MUST resolve conflicting findings and verify integration. Agents MUST NOT
+silently delegate overlapping work. Simple tasks MAY use one agent; the route and reason MUST be
+recorded. This makes coordination observable rather than merely claiming multiple agents were used.
 
-### II. Role Boundaries and Least Privilege
+### III. Security by Design and Verification
+Authentication and role-based access MUST be enforced on every protected server operation and in
+database row-level policies. AI input MUST treat submitted code, comments, errors, and reports as
+untrusted data. The app MUST bound and validate inputs and outputs, prevent secrets and unrelated
+records from entering prompts, render generated content safely, and never execute submitted code
+or apply generated fixes automatically. Tests MUST exercise cross-role access, prompt injection,
+quota exhaustion, malformed AI output, and provider failure before release. Security-sensitive
+changes MUST receive an independent security review.
 
-Every operation MUST enforce the actor's role, ownership, and assignment on the server and in
-Supabase RLS where applicable. For the Developer role, a user may access only assigned bugs,
-write only their own investigation notes and fix revisions, and submit fixes to QA without
-approving them. Original reporter code MUST remain immutable, and UI-only authorization is not
-sufficient.
+### IV. Context Engineering and Resource-Aware AI
+Each product role MUST have at least one useful LLM-based feature using the required SoC LLM.
+The shared AI gateway MUST send only task-relevant context, enforce provider and application
+limits, bound output and retries, handle failures, and record usage where available. Development
+agents MUST receive role-specific context and compact handoffs rather than entire transcripts by
+default. Model, agent count, context size, and effort SHOULD match task difficulty; deviations
+MUST be explained in the experiment record. Token, cache, latency, tool-call, and retry claims
+MUST come from measurements, with unavailable counters identified as such.
 
-### III. Verification as a Completion Gate
+### V. Complete, Maintainable, Deployable Product
+The product MUST provide a complete Reporter -> Developer -> QA resolution loop with versioned
+fixes and test/decision history. Shared components, storage, and AI access MUST have clear single
+responsibilities and avoid duplicate logic. CI MUST run relevant automated checks. Development
+and production MUST use separate configuration and data; the team MUST manage deployment
+outside build-and-host AI environments. The public repository MUST include accurate user and
+developer guides, a product website, workflow artifacts, verified interaction summaries, and
+evidence-backed reflections.
 
-Each acceptance criterion MUST map to implementation evidence or an automated test. Features MUST
-cover happy paths, validation failures, empty/loading/error states, unauthorized access, and
-workflow rejection paths. A feature is not complete until the applicable lint, typecheck, unit,
-database/RLS, and build checks have been run and their results recorded.
+## Product and Delivery Constraints
+The team has three members and MUST deliver three corresponding product roles: Bug Reporter,
+Developer, and QA Tester. The app concerns programming or software engineering and initially
+supports Python snippets. It MUST NOT reuse a previous MP as the submitted product. The SoC LLM
+is the required provider for product AI features; credentials MUST remain server-side. Team
+members MUST review its actual limits before setting quotas. The final repository MUST use the
+required public organization repository name, keep `master` current for submission, and follow
+the assignment's deadline and submission instructions. Deployment and product website setup MUST
+be managed by the team, with separate development and production environments.
 
-### IV. Untrusted Code and Safe AI Assistance
-
-User-submitted code, error messages, reproduction steps, notes, repository content, and generated
-code MUST be treated as untrusted data. Instructions embedded in those fields MUST NOT override
-system, role, or application rules. AI output MUST be advisory, schema-validated, and reviewable;
-the application MUST NOT automatically execute or apply user-submitted or AI-generated code.
-
-### V. Focused Context and Responsible Resource Use
-
-Agents and AI features MUST receive only the context relevant to the current task, authorized
-user, bug, and revision. Inputs MUST be size- and token-limited, and unrelated users, bugs, and
-private QA data MUST be excluded. Repeated analysis SHOULD use version-aware caching, and model,
-token, latency, error, and cache behavior SHOULD be observable when an AI feature is introduced.
-
-## Security and Resource Constraints
-
-- Secrets and privileged Supabase access MUST remain server-side.
-- AI calls MUST have input limits, output limits, timeouts, rate limits, and safe failure handling.
-- The platform MUST NOT execute submitted Python automatically in the MVP; execution requires a
-  separately designed sandbox and security review.
-- AI prompts MUST separate trusted application instructions from untrusted bug content.
-- Security tests MUST include prompt injection, oversized input, malformed AI output, unauthorized
-  identifiers, and attempts to expose another user's data.
-- Database migrations MUST enable RLS for new public tables and include negative authorization
-  tests for important access boundaries.
-
-## Development Workflow and Quality Gates
-
-Developer-role work MUST use the Spec Kit lifecycle:
-
-```text
-$speckit-specify → $speckit-clarify → $speckit-plan → $speckit-checklist
-→ $speckit-tasks → $speckit-analyze → $speckit-implement → $speckit-converge
-```
-
-The optional clarification, checklist, and analysis stages SHOULD be used for production-facing
-features. The repository-local guidance in `developer/` MUST be used alongside Spec Kit:
-
-- `developer/context/` supplies role and context-engineering rules.
-- `developer/skills/` supplies implementation, RLS, AI-security, and verification reviews.
-- `developer/workflows/` defines agent handoffs and completion evidence.
-- `developer/reflection/` records before/after technique experiments for the presentation.
-
-Specialized agents SHOULD have distinct responsibilities for specification, implementation,
-database/RLS review, security review, testing, and final verification. Each handoff MUST record
-the task, files changed, decisions, acceptance criteria, checks run, and unresolved risks.
+## Development Workflow and Evidence
+For each feature, the team MUST progress through specification, clarification, plan, tasks,
+implementation, security review where relevant, verification, and release review. Task owners
+MUST record acceptance evidence and unresolved issues in handoffs. CI and database security
+tests MUST pass before release. Interaction summaries MUST be stored under the initiating
+member's `logs/` folder and checked against actual changes. Reflections MUST compare concrete
+multi-agent and context/resource choices using recorded results; fabricated measurements or
+unverified outcome claims are prohibited. `workflow/` defines the local coordination protocol
+and evidence format alongside Spec Kit artifacts.
 
 ## Governance
-
-This constitution governs all HackHub development and takes precedence over ad-hoc prompts when
-they conflict with its principles. Amendments MUST be made through a reviewed constitution change,
-must include a version and date update, and must explain their impact. A MINOR version is used for
-new or materially expanded principles or sections; a PATCH version is used for clarifications; a
-MAJOR version is used for incompatible governance changes.
-
-Every SDD review, implementation handoff, and final verification MUST check constitution
-compliance. Complexity, privileged access, AI context expansion, and exceptions MUST be justified
-in the relevant plan or review record. The project constitution and repository-local guidance
-MUST be kept consistent when the workflow changes.
+This constitution governs all specs, plans, tasks, reviews, and release decisions. Any amendment
+MUST be proposed in a reviewable change, state the reason and impact on existing artifacts, and
+be accepted by the team before merging. Versioning uses MAJOR for incompatible principle or
+governance changes, MINOR for new principles or material expansions, and PATCH for clarifications
+without changed obligations. Every feature review MUST check compliance and record any justified
+exception with an owner and resolution date. The team MUST reconcile dependent specs, tasks,
+tests, and guides after an amendment.
 
 **Version**: 1.0.0 | **Ratified**: 2026-11-04 | **Last Amended**: 2026-11-04

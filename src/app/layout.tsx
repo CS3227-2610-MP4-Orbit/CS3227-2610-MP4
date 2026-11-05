@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HackHub",
-  description: "Run hackathons: teams, submissions and judging.",
+  title: "Python Bug Workflow",
+  description: "CS3227 MP4 project workspace.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

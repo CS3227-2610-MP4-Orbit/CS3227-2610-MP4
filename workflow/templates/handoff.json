@@ -1,0 +1,15 @@
+{
+  "task_id": "TASK-001",
+  "goal": "One sentence describing the assigned result",
+  "owner": "role or team member",
+  "status": "pending",
+  "spec": "workflow/specs/001-bug-lifecycle/spec.md",
+  "context_paths": [],
+  "decisions": [],
+  "findings": [],
+  "acceptance_criteria": [],
+  "artifacts": [],
+  "verification": [],
+  "remaining_work": [],
+  "next_owner": ""
+}

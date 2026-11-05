@@ -1,0 +1,22 @@
+{
+  "task_id": "T001",
+  "recorded_at": "REPLACE_WITH_CURRENT_UTC_TIME",
+  "workflow": "task_based",
+  "planned_agents": ["orchestrator", "generator", "verifier"],
+  "actual_agents": [],
+  "model_tiers": {},
+  "model_ids": {},
+  "input_tokens": null,
+  "cached_tokens": null,
+  "reasoning_tokens": null,
+  "output_tokens": null,
+  "context_chars": null,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": null,
+  "retries": null,
+  "result": "REPLACE_WITH_ACTUAL_RESULT",
+  "evidence_paths": [],
+  "notes": "Replace sample values with actual measurements before recording."
+}
