@@ -35,7 +35,7 @@ RLS, security, and acceptance evidence.
 - [ ] T005 [P] Add shared Developer input schemas and error mapping for report IDs, note bodies, fixed code, and submission notes in `src/lib/developer/validation.ts`
 - [ ] T006 [P] Add the authenticated Developer query and assignment authorization boundary in `src/lib/developer/queries.ts`
 - [ ] T007 [P] Add application tests for Developer validation and authorization mapping in `src/lib/developer/validation.test.ts`
-- [ ] T008 Extend `supabase/tests/bug_lifecycle.test.sql` with uncovered Developer negative cases, including unassigned reads, direct original-code edits, direct revision inserts, and unauthorized lifecycle calls
+- [ ] T008 Add `supabase/migrations/20261105000000_editable_investigation_notes.sql` for `investigation_notes.updated_at`, author-only note updates while reports are `open` or `in_progress`, and read-only notes after QA handoff; extend `supabase/tests/bug_lifecycle.test.sql` with direct original-code edits, direct revision inserts, and unauthorized lifecycle calls
 
 ---
 
@@ -63,22 +63,22 @@ RLS, security, and acceptance evidence.
 
 ## Phase 4: User Story 2 - Investigate an Assigned Report (Priority: P1)
 
-**Goal**: An assigned Developer can open a report, start work, and append attributed investigation notes.
+**Goal**: An assigned Developer can open a report, start work, append notes, and edit their own notes before QA handoff.
 
 **Independent Test**: Open an assigned report, start work, add a valid note, reload it, and confirm the note is attributed and protected from an unassigned user.
 
 ### Tests for User Story 2
 
-- [ ] T015 [P] [US2] Add server-action tests for start-work authorization, valid notes, empty notes, and stale status in `src/app/developer/[reportId]/actions.test.ts`
-- [ ] T016 [P] [US2] Add RLS/lifecycle coverage for assigned note insertion and unauthorized note insertion in `supabase/tests/bug_lifecycle.test.sql`
+- [ ] T015 [P] [US2] Add server-action tests for start-work authorization, valid notes, empty notes, note editing, stale status, and post-handoff edits in `src/app/developer/[reportId]/actions.test.ts`
+- [ ] T016 [P] [US2] Add RLS/lifecycle coverage for assigned note insertion, author-only note updates, unauthorized note updates, and post-handoff note immutability in `supabase/tests/bug_lifecycle.test.sql`
 
 ### Implementation for User Story 2
 
 - [ ] T017 [US2] Implement the report detail read model and participant-safe report page in `src/app/developer/[reportId]/page.tsx`
-- [ ] T018 [US2] Implement start-work and add-investigation-note server actions with validation and lifecycle error mapping in `src/app/developer/[reportId]/actions.ts`
+- [ ] T018 [US2] Implement start-work, add-investigation-note, and edit-investigation-note server actions with validation and lifecycle error mapping in `src/app/developer/[reportId]/actions.ts`
 - [ ] T019 [P] [US2] Implement report-detail loading state in `src/app/developer/[reportId]/loading.tsx`
 - [ ] T020 [P] [US2] Implement report-detail error and permission-denied handling in `src/app/developer/[reportId]/error.tsx`
-- [ ] T021 [US2] Implement the investigation note form, note history, and validation feedback in `src/app/developer/[reportId]/investigation-notes.tsx`
+- [ ] T021 [US2] Implement the investigation note form, editable note entries, note history, and validation feedback in `src/app/developer/[reportId]/investigation-notes.tsx`
 
 **Checkpoint**: User Story 2 is independently demonstrable with an assigned report and no fix revision required.
 

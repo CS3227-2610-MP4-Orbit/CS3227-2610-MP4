@@ -55,6 +55,19 @@ Preconditions:
 
 Effect: append an attributed note with a database-generated timestamp.
 
+## Mutation: edit investigation note
+
+Input: note identifier and replacement note body.
+
+Preconditions:
+
+- authenticated user is the note author and assigned Developer
+- report status is `open` or `in_progress`
+- replacement body satisfies the configured size and non-empty constraints
+
+Effect: update only the note body and database-generated `updated_at`. The author and
+`created_at` values remain unchanged.
+
 ## Mutation: submit fix
 
 Input: report identifier, corrected Python code, and optional submission note.

@@ -33,9 +33,12 @@ Developer must not update the original report code or its assignment through the
 - `author_id`: Developer who wrote the note
 - `body`: investigation content
 - `created_at`: database-generated timestamp
+- `updated_at`: database-generated timestamp updated when the author edits the note
 
-Notes are append-only in the current schema. The assigned Developer may add notes while the report
-is `open` or `in_progress`; participants may read notes according to the existing RLS policy.
+Notes can be appended by the assigned Developer and edited only by their author while the report is
+`open` or `in_progress`. Notes become read-only once the report is `awaiting_qa` or `closed`.
+The MVP stores the latest note body and update timestamp; a separate note-edit history is out of
+scope. Participants may read notes according to the existing RLS policy.
 
 ### `fix_revisions`
 
@@ -80,4 +83,5 @@ The QA feature owns approval to `closed`.
 - Direct inserts into `fix_revisions` and direct status updates are denied to authenticated users.
 - Original report code is not editable by Developers.
 - All timestamps are database-generated to prevent backdating.
-- RLS protects participant reads and Developer note inserts.
+- RLS protects participant reads, Developer note inserts, and author-only note updates before QA
+  handoff.

@@ -31,6 +31,10 @@ This feature owns the Developer-side submission and revision behavior. It MUST e
 handoff state and feedback data for the later QA feature, but it MUST NOT implement QA screens or
 QA approval/rejection actions here.
 
+- Q: Should investigation notes be append-only, or may their authors edit them? → A: Notes may be
+  appended and edited by their author while the report is `open` or `in_progress`; notes become
+  read-only after the report enters `awaiting_qa`.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Review assigned reports (Priority: P1)
@@ -77,6 +81,10 @@ and reload the report to verify the notes persist and are visible only to permit
    save, **Then** validation feedback is shown and no invalid note is stored.
 4. **Given** a user is not the assigned Developer, **When** they request the investigation notes,
    **Then** the notes are not disclosed.
+5. **Given** an assigned Developer authored a note while the report is `open` or `in_progress`,
+   **When** they edit that note, **Then** only the note body and its update timestamp change.
+6. **Given** a report is `awaiting_qa` or `closed`, **When** anyone attempts to edit an
+   investigation note, **Then** the request is rejected and the note remains unchanged.
 
 ---
 
@@ -160,6 +168,7 @@ feedback, submit a new revision, and resubmit it while the rejected revision rem
 - A report is unassigned, reassigned, or deleted while a Developer has the detail page open.
 - Two requests attempt to create a revision at the same time.
 - A stale detail page submits an older revision after a newer revision already exists.
+- A stale detail page attempts to edit a note after the report has entered `awaiting_qa`.
 - Investigation notes contain instructions attempting to change application behavior.
 - Code contains secrets, malicious text, or content intended to influence an AI assistant.
 - The Developer loses access while saving notes or submitting a fix.
@@ -176,8 +185,9 @@ feedback, submit a new revision, and resubmit it while the rejected revision rem
 - **FR-002**: The system MUST show a Developer only reports currently assigned to that Developer.
 - **FR-003**: The system MUST show the original report code, error message, expected behavior, actual
   behavior, and reproduction steps to an authorized Developer.
-- **FR-004**: The system MUST allow an authorized Developer to create and update investigation
-  notes for an assigned bug.
+- **FR-004**: The system MUST allow an authorized Developer to append investigation notes for an
+  assigned report and edit only notes authored by that Developer while the report is `open` or
+  `in_progress`.
 - **FR-005**: The system MUST validate investigation notes and reject invalid input with a useful
   message.
 - **FR-006**: The system MUST preserve the original reporter code as immutable data.
@@ -211,7 +221,8 @@ feedback, submit a new revision, and resubmit it while the rejected revision rem
 - **FR-022**: The system MUST NOT automatically execute user-submitted or generated Python code.
 - **FR-023**: The system MUST provide clear loading, empty, validation-error, permission-denied,
   service-error, and success states for the workflow screens and actions.
-- **FR-024**: The system MUST record authorship and timestamps for investigation notes, revisions,
+- **FR-024**: The system MUST record authorship, creation timestamps, and update timestamps for
+  investigation notes, revisions,
   QA decisions, and status transitions.
 
 ### Key Entities
@@ -257,6 +268,8 @@ feedback, submit a new revision, and resubmit it while the rejected revision rem
 - QA Tester functionality is represented only by the handoff boundary and status data in this
   feature; the full QA interface and QA decisions are delivered separately.
 - The MVP compares text revisions and does not execute code or run tests in an untrusted runtime.
+- Investigation notes are appendable and editable by their author until the report enters
+  `awaiting_qa`; note edit history is out of scope for the MVP.
 - The Developer AI feature will use the shared limits of at most 8,000 characters of relevant code
   and 4,000 characters of other context per request, with provider quotas verified before enabling
   live AI.

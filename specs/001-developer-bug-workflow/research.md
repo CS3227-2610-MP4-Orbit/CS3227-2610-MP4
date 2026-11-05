@@ -1,14 +1,18 @@
 # Research: Developer Bug Workflow
 
-## Decision 1: Reuse the approved bug-lifecycle schema
+## Decision 1: Extend, do not replace, the approved bug-lifecycle schema
 
 - **Decision**: Use the existing `bug_reports`, `investigation_notes`, `fix_revisions`,
-  `qa_decisions`, and `status_events` tables and the `start_work` and `submit_fix` functions.
+  `qa_decisions`, and `status_events` tables and the `start_work` and `submit_fix` functions. Add
+  a follow-up migration that adds `investigation_notes.updated_at`, permits note authors to edit
+  their own notes while a report is `open` or `in_progress`, and keeps notes read-only after QA
+  handoff.
 - **Rationale**: The migration already encodes assignment checks, immutable revisions, lifecycle
-  transitions, concurrency locking, role checks, append-only history, and RLS. A second Developer
-  schema would split the shared Reporter → Developer → QA contract.
-- **Alternatives considered**: Add a new Developer-only schema; rejected because it would duplicate
-  entities and create cross-role integration risk.
+  transitions, concurrency locking, role checks, and RLS. A small additive migration preserves
+  the shared Reporter → Developer → QA contract while allowing practical note correction.
+- **Alternatives considered**: Keep notes append-only; rejected because Developers need to correct
+  their own investigation notes. Add a separate note-edit history table; deferred from the MVP to
+  avoid expanding scope beyond latest-body plus update timestamp.
 
 ## Decision 2: Use server actions/server components for the first UI slice
 

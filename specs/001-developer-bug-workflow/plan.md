@@ -9,9 +9,10 @@
 Implement Jordan's Developer-owned slice of the Python bug-resolution workflow. The feature will
 let an assigned Developer start work, read the report, record investigation notes, submit
 immutable fix revisions, compare original and revised code, and hand the latest revision to QA.
-The existing bug-lifecycle migration already provides the core tables, RLS, and security-definer
-functions; implementation should use those contracts and add only missing application routes,
-server actions, UI states, and focused tests.
+The existing bug-lifecycle migration provides the core tables, RLS, and security-definer functions.
+Implementation should preserve those contracts and add one follow-up migration for editable
+investigation notes, plus the missing application routes, server actions, UI states, and focused
+tests.
 
 ## Technical Context
 
@@ -19,7 +20,7 @@ server actions, UI states, and focused tests.
 
 **Primary Dependencies**: Next.js App Router, Supabase SSR client, Supabase JS client, Zod, Tailwind CSS
 
-**Storage**: Supabase PostgreSQL with RLS; existing bug-lifecycle migration
+**Storage**: Supabase PostgreSQL with RLS; existing bug-lifecycle migration plus a follow-up note-edit migration
 
 **Testing**: Vitest for application tests; pgTAP/Supabase tests for RLS and lifecycle behavior;
 lint, typecheck, and production build

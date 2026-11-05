@@ -20,6 +20,8 @@ has been implemented.
   history requirements all documented? [Completeness, Spec §FR-006–FR-011, FR-024]
 - [ ] CHK004 Are untrusted code, error messages, notes, and future AI suggestions identified as
   hostile input rather than instructions? [Security, Spec §FR-021–FR-022]
+- [ ] CHK015 Are note authorship, edit permissions, report-status limits, and update timestamps
+  defined consistently for editable investigation notes? [Clarity, Spec §FR-004, FR-024]
 
 ## Requirement Clarity and Consistency
 
