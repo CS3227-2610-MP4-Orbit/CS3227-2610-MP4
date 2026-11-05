@@ -44,6 +44,38 @@
         "workflow/experiments.md"
       ],
       "status": "done"
+    },
+    {
+      "task_id": "F002-reporter-feedback",
+      "owner": "joseph",
+      "owned_paths": [
+        "supabase/migrations/20261105000200_reporter_feedback.sql",
+        "supabase/tests/reporter_feedback.test.sql",
+        "src/app/reports/[id]/feedback-section.tsx",
+        "src/app/reports/[id]/feedback-section.test.tsx",
+        "src/app/reports/[id]/page.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "F003-reporter-ui",
+      "owner": "joseph",
+      "owned_paths": [
+        "package.json",
+        "package-lock.json",
+        "src/app/layout.tsx",
+        "src/app/globals.css",
+        "src/app/reporter-nav.tsx",
+        "src/app/reporter-nav.test.tsx",
+        "src/app/page.tsx",
+        "src/app/reports/page.tsx",
+        "src/app/reports/new/page.tsx",
+        "src/app/reports/[id]/page.tsx",
+        "src/app/reports/report-form.tsx",
+        "src/app/reports/python-editor.tsx",
+        "src/app/reports/python-editor.test.tsx"
+      ],
+      "status": "done"
     }
   ]
 }
