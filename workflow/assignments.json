@@ -44,6 +44,33 @@
         "workflow/experiments.md"
       ],
       "status": "done"
+    },
+    {
+      "task_id": "F004-reporter-code-diff",
+      "owner": "joseph",
+      "owned_paths": [
+        "package.json",
+        "package-lock.json",
+        "src/app/reports/[id]/page.tsx",
+        "src/app/reports/[id]/comparison.tsx",
+        "src/app/reports/[id]/comparison.test.tsx",
+        "src/lib/reports/line-diff.ts",
+        "src/lib/reports/line-diff.test.ts",
+        "supabase/tests/reporter_comparison.test.sql"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "F004-local-report-compat",
+      "owner": "joseph",
+      "owned_paths": [
+        "src/lib/reports/legacy-local.ts",
+        "src/lib/reports/legacy-local.test.ts",
+        "src/app/reports/[id]/page.tsx",
+        "src/app/reports/[id]/actions.ts",
+        "src/app/reports/new/actions.ts"
+      ],
+      "status": "done"
     }
   ]
 }

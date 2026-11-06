@@ -1,0 +1,9 @@
+# Reporter original-versus-proposed comparison — 2026-11-06
+
+- User requested Reporter-only read UI, a clearly labeled hardcoded development sample, Spec Kit, multi-agent routing, and measured token usage. No Developer/QA writing action was added.
+- Spec Kit specify/clarify/plan/tasks/analyze produced `specs/004-reporter-fix-comparison/` before implementation. The shared `fix_revisions` contract and a 13,480-character bounded context pack were used; counts-only token capture started before generator work.
+- Generator implemented report-scoped revision read, version selector, side-by-side changed lines, empty/error/sample states, deterministic long-input fallback, and tests. Code review findings on attribution and timeout were fixed/rechecked. Security review found no blocker; anonymous read test added.
+- Independent verifier: 12 unit tests, lint, typecheck and whitespace passed. Disposable database: 72 pgTAP assertions and db lint passed. Existing development database was not reset. No browser surface was available; version switching and production sample omission need a browser smoke. Build failed on local Turbopack process/port permission.
+- `workflow/evidence/F004-reporter-code-diff-handoff.json` records handoff and limits. Actual model/token/cache counts remain pending post-turn collector finish; no savings claim is made.
+
+- Follow-up F004-local-report-compat: traced owned report 404 to older local `python_code` schema. Added local-development-only fallback for report read/create/edit, with explicit database-error state. Independent code/security reviews found no blocker; verifier passed 5 targeted tests, lint, and typecheck. Live authenticated UI smoke remains pending because Docker was unavailable to the agent. See `workflow/evidence/F004-local-report-compat-handoff.json`. Token counts are still pending the existing F004 post-turn capture.

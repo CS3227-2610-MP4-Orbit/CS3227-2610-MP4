@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { reportSchema, valuesFromForm, type ReportField, type ReportValues } from "@/lib/reports/validation";
+import { canUseLegacyLocalReports } from "@/lib/reports/legacy-local";
 
 export type ReportState = { values: ReportValues; errors: Partial<Record<ReportField, string>>; error?: string };
 
@@ -29,7 +30,10 @@ export async function createReport(_previous: ReportState, form: FormData): Prom
   }
 
   const { python_code, ...details } = parsed.data;
-  const { error } = await supabase.from("bug_reports").insert({ ...details, code: python_code, reporter_id: user.id });
+  const primary = await supabase.from("bug_reports").insert({ ...details, code: python_code, reporter_id: user.id });
+  const { error } = canUseLegacyLocalReports(primary.error)
+    ? await supabase.from("bug_reports").insert({ ...details, python_code, reporter_id: user.id })
+    : primary;
   if (error) return { values, errors: {}, error: "Could not save the report. Please try again." };
   redirect("/reports?submitted=1");
 }

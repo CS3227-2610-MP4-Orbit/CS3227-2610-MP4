@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { reportSchema, valuesFromForm, type ReportField } from "@/lib/reports/validation";
 import type { ReportState } from "../new/actions";
+import { canUseLegacyLocalReports } from "@/lib/reports/legacy-local";
 
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -25,9 +26,13 @@ export async function updateReport(id: string, _previous: ReportState, form: For
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "reporter") return { values, errors: {}, error: "Could not update this report." };
   const { python_code, ...details } = parsed.data;
-  const { data, error } = await supabase.from("bug_reports")
+  const primary = await supabase.from("bug_reports")
     .update({ ...details, code: python_code }).eq("id", id).eq("reporter_id", user.id).eq("status", "open")
     .select("id").maybeSingle();
+  const { data, error } = canUseLegacyLocalReports(primary.error)
+    ? await supabase.from("bug_reports").update({ ...details, python_code })
+      .eq("id", id).eq("reporter_id", user.id).eq("status", "open").select("id").maybeSingle()
+    : primary;
   if (error || !data) return { values, errors: {}, error: "Could not update this report. It may no longer be open." };
   redirect(`/reports/${id}?saved=1`);
 }

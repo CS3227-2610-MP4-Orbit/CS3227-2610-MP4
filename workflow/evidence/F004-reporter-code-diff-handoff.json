@@ -1,0 +1,59 @@
+{
+  "task_id": "F004-reporter-code-diff",
+  "goal": "Implement Reporter-only original-versus-proposed revision comparison with dev-only sample preview, read contract, and security tests",
+  "owner": "joseph (orchestrator)",
+  "status": "implemented and independently verified at code/database level; browser/build release checks remain",
+  "spec": "specs/004-reporter-fix-comparison/spec.md",
+  "context_paths": [
+    "workflow/requests/F004-reporter-code-diff-task.json",
+    "specs/004-reporter-fix-comparison/spec.md",
+    "specs/004-reporter-fix-comparison/plan.md",
+    "specs/004-reporter-fix-comparison/tasks.md",
+    "specs/004-reporter-fix-comparison/contracts/revision-read.md"
+  ],
+  "decisions": [
+    "Reuse existing immutable public.fix_revisions read contract; no new writer or QA action.",
+    "Query only after Reporter role and report ownership check; select highest revision_number first.",
+    "Use fixed development-only sample pair/note separated from actual revisions and never stored.",
+    "Use deterministic diff bounds and text fallback so SSR and hydration render consistently."
+  ],
+  "findings": [
+    "Code review found truncated author ID attribution and wall-clock diff timeout risk; generator changed fallback to full ID and deterministic bounds; reviewer rechecked.",
+    "Security review found no blocker; anonymous direct-read assertion was added.",
+    "Browser CUA reported no browser surface; hydrated version switching and production sample omission were not visually tested.",
+    "Production build failed due local Turbopack child-process/port permission, not a source diagnostic."
+  ],
+  "acceptance_criteria": [
+    "Owned Reporter sees original vs latest real revision with changed lines, author/time/note and can switch versions including on closed reports",
+    "No revision shows honest empty state; development-only sample is visibly labeled; load failure has distinct safe state",
+    "Foreign Reporter and wrong-role direct revision reads are denied by route and RLS; code and note are inert text",
+    "Long code comparison is bounded with fallback; unit/database/lint/type/build outcomes recorded; no Developer/QA writer added"
+  ],
+  "artifacts": [
+    "package.json",
+    "package-lock.json",
+    "src/app/reports/[id]/page.tsx",
+    "src/app/reports/[id]/comparison.tsx",
+    "src/app/reports/[id]/comparison.test.tsx",
+    "src/lib/reports/line-diff.ts",
+    "src/lib/reports/line-diff.test.ts",
+    "supabase/tests/reporter_comparison.test.sql",
+    "specs/004-reporter-fix-comparison/spec.md",
+    "specs/004-reporter-fix-comparison/plan.md",
+    "specs/004-reporter-fix-comparison/tasks.md",
+    "specs/004-reporter-fix-comparison/contracts/revision-read.md"
+  ],
+  "verification": [
+    "Independent verifier: npm test passed (3 files, 12 tests), lint/typecheck/diff check passed.",
+    "Disposable local Supabase: 4 pgTAP files, 72 assertions passed; db lint found no schema errors.",
+    "Code and security reviews: no remaining blocker.",
+    "No browser interaction/production-output smoke; build environment blocked."
+  ],
+  "remaining_work": [
+    "Run signed-in browser smoke: open owned report, inspect sample preview when no revision, select earlier real revision, verify closed report and narrow layout.",
+    "Run production build/CI in an environment permitting Turbopack processes and confirm no sample fixture output.",
+    "Finish counts-only token capture after this orchestrator turn, review draft run and record it.",
+    "Developer teammate to implement revision writer against the documented shared contract."
+  ],
+  "next_owner": "joseph (browser/release review), then Developer teammate for authoring integration"
+}
