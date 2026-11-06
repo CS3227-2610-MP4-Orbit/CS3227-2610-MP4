@@ -1,0 +1,49 @@
+{
+  "task_id": "F002-reporter-feedback",
+  "goal": "Implement the Reporter read-only Developer/QA feedback view on an owned report, with secure schema and tests, per Spec Kit 002 tasks T002-T008",
+  "owner": "joseph",
+  "owned_paths": [
+    "supabase/migrations/20261105000200_reporter_feedback.sql",
+    "supabase/tests/reporter_feedback.test.sql",
+    "src/app/reports/[id]/feedback-section.tsx",
+    "src/app/reports/[id]/feedback-section.test.tsx",
+    "src/app/reports/[id]/page.tsx"
+  ],
+  "spec": "specs/002-reporter-feedback-view/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Owning Reporter sees Developer/QA entries, source role, time, newest-first and an honest empty state; existing reports remain readable after closure",
+    "Direct foreign-reporter, non-reporter and anonymous reads are denied; Reporter cannot write feedback",
+    "Markup-like feedback is inert; feedback read error is distinct from empty state",
+    "Relevant unit, database, lint and type/build checks are reported with actual outcomes"
+  ],
+  "context_refs": [
+    {
+      "path": "specs/002-reporter-feedback-view/spec.md",
+      "start_line": 12,
+      "end_line": 75
+    },
+    {
+      "path": "specs/002-reporter-feedback-view/plan.md",
+      "start_line": 5,
+      "end_line": 57
+    },
+    {
+      "path": "specs/002-reporter-feedback-view/tasks.md",
+      "start_line": 1,
+      "end_line": 42
+    },
+    {
+      "path": "src/app/reports/[id]/page.tsx",
+      "start_line": 1,
+      "end_line": 56
+    },
+    {
+      "path": "supabase/migrations/20261105000100_reporter_edit.sql",
+      "start_line": 1,
+      "end_line": 24
+    }
+  ]
+}

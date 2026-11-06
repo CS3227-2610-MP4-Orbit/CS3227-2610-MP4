@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ReportForm } from "../report-form";
 import { updateReport } from "./actions";
 import { FixComparison, type FixRevision } from "./comparison";
+import { FeedbackSection, type FeedbackEntry } from "./feedback-section";
 import type { ReportValues } from "@/lib/reports/validation";
 import { canUseLegacyLocalReports } from "@/lib/reports/legacy-local";
 
@@ -54,13 +55,27 @@ async function ReporterReport({ params, searchParams }: {
     proposed: "def average(values):\n    if not values:\n        return 0\n    return sum(values) / len(values)\n",
     note: "Handle an empty list before dividing by its length.",
   } : undefined;
+  const { data: feedback, error: feedbackError } = await supabase.from("bug_feedback")
+    .select("id,author_role,body,created_at")
+    .eq("report_id", report.id)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false });
   const { saved } = await searchParams;
   return (
-    <main className="mx-auto w-full max-w-4xl p-6">
-      <Link href="/reports" className="text-sm underline">← My reports</Link>
-      <h1 className="mt-4 text-2xl font-semibold">{report.title}</h1>
-      <p className="mb-6 text-sm text-gray-600">Status: {report.status} · Created {new Date(report.created_at).toLocaleString()}</p>
+    <main className="mx-auto w-full max-w-4xl px-5 py-8 sm:px-8">
+      <Link href="/reports" className="text-sm font-medium text-blue-700 hover:underline">← My reports</Link>
+      <div className="mt-5 flex flex-wrap items-start justify-between gap-3">
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950">{report.title}</h1>
+        <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium capitalize text-blue-800">{report.status.replaceAll("_", " ")}</span>
+      </div>
+      <p className="mb-6 mt-2 text-sm text-slate-600">Created {new Date(report.created_at).toLocaleString()}</p>
+      <nav aria-label="Report sections" className="mb-6 flex gap-1 border-b border-slate-200">
+        <a href="#report-details" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Details</a>
+        <a href="#report-comparison" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Fix comparison</a>
+        <a href="#report-feedback" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Feedback</a>
+      </nav>
       {saved === "1" && <p role="status" className="mb-4 text-green-700">Report saved.</p>}
+      <section id="report-details" aria-label="Report details">
       {report.status === "open" ? <ReportForm action={updateReport.bind(null, id)} initialValues={values} submitLabel="Save changes" /> : (
         <div className="space-y-4">{([
           ["Python code", "python_code"], ["Error message", "error_message"],
@@ -68,7 +83,13 @@ async function ReporterReport({ params, searchParams }: {
           ["Reproduction steps", "reproduction_steps"],
         ] as const).map(([label, key]) => <section key={key}><h2 className="font-semibold">{label}</h2><pre className="whitespace-pre-wrap break-words rounded border p-3">{values[key]}</pre></section>)}</div>
       )}
-      <FixComparison original={values.python_code} revisions={revisionError ? [] : (revisions ?? []) as FixRevision[]} loadError={!!revisionError} sample={sample} />
+      </section>
+      <div id="report-comparison">
+        <FixComparison original={values.python_code} revisions={revisionError ? [] : (revisions ?? []) as FixRevision[]} loadError={!!revisionError} sample={sample} />
+      </div>
+      <div id="report-feedback">
+      <FeedbackSection entries={feedbackError ? [] : (feedback ?? []) as FeedbackEntry[]} loadError={!!feedbackError} />
+      </div>
     </main>
   );
 }

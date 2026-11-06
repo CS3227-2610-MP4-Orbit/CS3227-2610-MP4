@@ -1,0 +1,77 @@
+{
+  "task_id": "F002-reporter-feedback",
+  "recorded_at": "2026-11-05T09:35:38.266313Z",
+  "workflow": "task_based",
+  "planned_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "actual_agents": [
+    "orchestrator",
+    "explorer",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "model_tiers": {
+    "orchestrator": "lightweight",
+    "generator": "lightweight",
+    "code_reviewer": "lightweight",
+    "security_reviewer": "strong",
+    "verifier": "lightweight"
+  },
+  "model_ids": {
+    "root": [
+      "gpt-6-sol"
+    ],
+    "/root/generator": [],
+    "/root/security_reviewer": [],
+    "/root/code_reviewer": [],
+    "/root/verifier": [],
+    "/root/list_edit_generator": [],
+    "/root/list_edit_code_review": [],
+    "/root/list_edit_security_review": [],
+    "/root/list_edit_verifier": [],
+    "/root/usage_generator": [],
+    "/root/usage_code_review": [],
+    "/root/usage_security_review": [],
+    "/root/usage_verifier": [],
+    "/root/feedback_research": [
+      "gpt-6-sol"
+    ],
+    "/root/feedback_generator": [
+      "gpt-6-sol"
+    ],
+    "/root/feedback_code_review": [
+      "gpt-6-sol"
+    ],
+    "/root/feedback_security_review": [
+      "gpt-6-sol"
+    ],
+    "/root/feedback_verifier": [
+      "gpt-6-sol"
+    ]
+  },
+  "input_tokens": 8462709,
+  "cached_tokens": 8116480,
+  "reasoning_tokens": 6062,
+  "output_tokens": 25032,
+  "context_chars": 13798,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": null,
+  "retries": null,
+  "result": "pass",
+  "evidence_paths": [
+    "workflow/evidence/F002-reporter-feedback-handoff.json",
+    "supabase/tests/reporter_feedback.test.sql",
+    "workflow/evidence/usage/F002-reporter-feedback.start.json",
+    "workflow/evidence/usage/F002-reporter-feedback.usage.json"
+  ],
+  "notes": "Draft pending post-turn token finish. 8 unit tests, 34 DB assertions, lint/typecheck passed; build and signed-in smoke unverified. Explorer was a pre-plan read-only source check. Context was 13,798 characters; this is not token usage. Do not infer model IDs or cache savings from tiers. Usage from local Codex cumulative token-count deltas; see counts-only evidence file. Missing counters remain null."
+}

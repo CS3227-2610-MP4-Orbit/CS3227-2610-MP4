@@ -1,0 +1,57 @@
+{
+  "task_id": "F003-reporter-ui",
+  "goal": "Improve Reporter navigation and Python code editing per Spec Kit 003 tasks T002-T010 while preserving existing auth, form, and feedback work",
+  "owner": "joseph",
+  "owned_paths": [
+    "package.json",
+    "package-lock.json",
+    "src/app/layout.tsx",
+    "src/app/globals.css",
+    "src/app/reporter-nav.tsx",
+    "src/app/reporter-nav.test.tsx",
+    "src/app/page.tsx",
+    "src/app/reports/page.tsx",
+    "src/app/reports/new/page.tsx",
+    "src/app/reports/[id]/page.tsx",
+    "src/app/reports/report-form.tsx",
+    "src/app/reports/python-editor.tsx",
+    "src/app/reports/python-editor.test.tsx"
+  ],
+  "spec": "specs/003-reporter-navigation-editor/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Persistent accessible route navigation with active state and usable detail section navigation",
+    "Python editor gives syntax highlighting, line numbers and indentation while code remains inert",
+    "One python_code form field submits current text and retains it on validation errors and before hydration",
+    "Existing Reporter ownership/role checks and feedback behavior stay intact; relevant tests, lint, typecheck and build outcomes recorded"
+  ],
+  "context_refs": [
+    {
+      "path": "specs/003-reporter-navigation-editor/spec.md",
+      "start_line": 8,
+      "end_line": 67
+    },
+    {
+      "path": "specs/003-reporter-navigation-editor/plan.md",
+      "start_line": 1,
+      "end_line": 37
+    },
+    {
+      "path": "specs/003-reporter-navigation-editor/tasks.md",
+      "start_line": 1,
+      "end_line": 38
+    },
+    {
+      "path": "src/app/reports/report-form.tsx",
+      "start_line": 1,
+      "end_line": 41
+    },
+    {
+      "path": "src/app/reports/[id]/page.tsx",
+      "start_line": 1,
+      "end_line": 42
+    }
+  ]
+}
