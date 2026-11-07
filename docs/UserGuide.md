@@ -1,6 +1,28 @@
 # User guide
 
-The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide is being written role by role as features are verified. Sections for roles not listed below are not ready for testing yet. Test accounts and URLs will be added before release.
+The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide is being written role by role as features are verified. Sections for roles not listed below are not ready for testing yet.
+
+## Getting started
+
+### Test accounts
+
+Roles are set by the team, so use these accounts. They all share one password: **`BugFlow-Demo-2026`**.
+
+| Role | Accounts |
+|---|---|
+| Reporter | `reporter1@example.com`, `reporter2@example.com` |
+| Developer | `developer1@example.com`, `developer2@example.com` |
+| QA tester | `qa1@example.com`, `qa2@example.com` |
+
+**Create account** on the sign-in page makes a new **Reporter** account.
+
+### Signing in
+
+After signing in you land on your role's workspace: Reporters on **My bug reports** (`/reports`), Developers on **Assigned bugs** (`/developer`), and QA testers on the **QA queue** (`/qa`). The bar at the top shows only your role's pages. **Home** describes your role and links to your workspace.
+
+### How a bug moves between roles
+
+When a Reporter submits a report, it is assigned automatically to the Developer and the QA tester with the fewest unclosed reports. Nobody is assigned a report they filed. The Developer fixes it, the QA tester verifies the fix, and a rejected fix goes back to the Developer with feedback. To follow one bug through every step, use one account of each role, for example `reporter1`, `developer1` and `qa1`. The first report usually goes to `developer1` and `qa1`, and the next to `developer2` and `qa2`.
 
 ## QA tester
 

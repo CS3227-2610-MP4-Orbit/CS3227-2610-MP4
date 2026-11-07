@@ -3,6 +3,8 @@
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { WORKSPACES } from "@/lib/roles";
+import { getSignedInRole } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 
 const credentials = z.object({
@@ -28,7 +30,9 @@ export async function authenticate(_prev: LoginState, form: FormData): Promise<L
 
   // One message for every failure, so the form does not reveal which emails are registered.
   if (error) return { error: "Could not sign in with those details." };
-  redirect("/");
+  // Land on the role's workspace; home explains the role if the profile cannot be read yet.
+  const session = await getSignedInRole();
+  redirect(session ? WORKSPACES[session.role].home : "/");
 }
 
 export async function signOut() {
