@@ -18,6 +18,7 @@ export type StatusEvent = { id: number; from_status: string | null; to_status: s
 
 export type QaReview = {
   kind: "ok";
+  userId: string;
   report: {
     id: string; title: string; code: string; error_message: string; expected_behavior: string;
     actual_behavior: string; reproduction_steps: string; status: string; created_at: string;
@@ -96,6 +97,7 @@ export async function getQaReview(reportId: string): Promise<Denied | QaReview |
 
   return {
     kind: "ok",
+    userId,
     report,
     revisions: (revisions ?? []) as Revision[],
     testCases: (tests.data ?? []) as TestCase[],

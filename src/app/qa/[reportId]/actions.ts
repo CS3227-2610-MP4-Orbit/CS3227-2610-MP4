@@ -3,10 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { runAiFeature } from "@/lib/ai/gateway";
+import { getQaReview } from "@/lib/qa/queries";
 import { createClient } from "@/lib/supabase/server";
 import { decisionSchema, fieldErrors, formFields, idSchema, testCaseSchema } from "@/lib/qa/validation";
 
-import { emptyState, type QaActionState } from "./state";
+import { type AiSuggestionState, emptyState, type QaActionState } from "./state";
 
 
 // Database errors are never shown: they can describe the schema. Each action maps them to a
@@ -49,4 +51,45 @@ export async function decideFix(reportId: string, _previous: QaActionState, form
   revalidatePath("/qa");
   // The decision form disappears once the fix is decided, so the confirmation is shown by the page.
   redirect(`/qa/${reportId}?decided=${verdict}`);
+}
+
+/**
+ * QA's AI feature (spec 001 FR-009): suggested tests for the latest fix. The context is loaded
+ * through the QA tester's own session, so only an assigned QA tester gets any, and only the
+ * fields needed for testing are sent. The answer is shown as a labelled suggestion; nothing is
+ * recorded or run automatically.
+ */
+export async function suggestTests(reportId: string, previous: AiSuggestionState): Promise<AiSuggestionState> {
+  // A refusal keeps the last suggestion on screen and explains why no new one came.
+  const failed = (message: string): AiSuggestionState => ({ ...previous, message });
+  const unavailable = failed("Suggestions are only available for a fix awaiting your QA.");
+  if (!idSchema.safeParse(reportId).success) return unavailable;
+  try {
+    const review = await getQaReview(reportId);
+    if (!review || review.kind !== "ok") return unavailable;
+    const { report, revisions, testCases, userId } = review;
+    const latest = revisions[0];
+    if (report.status !== "awaiting_qa" || !latest) return unavailable;
+
+    const recorded = testCases.filter((test) => test.revision_id === latest.id).map((test) => `- ${test.description}`).join("\n");
+    const result = await runAiFeature({
+      feature: "qa_test_suggestions",
+      userId,
+      role: "qa",
+      reportId,
+      context: [
+        { label: "Bug title", value: report.title },
+        { label: "Original code", value: report.code },
+        { label: "Error message", value: report.error_message },
+        { label: "Expected behavior", value: report.expected_behavior },
+        { label: "Actual behavior", value: report.actual_behavior },
+        { label: `Proposed fix (version ${latest.revision_number})`, value: latest.code },
+        { label: "Developer note", value: latest.note },
+        { label: "Tests already recorded", value: recorded },
+      ],
+    });
+    return result.ok ? { ok: true, text: result.text, message: "" } : failed(result.message);
+  } catch {
+    return failed("The AI could not produce a suggestion. Try again later.");
+  }
 }

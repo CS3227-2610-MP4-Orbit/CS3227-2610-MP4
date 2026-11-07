@@ -28,6 +28,12 @@ Select a report in the queue. The page shows:
 3. **Verify the latest fix**: this section appears only while a fix is awaiting QA.
 4. **History**: for each version, its tests (with expected and actual results), its decision and feedback, and every status change with who made it.
 
+### AI test ideas
+
+While a fix is awaiting QA, select **Suggest test cases** in the **AI test ideas** box. The AI reads the bug report, the latest fix, the Developer's note and the tests you have already recorded. It suggests up to six tests, each with an input, an expected result and a reason. The answer is labelled **AI suggestion · not checked**. It is not recorded or run: choose the tests you want, run them yourself, and record the results below. **Suggest again** asks for new ideas, and the previous answer stays on screen until the new one arrives.
+
+You can ask 3 times a minute and 20 times a day. Past those limits you see "You asked for suggestions too often. Try again in a minute." or a daily-limit message. If the AI is unavailable, slow or busy, a message says so, and the rest of the page keeps working.
+
 ### Recording a test
 
 Under **Record a test case**, fill in **What you tested**, **Expected result** and **Actual result**, choose **pass** or **fail**, and select **Save test**. The test appears in the list above the form, and the form clears for the next test. You can record several tests. Each field is required and can be up to 5,000 characters. Tests are attached to the version you are testing and cannot be edited afterwards.
