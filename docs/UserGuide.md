@@ -1,6 +1,30 @@
 # User guide
 
-The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide is being written role by role as features are verified. Sections for roles not listed below are not ready for testing yet. Test accounts and URLs will be added before release.
+The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide is being written role by role as features are verified. Sections for roles not listed below are not ready for testing yet.
+
+## Getting started
+
+### Test accounts
+
+Roles are set by the team, so use these accounts. They all share one password: **`BugFlow-Demo-2026`**.
+
+| Role | Accounts |
+|---|---|
+| Reporter | `reporter1@example.com`, `reporter2@example.com` |
+| Developer | `developer1@example.com`, `developer2@example.com` |
+| QA tester | `qa1@example.com`, `qa2@example.com` |
+
+**Create account** on the sign-in page makes a new **Reporter** account.
+
+> **This is a shared demo.** The Developer and QA accounts above are the only ones, and their password is public, so anything you submit can be read by anyone testing the app. Do not paste private code. Each Reporter can submit up to 20 reports an hour. After that, submitting shows "Could not save the report. Please try again." until the hour has passed.
+
+### Signing in
+
+After signing in you land on your role's workspace: Reporters on **My bug reports** (`/reports`), Developers on **Assigned bugs** (`/developer`, coming in the next release), and QA testers on the **QA queue** (`/qa`). The bar at the top shows only your role's pages. **Home** describes your role and links to your workspace.
+
+### How a bug moves between roles
+
+When a Reporter submits a report, it is assigned automatically to the Developer and the QA tester with the fewest unclosed reports. Nobody is assigned a report they filed. The Developer fixes it, the QA tester verifies the fix, and a rejected fix goes back to the Developer with feedback. When both people in a role have the same number of unclosed reports, the older account gets it, which is `developer1` or `qa1` in the demo accounts. To follow one bug through every step, find it in the queue of each Developer and QA tester account.
 
 ## QA tester
 

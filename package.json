@@ -10,7 +10,8 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "test:db": "supabase test db",
-    "setup:envs": "node scripts/setup-environments.mjs"
+    "setup:envs": "node scripts/setup-environments.mjs",
+    "seed:demo": "node scripts/seed-demo-accounts.mjs"
   },
   "dependencies": {
     "@codemirror/lang-python": "^6.2.1",

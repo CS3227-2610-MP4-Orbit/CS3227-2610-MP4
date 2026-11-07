@@ -10,11 +10,20 @@ Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-lev
 | Reporter: create, edit, list, fix comparison, feedback (`src/app/reports/`) | Implemented |
 | QA tester: queue, review, tests, decisions, history (`src/app/qa/`) | Implemented |
 | Developer workspace (`src/app/developer/`) | In progress on a separate branch |
+| Automatic assignment, role home and navigation, demo accounts | Implemented |
 | AI gateway (`src/lib/ai/`) and QA's AI feature | Implemented. Reporter and Developer features are configured in the gateway, but their UI is not built yet |
 
 ## Design
 
 Three authenticated roles share reports, revision history, test cases, decisions and audit events. Every protected read runs as the signed-in user, so row-level security decides what each role may see. Status changes only through the security-definer functions `start_work`, `submit_fix` and `decide_fix`. Each one checks the caller's current role, assignment and the report status, and records a status event in the same transaction. User code and AI output are rendered as text and never executed.
+
+### Assignment and roles
+
+Migration `20261107010000_assign_reports.sql` adds an after-insert trigger to `bug_reports`. When a report has no assignees, which is true of every Reporter submission, it is given to the Developer and the QA tester with the fewest unclosed reports, oldest account first. It is never given to the person who filed it. An advisory lock spreads reports submitted at the same moment. The trigger runs after the insert because row-level security checks an insert's `WITH CHECK` after `BEFORE` triggers, and a Reporter's insert must carry no assignees. Reports the team assigns explicitly with the secret key are left as set. A second trigger, `limit_report_submissions`, refuses a Reporter's 21st report within an hour (error `54000`), so one account cannot flood the queue or the assignment lock. Secret-key inserts are not limited. The tests are in `supabase/tests/assign_reports.test.sql`.
+
+`src/lib/roles.ts` is the single map from each role to its workspace, its navigation links and its home-page text. `src/lib/session.ts` (`getSignedInRole`) reads the signed-in role. The sign-in action redirects to the role's workspace, the layout's `SignedInNav` shows that role's links, and the home page shows its actions.
+
+Demo accounts: `DEMO_PASSWORD=... npm run seed:demo -- <local|dev|prod>` (`scripts/seed-demo-accounts.mjs`) creates or updates two accounts per role and sets their roles. It reads `.env.local` or the `DEV_`/`PROD_` keys in `.env.setup`, and prints only emails and roles.
 
 ### QA workspace
 

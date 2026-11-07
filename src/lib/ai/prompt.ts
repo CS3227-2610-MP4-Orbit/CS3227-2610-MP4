@@ -1,7 +1,9 @@
 // Prompt construction and response parsing for the SoC LLM gateway. Pure, so it can be tested
 // without a network or database; gateway.ts adds limits, the HTTP call and usage records.
 
-export type AppRole = "reporter" | "developer" | "qa";
+import type { AppRole } from "../roles";
+
+export type { AppRole };
 export type AiFeature = "reporter_code_explanation" | "developer_debugging" | "qa_test_suggestions";
 
 type FeatureConfig = { role: AppRole; task: string; maxOutputTokens: number };
