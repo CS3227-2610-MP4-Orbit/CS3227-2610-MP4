@@ -56,7 +56,7 @@ export default async function DeveloperReportPage({ params }: { params: Promise<
       <QaHandoff
         status={report.status}
         revisionNumber={revisions.at(-1)?.revision_number}
-        submittedBy={revisions.at(-1)?.author_id}
+        submittedBy={revisions.at(-1)?.author_name}
         submittedAt={revisions.at(-1)?.created_at}
       />
       <DeveloperAiAssistant reportId={report.id} />

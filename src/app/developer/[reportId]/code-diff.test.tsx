@@ -22,4 +22,11 @@ describe("CodeDiff", () => {
     expect(CodeDiff({ original: "", revised: "added" })).toBeTruthy();
     expect(CodeDiff({ original: "removed", revised: "" })).toBeTruthy();
   });
+
+  it("keeps unchanged lines aligned when a line is inserted", () => {
+    const rendered = JSON.stringify(CodeDiff({ original: "first\nlast", revised: "first\ninserted\nlast" }));
+    expect(rendered).toContain("inserted");
+    expect(rendered).toContain("last");
+    expect(rendered.match(/last/g)?.length).toBe(1);
+  });
 });

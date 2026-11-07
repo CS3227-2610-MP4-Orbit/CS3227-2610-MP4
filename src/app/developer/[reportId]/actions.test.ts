@@ -67,6 +67,15 @@ describe("Developer investigation actions", () => {
     expect(createClient).not.toHaveBeenCalled();
   });
 
+  it("rejects corrected code with invalid Python syntax", async () => {
+    const form = new FormData();
+    form.set("reportId", "00000000-0000-4000-8000-000000000001");
+    form.set("code", "def broken(:");
+
+    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "Corrected code must be valid Python syntax." });
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
   it("uses the submit_fix lifecycle RPC and returns a safe success message", async () => {
     const rpc = vi.fn().mockResolvedValue({ data: "revision-id", error: null });
     vi.mocked(createClient).mockResolvedValue({ rpc } as never);

@@ -16,7 +16,7 @@ export type DeveloperReportDetail = {
     updated_at: string;
   };
   notes: Array<{ id: string; author_id: string; body: string; created_at: string; updated_at: string }>;
-  revisions: Array<{ id: string; revision_number: number; author_id: string; code: string; note: string; created_at: string }>;
+  revisions: Array<{ id: string; revision_number: number; author_id: string; author_name: string; code: string; note: string; created_at: string }>;
   decisions: Array<{ revision_id: string; verdict: string; feedback: string; created_at: string }>;
 };
 
@@ -48,10 +48,20 @@ export async function getAssignedDeveloperReportDetail(reportId: string): Promis
   ]);
   if (notesError || revisionsError) throw new Error("Unable to load report details.");
   const revisionIds = (revisions ?? []).map((revision) => revision.id);
+  const authorIds = [...new Set((revisions ?? []).map((revision) => revision.author_id))];
+  const { data: authors, error: authorsError } = authorIds.length
+    ? await supabase.from("profiles").select("id, full_name").in("id", authorIds)
+    : { data: [], error: null };
+  if (authorsError) throw new Error("Unable to load revision authors.");
+  const authorNames = new Map((authors ?? []).map((author) => [author.id, author.full_name]));
   const { data: decisions, error: decisionsError } = revisionIds.length
     ? await supabase.from("qa_decisions").select("revision_id, verdict, feedback, created_at").in("revision_id", revisionIds)
     : { data: [], error: null };
   if (decisionsError) throw new Error("Unable to load QA feedback.");
 
-  return { report, notes: notes ?? [], revisions: revisions ?? [], decisions: decisions ?? [] } as DeveloperReportDetail;
+  const revisionsWithAuthors = (revisions ?? []).map((revision) => ({
+    ...revision,
+    author_name: authorNames.get(revision.author_id)?.trim() || "Assigned Developer",
+  }));
+  return { report, notes: notes ?? [], revisions: revisionsWithAuthors, decisions: decisions ?? [] } as DeveloperReportDetail;
 }

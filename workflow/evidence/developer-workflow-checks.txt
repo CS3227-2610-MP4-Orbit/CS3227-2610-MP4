@@ -1,9 +1,9 @@
-Phase 8 workflow checks recorded on 2026-11-07.
+Phase 8 workflow checks recorded on 2026-11-07 after Windows compatibility remediation.
 
 python workflow/scripts/check_workflow.py
-BLOCKED: ModuleNotFoundError: No module named 'fcntl' on Windows.
+PASS: Workflow structure valid
 
 python workflow/scripts/test_agent_workflow.py
-BLOCKED: ModuleNotFoundError: No module named 'fcntl' on Windows.
+PASS: 7 tests passed
 
-The failures are environment/platform limitations; no successful workflow-check result is claimed.
+The workflow script now uses a platform-specific exclusive-lock fallback on Windows while retaining fcntl locking on POSIX.

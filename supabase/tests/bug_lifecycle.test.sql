@@ -5,7 +5,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(55);
+select plan(58);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two of each role so cross-report and cross-assignment access can be checked.
@@ -143,6 +143,23 @@ select throws_ok(
   'an unassigned developer cannot start work'
 );
 
+reset role;
+update public.profiles set role = 'reporter' where id = '00000000-0000-4000-8000-0000000000b1';
+select pg_temp.act_as('00000000-0000-4000-8000-0000000000b1');
+select throws_ok(
+  $$ select public.start_work(current_setting('test.report')::uuid) $$,
+  '42501', null,
+  'a demoted assigned user cannot start Developer work'
+);
+select throws_ok(
+  $$ insert into public.investigation_notes (report_id, author_id, body)
+     values (current_setting('test.report')::uuid, '00000000-0000-4000-8000-0000000000b1', 'should be denied') $$,
+  '42501', null,
+  'a demoted assigned user cannot add Developer notes'
+);
+reset role;
+update public.profiles set role = 'developer' where id = '00000000-0000-4000-8000-0000000000b1';
+
 select pg_temp.act_as('00000000-0000-4000-8000-0000000000b1');
 select isnt_empty(
   $$ select 1 from public.bug_reports where id = current_setting('test.report')::uuid $$,
@@ -191,6 +208,18 @@ select is(
   'len([]) is 0; guard the empty case',
   'an unauthorized note edit changes nothing'
 );
+reset role;
+update public.profiles set role = 'reporter' where id = '00000000-0000-4000-8000-0000000000b1';
+select pg_temp.act_as('00000000-0000-4000-8000-0000000000b1');
+select throws_ok(
+  $$ select public.submit_fix(current_setting('test.report')::uuid,
+       'def avg(xs):\n    return 0', 'demoted') $$,
+  '42501', null,
+  'a demoted assigned user cannot submit a fix'
+);
+reset role;
+update public.profiles set role = 'developer' where id = '00000000-0000-4000-8000-0000000000b1';
+select pg_temp.act_as('00000000-0000-4000-8000-0000000000b1');
 update public.bug_reports set title = 'changed by dev' where id = current_setting('test.report')::uuid;
 select is(
   (select title from public.bug_reports where id = current_setting('test.report')::uuid),
