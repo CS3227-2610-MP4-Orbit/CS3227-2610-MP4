@@ -20,7 +20,7 @@ Roles are set by the team, so use these accounts. They all share one password: *
 
 ### Signing in
 
-After signing in you land on your role's workspace: Reporters on **My bug reports** (`/reports`), Developers on **Assigned bugs** (`/developer`, coming in the next release), and QA testers on the **QA queue** (`/qa`). The bar at the top shows only your role's pages. **Home** describes your role and links to your workspace.
+After signing in you land on your role's workspace: Reporters on **My bug reports** (`/reports`), Developers on **Assigned bugs** (`/developer`), and QA testers on the **QA queue** (`/qa`). The bar at the top shows only your role's pages. **Home** describes your role and links to your workspace.
 
 ### How a bug moves between roles
 
