@@ -9,7 +9,7 @@ Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-lev
 | Lifecycle schema, RLS and lifecycle functions (`supabase/migrations/`) | Implemented and tested (`supabase/tests/`) |
 | Reporter: create, edit, list, fix comparison, feedback (`src/app/reports/`) | Implemented |
 | QA tester: queue, review, tests, decisions, history (`src/app/qa/`) | Implemented |
-| Developer workspace (`src/app/developer/`) | In progress on a separate branch |
+| Developer workspace (`src/app/developer/`) | Implemented |
 | Automatic assignment, role home and navigation, demo accounts | Implemented |
 | AI gateway (`src/lib/ai/`) and QA's AI feature | Implemented. Reporter and Developer features are configured in the gateway, but their UI is not built yet |
 
