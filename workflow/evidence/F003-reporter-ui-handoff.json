@@ -1,0 +1,60 @@
+{
+  "task_id": "F003-reporter-ui",
+  "goal": "Improve Reporter navigation and Python code editing per Spec Kit 003 tasks T002-T010 while preserving existing auth, form, and feedback work",
+  "owner": "joseph (orchestrator)",
+  "status": "implemented; code/security reviewed; unit-level verification passed; browser/build follow-up required",
+  "spec": "specs/003-reporter-navigation-editor/spec.md",
+  "context_paths": [
+    "workflow/requests/F003-reporter-ui-task.json",
+    "specs/003-reporter-navigation-editor/spec.md",
+    "specs/003-reporter-navigation-editor/plan.md",
+    "specs/003-reporter-navigation-editor/tasks.md"
+  ],
+  "decisions": [
+    "Use CodeMirror 6 Python language support with one native textarea named python_code as the form source and pre-hydration fallback.",
+    "Use shared route links with active state and detail section anchors; preserve existing Reporter authorization and F002 feedback.",
+    "Synchronize CodeMirror edits to native textarea.value immediately before React rerender."
+  ],
+  "findings": [
+    "Code review initially found missing visible-editor label/invalid state; generator fixed it and reviewer rechecked successfully.",
+    "Security review found no blocker: no code execution/exfiltration, server validation and authorization retained.",
+    "Reporter navigation Suspense fallback can briefly show links on login route before hydration.",
+    "Independent build attempt failed on Turbopack process/port binding permission; generator separately reported a successful build."
+  ],
+  "acceptance_criteria": [
+    "Persistent accessible route navigation with active state and usable detail section navigation",
+    "Python editor gives syntax highlighting, line numbers and indentation while code remains inert",
+    "One python_code form field submits current text and retains it on validation errors and before hydration",
+    "Existing Reporter ownership/role checks and feedback behavior stay intact; relevant tests, lint, typecheck and build outcomes recorded"
+  ],
+  "artifacts": [
+    "package.json",
+    "package-lock.json",
+    "src/app/layout.tsx",
+    "src/app/globals.css",
+    "src/app/reporter-nav.tsx",
+    "src/app/reporter-nav.test.tsx",
+    "src/app/page.tsx",
+    "src/app/reports/page.tsx",
+    "src/app/reports/new/page.tsx",
+    "src/app/reports/[id]/page.tsx",
+    "src/app/reports/report-form.tsx",
+    "src/app/reports/python-editor.tsx",
+    "src/app/reports/python-editor.test.tsx",
+    "specs/003-reporter-navigation-editor/spec.md",
+    "specs/003-reporter-navigation-editor/plan.md",
+    "specs/003-reporter-navigation-editor/tasks.md"
+  ],
+  "verification": [
+    "Independent verifier: npm test passed (4 files, 13 tests).",
+    "Independent verifier: npm run lint, npm run typecheck and git diff --check passed.",
+    "Generator: npm run build passed after Suspense fix; independent verifier build failed due local Turbopack process/port permission.",
+    "Browser CUA reported no browser available; hydrated editing, keyboard submission/error recovery and narrow viewport not observed."
+  ],
+  "remaining_work": [
+    "Perform signed-in browser smoke on desktop and narrow viewport, including code input, validation error, immediate submit, saved LF content and section links.",
+    "Run independent production build in an environment permitting Turbopack child processes.",
+    "Finish task token capture after orchestrator turn, review draft run and record actual usage."
+  ],
+  "next_owner": "joseph (browser/release review)"
+}

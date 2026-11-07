@@ -1,0 +1,15 @@
+{
+  "task_id": "OBS001-usage-capture",
+  "goal": "Capture counts-only Codex usage for future bounded development tasks",
+  "owner": "joseph",
+  "status": "implemented and verified; first measured task pending",
+  "spec": "workflow/experiments.md",
+  "context_paths": ["workflow/requests/OBS001-usage-capture-task.json", "workflow/experiments.md", "workflow/templates/run-record.json", "workflow/scripts/agent_workflow.py"],
+  "decisions": ["Capture a root-thread start snapshot before spawning agents and finish after all turns settle.", "Compute task usage from cumulative counter deltas, including confirmed spawned descendants and excluding helper sessions.", "Store only session IDs, agent paths, timestamps, scoped model IDs, and numeric counters; raw Codex JSONL remains outside the repository.", "Leave uncertain child baselines and missing counters null rather than assuming zero."],
+  "findings": ["Code review found lifetime-wide model attribution, possible pre-existing child overcounting, and an unrecoverable invalid draft-run path; all were fixed and re-reviewed.", "Security review found child filtering and malformed-record privacy risks; thread_spawn filtering and guarded parsing resolved them.", "Read-only local smoke found Codex usage counters and confirmed spawned sessions, without writing real usage evidence."],
+  "acceptance_criteria": ["Start identifies a root Codex thread and stores safe cumulative counts.", "Finish includes confirmed spawned descendants, excludes helpers, and computes non-negative task deltas.", "Raw private content does not enter evidence or terminal output.", "A draft run can receive measured counts and provenance while unknown fields remain null.", "Synthetic tests cover attribution, missing and negative counters, duplicate captures, draft retry, and private-content non-disclosure."],
+  "artifacts": ["workflow/scripts/token_usage.py", "workflow/scripts/test_token_usage.py", "workflow/README.md", "workflow/experiments.md"],
+  "verification": ["Independent verifier: 10 collector tests passed.", "Independent verifier: 7 existing workflow tests passed.", "Independent verifier: workflow structure check and git diff --check passed.", "Read-only local Codex snapshot found root counters and 13 root/confirmed spawned sessions; no real usage artifact was written.", "Security reviewer independently reran 10 collector tests after the parser fix; all passed."],
+  "remaining_work": ["Start capture before the next bounded task, then finish after agent turns settle and review the counts-only summary before recording it.", "Run comparable quality-controlled trials before claiming token or value savings.", "The OBS001 setup task itself has no measured token delta because its start snapshot was not taken before work."],
+  "next_owner": "joseph"
+}

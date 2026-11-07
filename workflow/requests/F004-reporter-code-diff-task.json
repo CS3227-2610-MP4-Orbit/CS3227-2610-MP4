@@ -1,0 +1,62 @@
+{
+  "task_id": "F004-reporter-code-diff",
+  "goal": "Implement Reporter-only original-versus-proposed revision comparison with dev-only sample preview, read contract, and security tests",
+  "owner": "joseph",
+  "owned_paths": [
+    "package.json",
+    "package-lock.json",
+    "src/app/reports/[id]/page.tsx",
+    "src/app/reports/[id]/comparison.tsx",
+    "src/app/reports/[id]/comparison.test.tsx",
+    "src/lib/reports/line-diff.ts",
+    "src/lib/reports/line-diff.test.ts",
+    "supabase/tests/reporter_comparison.test.sql"
+  ],
+  "spec": "specs/004-reporter-fix-comparison/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Owned Reporter sees original vs latest real revision with changed lines, author/time/note and can switch versions including on closed reports",
+    "No revision shows honest empty state; development-only sample is visibly labeled; load failure has distinct safe state",
+    "Foreign Reporter and wrong-role direct revision reads are denied by route and RLS; code and note are inert text",
+    "Long code comparison is bounded with fallback; unit/database/lint/type/build outcomes recorded; no Developer/QA writer added"
+  ],
+  "context_refs": [
+    {
+      "path": "specs/004-reporter-fix-comparison/spec.md",
+      "start_line": 30,
+      "end_line": 80
+    },
+    {
+      "path": "specs/004-reporter-fix-comparison/plan.md",
+      "start_line": 1,
+      "end_line": 28
+    },
+    {
+      "path": "specs/004-reporter-fix-comparison/tasks.md",
+      "start_line": 1,
+      "end_line": 42
+    },
+    {
+      "path": "src/app/reports/[id]/page.tsx",
+      "start_line": 10,
+      "end_line": 56
+    },
+    {
+      "path": "supabase/migrations/20261104000000_bug_lifecycle.sql",
+      "start_line": 88,
+      "end_line": 98
+    },
+    {
+      "path": "supabase/migrations/20261104000000_bug_lifecycle.sql",
+      "start_line": 410,
+      "end_line": 418
+    },
+    {
+      "path": "supabase/migrations/20261105000300_reporter_role_access.sql",
+      "start_line": 1,
+      "end_line": 39
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "task_id": "F004-reporter-code-diff",
+  "recorded_at": "2026-11-06T02:50:40.957678Z",
+  "workflow": "task_based",
+  "planned_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "actual_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "model_tiers": {
+    "orchestrator": "lightweight",
+    "generator": "lightweight",
+    "code_reviewer": "lightweight",
+    "security_reviewer": "strong",
+    "verifier": "lightweight"
+  },
+  "model_ids": {
+    "root": [],
+    "/root/generator": [],
+    "/root/security_reviewer": [],
+    "/root/code_reviewer": [],
+    "/root/verifier": [],
+    "/root/list_edit_generator": [],
+    "/root/list_edit_code_review": [],
+    "/root/list_edit_security_review": [],
+    "/root/list_edit_verifier": [],
+    "/root/usage_generator": [],
+    "/root/usage_code_review": [],
+    "/root/usage_security_review": [],
+    "/root/usage_verifier": [],
+    "/root/feedback_research": [],
+    "/root/feedback_generator": [],
+    "/root/feedback_code_review": [],
+    "/root/feedback_security_review": [],
+    "/root/feedback_verifier": [],
+    "/root/ui_generator": [],
+    "/root/ui_code_review": [],
+    "/root/ui_security_review": [],
+    "/root/ui_verifier": [],
+    "/root/ci_security_review": [],
+    "/root/ci_code_review": [],
+    "/root/ci_verifier": [],
+    "/root/comparison_generator": [
+      "gpt-6-sol"
+    ],
+    "/root/comparison_code_review": [
+      "gpt-6-sol"
+    ],
+    "/root/comparison_security_review": [
+      "gpt-6-sol"
+    ],
+    "/root/comparison_verifier": [
+      "gpt-6-sol"
+    ]
+  },
+  "input_tokens": 24193790,
+  "cached_tokens": 24086400,
+  "reasoning_tokens": 12255,
+  "output_tokens": 36008,
+  "context_chars": 13480,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": null,
+  "retries": null,
+  "result": "pass",
+  "evidence_paths": [
+    "workflow/evidence/F004-reporter-code-diff-handoff.json",
+    "supabase/tests/reporter_comparison.test.sql",
+    "workflow/evidence/usage/F004-reporter-code-diff.start.json",
+    "workflow/evidence/usage/F004-reporter-code-diff.usage.json"
+  ],
+  "notes": "Draft pending post-turn token finish. Code/database acceptance passed; browser smoke and production build remain unverified. Context 13,480 characters are bounded excerpts, not token usage. Model tiers are route guidance, not measured model IDs. No cache/value savings inferred. Usage from local Codex cumulative token-count deltas; see counts-only evidence file. Missing counters remain null."
+}
