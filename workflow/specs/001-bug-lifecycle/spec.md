@@ -24,7 +24,7 @@ Three authenticated roles collaborate on Python snippet bugs: Reporter submits a
 - Confirmed owners: Joseph — Reporter; Jordan — Developer; Johanssen — QA tester.
 - Decide account provisioning and whether a person may hold multiple roles.
 - Decide developer/QA assignment and who can access unassigned reports.
-- Starting application limits: title 120 characters; Python snippet 20,000 characters; each other report text field 2,000 characters. Send at most 8,000 characters of relevant code and 4,000 characters of other context per AI request; cap model output at 700 tokens. Allow a burst of up to five requests per user per minute and 50 per day, subject to the SoC service's actual quota.
+- Starting application limits: title 120 characters; Python snippet 20,000 characters; each other report, note, and feedback text field 5,000 characters. Send at most 8,000 characters of relevant code and 4,000 characters of other context per AI request; cap model output at 700 tokens. Allow a burst of up to five requests per user per minute and 50 per day, subject to the SoC service's actual quota.
 - Use the SoC service's default supported chat model, configured through `SOCLAAS_MODEL` when credentials are issued. Keep endpoint and credentials server-side. Verify the provider's exact model ID and limits before enabling live AI.
 
 ## Out of scope for MVP
