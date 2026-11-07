@@ -1,6 +1,6 @@
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(19);
+select plan(23);
 
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at)
 values
@@ -37,6 +37,8 @@ select throws_ok($$ insert into public.bug_reports (reporter_id,title,code,error
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000001', true);
 select lives_ok($$ update public.bug_reports set title = 'Edited' where reporter_id = '00000000-0000-0000-0000-000000000001' $$, 'reporter can edit own open report');
 select is((select title from public.bug_reports where reporter_id = '00000000-0000-0000-0000-000000000001'), 'Edited', 'own edit is visible');
+select lives_ok($$ update public.bug_reports set code = 'print(2)' where reporter_id = '00000000-0000-0000-0000-000000000001' $$, 'reporter can edit code while the report is open');
+select is((select code from public.bug_reports where reporter_id = '00000000-0000-0000-0000-000000000001'), 'print(2)', 'open report code edit is visible');
 select throws_ok($$ update public.bug_reports set status = 'closed' where reporter_id = '00000000-0000-0000-0000-000000000001' $$, '42501', null, 'reporter cannot change status');
 select throws_ok($$ update public.bug_reports set reporter_id = '00000000-0000-0000-0000-000000000002' where reporter_id = '00000000-0000-0000-0000-000000000001' $$, '42501', null, 'reporter cannot change owner');
 select throws_ok($$ update public.bug_reports set title = repeat('x',121) where reporter_id = '00000000-0000-0000-0000-000000000001' $$, '23514', null, 'database rejects oversized edit');
@@ -51,6 +53,12 @@ insert into public.bug_reports (reporter_id,title,code,error_message,expected_be
   values ('00000000-0000-0000-0000-000000000002','Developer old report','print(2)','Error','works','fails','run');
 set local role authenticated;
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000001', true);
+reset role;
+update public.bug_reports set status = 'in_progress' where reporter_id = '00000000-0000-0000-0000-000000000001';
+set local role authenticated;
+select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000001', true);
+select lives_ok($$ update public.bug_reports set code = 'print(3)' where reporter_id = '00000000-0000-0000-0000-000000000001' $$, 'reporter update is filtered after Developer work starts');
+select is((select code from public.bug_reports where reporter_id = '00000000-0000-0000-0000-000000000001'), 'print(2)', 'original code remains unchanged after work starts');
 with changed as (update public.bug_reports set title = 'Late edit' where reporter_id = '00000000-0000-0000-0000-000000000001' returning id)
 select is((select count(*)::int from changed), 0, 'closed report cannot be edited');
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000002', true);

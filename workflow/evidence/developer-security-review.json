@@ -1,0 +1,42 @@
+{
+  "task_id": "T039",
+  "goal": "Independently review Developer authentication, lifecycle, RLS, immutable-code, and QA-boundary security.",
+  "owner": "security_reviewer",
+  "status": "fail",
+  "spec": "specs/001-developer-bug-workflow/spec.md",
+  "context_paths": [
+    "specs/001-developer-bug-workflow/spec.md",
+    "specs/001-developer-bug-workflow/contracts/developer-workflow.md",
+    "supabase/migrations/20261104000000_bug_lifecycle.sql",
+    "supabase/migrations/20261107020000_editable_investigation_notes.sql",
+    "supabase/tests/bug_lifecycle.test.sql"
+  ],
+  "decisions": [
+    "Do not proceed to Developer AI work until the high-severity lifecycle authorization finding is resolved.",
+    "QA approval and rejection actions remain outside the Developer-owned implementation."
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "title": "Lifecycle mutations do not verify current role",
+      "evidence": "start_work, submit_fix, investigation-note policies, and decide_fix rely on assignment identifiers without requiring the caller's current role",
+      "recommendation": "Require current_app_role() = developer for Developer mutations and current_app_role() = qa for decide_fix, with role-demotion tests."
+    }
+  ],
+  "acceptance_criteria": [
+    "Only the currently authorized role can invoke protected lifecycle mutations.",
+    "Original report code remains immutable for every authenticated role after creation.",
+    "No unauthorized code, revision, note, or QA data is disclosed."
+  ],
+  "artifacts": ["workflow/evidence/developer-security-review.json"],
+  "verification": [
+    "Developer-focused review reported 7 files and 41 tests passed.",
+    "Reporter code-edit policy now has regression coverage: edits are allowed while open and filtered after in_progress.",
+    "Database runtime verification was unavailable because Supabase telemetry failed with EPERM writing C:\\Users\\jordan\\.supabase\\telemetry.json."
+  ],
+  "remaining_work": [
+    "Resolve the remaining high-severity current-role finding and rerun database security tests.",
+    "Review medium findings for shifted-line diff alignment and Python syntax validation."
+  ],
+  "next_owner": "developer owner"
+}

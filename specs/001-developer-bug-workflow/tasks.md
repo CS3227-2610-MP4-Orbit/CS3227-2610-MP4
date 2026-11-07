@@ -153,12 +153,12 @@ RLS, security, and acceptance evidence.
 
 **Purpose**: Independent review, evidence, and final validation across all stories.
 
-- [ ] T039 [P] Run the `security_reviewer` role against the spec, migration, changed server actions, and RLS tests; record findings in `workflow/evidence/developer-security-review.json`
-- [ ] T040 [P] Run the `code_reviewer` role against changed Developer files and contracts; record findings in `workflow/evidence/developer-code-review.json`
-- [ ] T041 Run the `verifier` role against the quickstart, acceptance criteria, and actual command output; record the result in `workflow/evidence/developer-verification.json`
-- [ ] T042 Run `python workflow/scripts/check_workflow.py` and `python workflow/scripts/test_agent_workflow.py`; record actual results in `workflow/evidence/developer-workflow-checks.txt`
-- [ ] T043 Run `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:db`, and `npm run build`; record actual results in `workflow/evidence/developer-command-results.txt`
-- [ ] T044 Update `logs/jordan/` with the interaction summary and `docs/Reflections.md` with measured technique/context/resource evidence; do not invent unavailable metrics
+- [X] T039 [P] Run the `security_reviewer` role against the spec, migration, changed server actions, and RLS tests; record findings in `workflow/evidence/developer-security-review.json`
+- [X] T040 [P] Run the `code_reviewer` role against changed Developer files and contracts; record findings in `workflow/evidence/developer-code-review.json`
+- [X] T041 Run the `verifier` role against the quickstart, acceptance criteria, and actual command output; record the result in `workflow/evidence/developer-verification.json`
+- [X] T042 Run `python workflow/scripts/check_workflow.py` and `python workflow/scripts/test_agent_workflow.py`; record actual results in `workflow/evidence/developer-workflow-checks.txt`
+- [X] T043 Run `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:db`, and `npm run build`; record actual results in `workflow/evidence/developer-command-results.txt`
+- [X] T044 Update `logs/jordan/` with the interaction summary and `docs/Reflections.md` with measured technique/context/resource evidence; do not invent unavailable metrics
 - [ ] T045 Run the manual scenarios in `specs/001-developer-bug-workflow/quickstart.md` and record the outcome in `workflow/evidence/developer-quickstart.md`
 
 ## Phase 9: Developer AI Assistance

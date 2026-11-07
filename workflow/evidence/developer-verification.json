@@ -1,0 +1,31 @@
+{
+  "task_id": "T041",
+  "goal": "Verify Developer acceptance criteria and regression risk after independent reviews.",
+  "owner": "verifier",
+  "status": "fail",
+  "spec": "specs/001-developer-bug-workflow/spec.md",
+  "context_paths": [
+    "specs/001-developer-bug-workflow/quickstart.md",
+    "workflow/evidence/developer-security-review.json",
+    "workflow/evidence/developer-code-review.json",
+    "workflow/evidence/developer-command-results.txt"
+  ],
+  "decisions": [
+    "US1-US5 Developer behavior is not ready for release verification because independent security and code reviews contain unresolved blockers.",
+    "Do not start Phase 9 Developer AI implementation until Phase 8 blockers are resolved."
+  ],
+  "findings": [
+    "Focused Developer tests pass, but full repository validation is incomplete.",
+    "The original-code immutability and current-role authorization boundaries need remediation.",
+    "Manual quickstart execution was not possible without a working local Supabase environment and authenticated test accounts."
+  ],
+  "acceptance_criteria": [
+    "All high-severity review findings are resolved or explicitly accepted.",
+    "Database/RLS tests execute successfully.",
+    "Manual quickstart scenarios are run and recorded."
+  ],
+  "artifacts": ["workflow/evidence/developer-verification.json"],
+  "verification": ["See developer-command-results.txt and developer-workflow-checks.txt for actual command output summaries."],
+  "remaining_work": ["Remediate review findings, resolve environment blockers, then rerun verification."],
+  "next_owner": "developer owner"
+}
