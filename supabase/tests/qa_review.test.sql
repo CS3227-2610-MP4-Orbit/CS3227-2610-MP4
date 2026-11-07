@@ -27,6 +27,12 @@ $$;
 -- Developer hands revision 1 to QA.
 select pg_temp.act_as('00000000-0000-4000-8000-0000000001b1');
 select public.start_work(current_setting('test.report')::uuid);
+insert into public.investigation_notes (report_id, author_id, body)
+values (
+  current_setting('test.report')::uuid,
+  '00000000-0000-4000-8000-0000000001b1',
+  'Guard empty input before accessing the first element'
+);
 select public.submit_fix(current_setting('test.report')::uuid, 'def first(xs):\n    return xs[0] if xs else None', 'Guard empty');
 
 -- ---------------------------------------------------------------------------

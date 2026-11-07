@@ -115,14 +115,14 @@ RLS, security, and acceptance evidence.
 
 ### Tests for User Story 4
 
-- [ ] T029 [P] [US4] Add handoff precondition and permission tests for missing notes, missing code, wrong status, and Developer approval attempts in `src/app/developer/[reportId]/actions.test.ts`
-- [ ] T030 [P] [US4] Add lifecycle evidence for `in_progress` to `awaiting_qa` and Developer denial of `decide_fix` in `supabase/tests/bug_lifecycle.test.sql`
+- [X] T029 [P] [US4] Add handoff precondition and permission tests for missing notes, missing code, wrong status, and Developer approval attempts in `src/app/developer/[reportId]/actions.test.ts`
+- [X] T030 [P] [US4] Add lifecycle evidence for `in_progress` to `awaiting_qa` and Developer denial of `decide_fix` in `supabase/tests/bug_lifecycle.test.sql`
 
 ### Implementation for User Story 4
 
-- [ ] T031 [US4] Implement the QA handoff action and success/error messages using the `submit_fix` result in `src/app/developer/[reportId]/actions.ts`
-- [ ] T032 [US4] Implement the read-only awaiting-QA handoff summary without approval/rejection controls in `src/app/developer/[reportId]/qa-handoff.tsx`
-- [ ] T033 [US4] Integrate the handoff summary and status into `src/app/developer/[reportId]/page.tsx`
+- [X] T031 [US4] Implement the QA handoff action and success/error messages using the `submit_fix` result in `src/app/developer/[reportId]/actions.ts`
+- [X] T032 [US4] Implement the read-only awaiting-QA handoff summary without approval/rejection controls in `src/app/developer/[reportId]/qa-handoff.tsx`
+- [X] T033 [US4] Integrate the handoff summary and status into `src/app/developer/[reportId]/page.tsx`
 
 **Checkpoint**: User Story 4 is independently demonstrable as the Developer-to-QA boundary.
 
@@ -136,14 +136,14 @@ RLS, security, and acceptance evidence.
 
 ### Tests for User Story 5
 
-- [ ] T034 [P] [US5] Add rejection-feedback and revision-chain read tests in `src/app/developer/[reportId]/page.test.tsx`
-- [ ] T035 [P] [US5] Add rejection-to-revision lifecycle coverage in `supabase/tests/bug_lifecycle.test.sql`
+- [X] T034 [P] [US5] Add rejection-feedback and revision-chain read tests in `src/app/developer/[reportId]/page.test.tsx`
+- [X] T035 [P] [US5] Add rejection-to-revision lifecycle coverage in `supabase/tests/bug_lifecycle.test.sql`
 
 ### Implementation for User Story 5
 
-- [ ] T036 [US5] Implement participant-safe QA rejection feedback display linked to the affected revision in `src/app/developer/[reportId]/qa-feedback.tsx`
-- [ ] T037 [US5] Enable revision submission after QA rejection while preserving prior revisions in `src/app/developer/[reportId]/fix-form.tsx`
-- [ ] T038 [US5] Integrate rejection feedback, revision lineage, and `in_progress` state into `src/app/developer/[reportId]/page.tsx`
+- [X] T036 [US5] Implement participant-safe QA rejection feedback display linked to the affected revision in `src/app/developer/[reportId]/qa-feedback.tsx`
+- [X] T037 [US5] Enable revision submission after QA rejection while preserving prior revisions in `src/app/developer/[reportId]/fix-form.tsx`
+- [X] T038 [US5] Integrate rejection feedback, revision lineage, and `in_progress` state into `src/app/developer/[reportId]/page.tsx`
 
 **Checkpoint**: User Story 5 is independently demonstrable as a complete Developer revision loop.
 
@@ -153,12 +153,12 @@ RLS, security, and acceptance evidence.
 
 **Purpose**: Independent review, evidence, and final validation across all stories.
 
-- [ ] T039 [P] Run the `security_reviewer` role against the spec, migration, changed server actions, and RLS tests; record findings in `workflow/evidence/developer-security-review.json`
-- [ ] T040 [P] Run the `code_reviewer` role against changed Developer files and contracts; record findings in `workflow/evidence/developer-code-review.json`
-- [ ] T041 Run the `verifier` role against the quickstart, acceptance criteria, and actual command output; record the result in `workflow/evidence/developer-verification.json`
-- [ ] T042 Run `python workflow/scripts/check_workflow.py` and `python workflow/scripts/test_agent_workflow.py`; record actual results in `workflow/evidence/developer-workflow-checks.txt`
-- [ ] T043 Run `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:db`, and `npm run build`; record actual results in `workflow/evidence/developer-command-results.txt`
-- [ ] T044 Update `logs/jordan/` with the interaction summary and `docs/Reflections.md` with measured technique/context/resource evidence; do not invent unavailable metrics
+- [X] T039 [P] Run the `security_reviewer` role against the spec, migration, changed server actions, and RLS tests; record findings in `workflow/evidence/developer-security-review.json`
+- [X] T040 [P] Run the `code_reviewer` role against changed Developer files and contracts; record findings in `workflow/evidence/developer-code-review.json`
+- [X] T041 Run the `verifier` role against the quickstart, acceptance criteria, and actual command output; record the result in `workflow/evidence/developer-verification.json`
+- [X] T042 Run `python workflow/scripts/check_workflow.py` and `python workflow/scripts/test_agent_workflow.py`; record actual results in `workflow/evidence/developer-workflow-checks.txt`
+- [X] T043 Run `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:db`, and `npm run build`; record actual results in `workflow/evidence/developer-command-results.txt`
+- [X] T044 Update `logs/jordan/` with the interaction summary and `docs/Reflections.md` with measured technique/context/resource evidence; do not invent unavailable metrics
 - [ ] T045 Run the manual scenarios in `specs/001-developer-bug-workflow/quickstart.md` and record the outcome in `workflow/evidence/developer-quickstart.md`
 
 ## Phase 9: Developer AI Assistance

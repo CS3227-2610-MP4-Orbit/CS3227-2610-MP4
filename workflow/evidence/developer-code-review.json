@@ -1,0 +1,63 @@
+{
+  "task_id": "T040",
+  "goal": "Independently review Developer-owned implementation and contracts for correctness and maintainability.",
+  "owner": "code_reviewer",
+  "status": "fail",
+  "spec": "specs/001-developer-bug-workflow/spec.md",
+  "context_paths": [
+    "specs/001-developer-bug-workflow/spec.md",
+    "specs/001-developer-bug-workflow/contracts/developer-workflow.md",
+    "src/app/developer/",
+    "src/lib/developer/",
+    "supabase/tests/bug_lifecycle.test.sql"
+  ],
+  "decisions": [
+    "Treat the lifecycle authorization issue as a release blocker.",
+    "Accept the Reporter code-edit behavior after the product clarification: editable while open, protected once in_progress.",
+    "Treat the shifted-line comparison issue as a US3 correctness defect requiring remediation before final verification."
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "title": "Demoted assigned users can continue lifecycle mutations",
+      "evidence": "start_work and submit_fix check assignment but not current profile role",
+      "recommendation": "Add current-role checks and role-demotion regression tests."
+    },
+    {
+      "severity": "medium",
+      "title": "Index-based code diff misclassifies shifted lines",
+      "evidence": "src/app/developer/[reportId]/code-diff.tsx compares lines by array index",
+      "recommendation": "Use alignment-aware diffing or add a line-diff algorithm and shifted-line tests."
+    },
+    {
+      "severity": "medium",
+      "title": "Corrected Python is not syntax-validated",
+      "evidence": "fixedPythonCodeSchema validates only non-empty content and length",
+      "recommendation": "Add safe Python syntax validation or clarify the requirement boundary."
+    },
+    {
+      "severity": "low",
+      "title": "Handoff displays the Developer UUID instead of a display identity",
+      "evidence": "qa-handoff receives and renders revision.author_id",
+      "recommendation": "Load a safe display name or label the identifier appropriately."
+    }
+  ],
+  "acceptance_criteria": [
+    "Developer behavior matches the specification and contract across US1-US5.",
+    "Code comparison remains correct when lines are inserted or removed.",
+    "The handoff is maintainable and does not expose internal identifiers unnecessarily."
+  ],
+  "artifacts": ["workflow/evidence/developer-code-review.json"],
+  "verification": [
+    "Reporter open-versus-in_progress code-edit behavior is now specified and covered by regression tests.",
+    "Developer-focused tests: 19 passed.",
+    "Lint: passed.",
+    "Full test suite: 73 passed and 2 suites failed because diff is unavailable.",
+    "Typecheck: failed on unavailable CodeMirror and diff dependencies.",
+    "git diff --check: passed."
+  ],
+  "remaining_work": [
+    "Resolve high and medium findings before final verification."
+  ],
+  "next_owner": "developer owner"
+}

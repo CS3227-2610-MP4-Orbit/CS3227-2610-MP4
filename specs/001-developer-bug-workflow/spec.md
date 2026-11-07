@@ -36,6 +36,13 @@ QA approval/rejection actions here.
   appended and edited by their author while the report is `open` or `in_progress`; notes become
   read-only after the report enters `awaiting_qa`.
 
+### Session 2026-11-07
+
+- Q: May a Reporter edit submitted Python code? → A: The Reporter may edit their own report,
+  including code, while the report is `open`. Once Developer work starts and the report becomes
+  `in_progress`, the original code is protected and Reporter edits are rejected. Developer
+  revisions are always stored separately from the original report code.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Review assigned reports (Priority: P1)
@@ -191,7 +198,8 @@ feedback, submit a new revision, and resubmit it while the rejected revision rem
   `in_progress`.
 - **FR-005**: The system MUST validate investigation notes and reject invalid input with a useful
   message.
-- **FR-006**: The system MUST preserve the original reporter code as immutable data.
+- **FR-006**: The system MUST preserve the original reporter code as immutable data once a report
+  enters `in_progress`; edits while the report is `open` are allowed only to the owning Reporter.
 - **FR-007**: The system MUST allow an authorized Developer to submit corrected Python code as a
   new revision linked to the bug and submitting Developer.
 - **FR-008**: The system MUST preserve every submitted revision, including revisions that are
