@@ -4,7 +4,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(13);
+select plan(16);
 
 create function pg_temp.act_as(uid uuid) returns void language sql as $$
   select set_config('request.jwt.claims', json_build_object('sub', uid, 'role', 'authenticated')::text, true);
@@ -29,9 +29,9 @@ update public.profiles set role = 'reporter' where role in ('developer', 'qa');
 select pg_temp.act_as('00000000-0000-4000-8000-0000000002a1');
 select lives_ok($$ select pg_temp.report('before any staff') $$, 'a report can be submitted with no Developer or QA account');
 reset role;
-select is(
-  (select developer_id::text || qa_id::text from public.bug_reports where title = 'before any staff'),
-  null,
+select results_eq(
+  $$ select developer_id, qa_id from public.bug_reports where title = 'before any staff' $$,
+  $$ values (null::uuid, null::uuid) $$,
   'with no eligible accounts the report stays unassigned'
 );
 
@@ -135,6 +135,34 @@ select is(
   (select developer_id from public.bug_reports where title = 'filed by a future developer'),
   null,
   'nobody is assigned to fix a report they filed themselves'
+);
+
+-- ---------------------------------------------------------------------------
+-- Submission limit: 20 reports an hour per Reporter
+-- ---------------------------------------------------------------------------
+
+insert into auth.users (id, email) values ('00000000-0000-4000-8000-0000000002a2', 'assign-flood@test.local');
+insert into public.bug_reports (reporter_id, title, code, expected_behavior, actual_behavior, reproduction_steps)
+select '00000000-0000-4000-8000-0000000002a2', 'flood ' || n, 'c', 'e', 'a', 'r' from generate_series(1, 19) n;
+select pg_temp.act_as('00000000-0000-4000-8000-0000000002a2');
+select lives_ok(
+  $$ insert into public.bug_reports (reporter_id, title, code, expected_behavior, actual_behavior, reproduction_steps)
+     values ('00000000-0000-4000-8000-0000000002a2', 'flood 20', 'c', 'e', 'a', 'r') $$,
+  'a Reporter can file a 20th report in an hour'
+);
+select throws_ok(
+  $$ insert into public.bug_reports (reporter_id, title, code, expected_behavior, actual_behavior, reproduction_steps)
+     values ('00000000-0000-4000-8000-0000000002a2', 'flood 21', 'c', 'e', 'a', 'r') $$,
+  '54000', null,
+  'the 21st report in an hour is refused'
+);
+reset role;
+-- Requests made with the secret key carry the service_role claim.
+select set_config('request.jwt.claims', '{"role":"service_role"}', true);
+select lives_ok(
+  $$ insert into public.bug_reports (reporter_id, title, code, expected_behavior, actual_behavior, reproduction_steps)
+     values ('00000000-0000-4000-8000-0000000002a2', 'team import', 'c', 'e', 'a', 'r') $$,
+  'the team''s own inserts are not limited'
 );
 
 select ok(

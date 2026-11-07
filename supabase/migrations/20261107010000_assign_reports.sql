@@ -14,7 +14,12 @@
 -- team set it. check_report_assignment still validates the roles.
 --
 -- A transaction-level advisory lock serialises assignment, so two reports submitted at the same
--- moment see each other's load and are spread across people instead of both going to one.
+-- moment see each other's load and are spread across people instead of both going to one. The
+-- app submits each report in its own short request transaction, so the lock is held briefly; the
+-- submission limit below stops one account flooding the queue or the lock.
+--
+-- Submission limit: a Reporter may file at most 20 reports an hour. The team's secret-key inserts
+-- are not limited.
 
 create function public.assign_report_reviewers()
 returns trigger
@@ -58,3 +63,26 @@ revoke execute on function public.assign_report_reviewers() from public, anon, a
 create trigger assign_report_reviewers
   after insert on public.bug_reports
   for each row execute function public.assign_report_reviewers();
+
+create function public.limit_report_submissions()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if (select auth.role()) = 'authenticated' and (
+    select count(*) from public.bug_reports
+    where reporter_id = new.reporter_id and created_at > now() - interval '1 hour'
+  ) >= 20 then
+    raise exception 'too many reports in the last hour' using errcode = '54000';
+  end if;
+  return new;
+end;
+$$;
+
+revoke execute on function public.limit_report_submissions() from public, anon, authenticated;
+
+create trigger limit_report_submissions
+  before insert on public.bug_reports
+  for each row execute function public.limit_report_submissions();

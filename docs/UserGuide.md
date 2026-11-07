@@ -16,13 +16,15 @@ Roles are set by the team, so use these accounts. They all share one password: *
 
 **Create account** on the sign-in page makes a new **Reporter** account.
 
+> **This is a shared demo.** The Developer and QA accounts above are the only ones, and their password is public, so anything you submit can be read by anyone testing the app. Do not paste private code. Each Reporter can submit up to 20 reports an hour. After that, submitting shows "Could not save the report. Please try again." until the hour has passed.
+
 ### Signing in
 
-After signing in you land on your role's workspace: Reporters on **My bug reports** (`/reports`), Developers on **Assigned bugs** (`/developer`), and QA testers on the **QA queue** (`/qa`). The bar at the top shows only your role's pages. **Home** describes your role and links to your workspace.
+After signing in you land on your role's workspace: Reporters on **My bug reports** (`/reports`), Developers on **Assigned bugs** (`/developer`, coming in the next release), and QA testers on the **QA queue** (`/qa`). The bar at the top shows only your role's pages. **Home** describes your role and links to your workspace.
 
 ### How a bug moves between roles
 
-When a Reporter submits a report, it is assigned automatically to the Developer and the QA tester with the fewest unclosed reports. Nobody is assigned a report they filed. The Developer fixes it, the QA tester verifies the fix, and a rejected fix goes back to the Developer with feedback. To follow one bug through every step, use one account of each role, for example `reporter1`, `developer1` and `qa1`. The first report usually goes to `developer1` and `qa1`, and the next to `developer2` and `qa2`.
+When a Reporter submits a report, it is assigned automatically to the Developer and the QA tester with the fewest unclosed reports. Nobody is assigned a report they filed. The Developer fixes it, the QA tester verifies the fix, and a rejected fix goes back to the Developer with feedback. When both people in a role have the same number of unclosed reports, the older account gets it, which is `developer1` or `qa1` in the demo accounts. To follow one bug through every step, find it in the queue of each Developer and QA tester account.
 
 ## QA tester
 

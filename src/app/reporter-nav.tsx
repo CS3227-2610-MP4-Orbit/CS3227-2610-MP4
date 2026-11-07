@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -17,7 +18,17 @@ export function RoleNav({ links, label }: { links: readonly NavLink[]; label: st
   return <NavLinks links={links} label={label} active={activeRoute(pathname, links)} />;
 }
 
+/**
+ * Shown while the role loads: nothing on sign-in, otherwise the header at its final height.
+ * Reading the path needs its own boundary, because a fallback sits outside the one it fills.
+ */
 export function RoleNavFallback() {
+  return <Suspense fallback={null}><PathAwareFallback /></Suspense>;
+}
+
+function PathAwareFallback() {
+  const pathname = usePathname();
+  if (pathname === "/login") return null;
   return <NavLinks links={[]} label="Navigation" active={null} />;
 }
 
@@ -26,7 +37,7 @@ function NavLinks({ links, label, active }: { links: readonly NavLink[]; label: 
     <header className="border-b border-slate-200 bg-white/95">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-3 px-5 py-3 sm:px-8">
         <Link href="/" className="text-base font-bold tracking-tight text-slate-900">Python Bug Workflow</Link>
-        {links.length > 0 && (
+        {links.length === 0 ? <div aria-hidden="true" className="h-11" /> : (
           <nav aria-label={label} className="flex max-w-full gap-1 overflow-x-auto rounded-xl bg-slate-100 p-1 text-sm font-medium">
             {links.map(({ href, label: text }) => <Link key={href} href={href} aria-current={active === href ? "page" : undefined} className="whitespace-nowrap rounded-lg px-3 py-2 text-slate-600 transition-colors hover:bg-white hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 aria-[current=page]:bg-white aria-[current=page]:text-blue-700 aria-[current=page]:shadow-sm">{text}</Link>)}
           </nav>
