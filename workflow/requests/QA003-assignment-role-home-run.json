@@ -1,0 +1,54 @@
+{
+  "task_id": "QA003-assignment-role-home",
+  "recorded_at": "2026-11-07T07:32:01.872316Z",
+  "workflow": "task_based",
+  "planned_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "actual_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "model_tiers": {
+    "orchestrator": "strong",
+    "generator": "strong",
+    "verifier": "strong",
+    "code_reviewer": "standard",
+    "security_reviewer": "standard"
+  },
+  "model_ids": {
+    "root": [
+      "claude-opus-5-5"
+    ],
+    "/root/feature_dev_code_reviewer": [
+      "claude-sonnet-5-5"
+    ],
+    "/root/general_purpose": [
+      "claude-sonnet-5"
+    ]
+  },
+  "input_tokens": 25194377,
+  "cached_tokens": 24939133,
+  "reasoning_tokens": 33031,
+  "output_tokens": 86545,
+  "context_chars": null,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": 111,
+  "retries": 2,
+  "result": "pass",
+  "evidence_paths": [
+    "supabase/tests/assign_reports.test.sql",
+    "src/lib/roles.test.ts",
+    "workflow/evidence/usage/QA003-assignment-role-home.usage.json"
+  ],
+  "notes": "Claude Code. Issues #15-#17. The window also covers creating labels, issues and the draft PR, and a question comparing team token usage. retries=2: a teammate test exposed that a former Reporter could be assigned their own report (rule changed), and a test assumed the team's insert carried no claims (fixed). Code review: 4 important, 2 minor; security review: no exploit, 2 risks (public demo logins as the only staff accounts; no submission limit). All fixed or documented except a cosmetic signed-out flash already covered by the proxy redirect. Verified: 124 pgTAP, 66 vitest, lint, typecheck, build, browser run with demo accounts. Usage from local Claude Code transcripts: unique API responses inside the task window; see counts-only evidence file. Missing counters remain null."
+}
