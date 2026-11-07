@@ -210,7 +210,12 @@ def write_new(path: Path, value: dict) -> None:
         stream.write("\n")
 
 
-def update_draft_run(path: Path, summary: dict, evidence_path: Path) -> None:
+CODEX_NOTE = ("Usage from local Codex cumulative token-count deltas; "
+              "see counts-only evidence file. Missing counters remain null.")
+
+
+def update_draft_run(path: Path, summary: dict, evidence_path: Path, *,
+                     note: str = CODEX_NOTE, tool_calls: int | None = None) -> None:
     # Never edit the append-only record or arbitrary files outside the draft folder.
     expected = (ROOT / "workflow/requests").resolve()
     if not path.resolve().is_relative_to(expected) or path.suffix != ".json" or not path.name.endswith("-run.json"):
@@ -230,8 +235,9 @@ def update_draft_run(path: Path, summary: dict, evidence_path: Path) -> None:
     run["model_ids"] = model_ids
     relative = str(evidence_path.relative_to(ROOT))
     run["evidence_paths"] = list(dict.fromkeys([*run["evidence_paths"], relative]))
-    run["notes"] = (run.get("notes", "") + " Usage from local Codex cumulative token-count deltas; "
-                    "see counts-only evidence file. Missing counters remain null.").strip()
+    if tool_calls is not None and run.get("tool_calls") is None:
+        run["tool_calls"] = tool_calls
+    run["notes"] = (run.get("notes", "") + " " + note).strip()
     validate_run(run)
     with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
                                      prefix=".usage-run-", delete=False) as stream:
