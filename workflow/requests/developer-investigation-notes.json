@@ -1,0 +1,27 @@
+{
+  "task_id": "T015-T021",
+  "goal": "Allow an assigned Developer to start investigating a report and append or edit their own notes before QA handoff.",
+  "owner": "JordanGoh4",
+  "owned_paths": [
+    "src/app/developer/[reportId]/",
+    "src/lib/developer/detail.ts",
+    "supabase/tests/bug_lifecycle.test.sql",
+    "workflow/evidence/developer-investigation/"
+  ],
+  "spec": "specs/001-developer-bug-workflow/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": true,
+  "acceptance_criteria": [
+    "Only the assigned Developer can load the report detail.",
+    "Starting work uses the approved open-to-in_progress lifecycle function.",
+    "Notes are validated, attributed to the signed-in Developer, and editable only by their author before QA handoff.",
+    "Notes are read-only after the report enters awaiting_qa or closed."
+  ],
+  "context_refs": [
+    { "path": "specs/001-developer-bug-workflow/spec.md", "start_line": 70, "end_line": 150 },
+    { "path": "specs/001-developer-bug-workflow/contracts/developer-workflow.md", "start_line": 15, "end_line": 85 },
+    { "path": "specs/001-developer-bug-workflow/data-model.md", "start_line": 25, "end_line": 105 },
+    { "path": "supabase/migrations/20261105000000_editable_investigation_notes.sql", "start_line": 1, "end_line": 45 }
+  ]
+}

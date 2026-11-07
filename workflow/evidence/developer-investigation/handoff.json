@@ -1,0 +1,44 @@
+{
+  "task_id": "T015-T021",
+  "goal": "Deliver the assigned Developer investigation workflow.",
+  "owner": "JordanGoh4",
+  "status": "ready_for_review",
+  "spec": "specs/001-developer-bug-workflow/spec.md",
+  "context_paths": [
+    "specs/001-developer-bug-workflow/contracts/developer-workflow.md",
+    "specs/001-developer-bug-workflow/data-model.md",
+    "supabase/migrations/20261104000000_bug_lifecycle.sql",
+    "supabase/migrations/20261105000000_editable_investigation_notes.sql"
+  ],
+  "decisions": [
+    "Use the existing start_work lifecycle function rather than updating status from the client.",
+    "Use server actions for note mutations and rely on RLS for assignment, author, and lifecycle enforcement.",
+    "Return a participant-safe not-found result for unassigned or unknown reports."
+  ],
+  "findings": [
+    "The start-work action was converted to a stateful React 19 action so lifecycle conflicts return a recoverable message.",
+    "The database test command remains blocked locally by Supabase CLI telemetry file permissions on Windows."
+  ],
+  "acceptance_criteria": [
+    "An assigned Developer can view the report detail and current notes.",
+    "An assigned Developer can start work and manage notes before QA handoff.",
+    "An unassigned user cannot receive protected report detail."
+  ],
+  "artifacts": [
+    "src/app/developer/[reportId]/page.tsx",
+    "src/app/developer/[reportId]/actions.ts",
+    "src/app/developer/[reportId]/note-form.tsx",
+    "src/lib/developer/detail.ts",
+    "src/app/developer/[reportId]/actions.test.ts",
+    "supabase/tests/bug_lifecycle.test.sql"
+  ],
+  "verification": [
+    "npm test: 4 test files and 9 tests passed",
+    "npm run typecheck passed",
+    "npm run lint passed",
+    "git diff --check passed",
+    "npm run test:db blocked by EPERM writing C:\\Users\\user\\.supabase telemetry"
+  ],
+  "remaining_work": ["T022-T045"],
+  "next_owner": "security-reviewer"
+}
