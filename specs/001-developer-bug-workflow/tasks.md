@@ -35,7 +35,7 @@ RLS, security, and acceptance evidence.
 - [X] T005 [P] Add shared Developer input schemas and error mapping for report IDs, note bodies, fixed code, and submission notes in `src/lib/developer/validation.ts`
 - [X] T006 [P] Add the authenticated Developer query and assignment authorization boundary in `src/lib/developer/queries.ts`
 - [X] T007 [P] Add application tests for Developer validation and authorization mapping in `src/lib/developer/validation.test.ts`
-- [X] T008 Add `supabase/migrations/20261105000000_editable_investigation_notes.sql` for `investigation_notes.updated_at`, author-only note updates while reports are `open` or `in_progress`, and read-only notes after QA handoff; extend `supabase/tests/bug_lifecycle.test.sql` with direct original-code edits, direct revision inserts, and unauthorized lifecycle calls
+- [X] T008 Add `supabase/migrations/20261107020000_editable_investigation_notes.sql` for `investigation_notes.updated_at`, author-only note updates while reports are `open` or `in_progress`, and read-only notes after QA handoff; extend `supabase/tests/bug_lifecycle.test.sql` with direct original-code edits, direct revision inserts, and unauthorized lifecycle calls
 
 ---
 
