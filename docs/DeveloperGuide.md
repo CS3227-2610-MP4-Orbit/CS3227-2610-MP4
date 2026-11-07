@@ -2,11 +2,36 @@
 
 ## Current state
 
-The repository is a minimal Next.js/Supabase starter for the planned Python bug resolution product. The Reporter, Developer and QA lifecycle, SoC LLM integration and their security tests are **not implemented**. The requirements and task breakdown are in `workflow/specs/001-bug-lifecycle/`.
+Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. Requirements and tasks are in `specs/001-python-bug-lifecycle/`.
 
-## Planned design
+| Area | State |
+|---|---|
+| Lifecycle schema, RLS and lifecycle functions (`supabase/migrations/`) | Implemented and tested (`supabase/tests/`) |
+| Reporter: create, edit, list, fix comparison, feedback (`src/app/reports/`) | Implemented |
+| QA tester: queue, review, tests, decisions, history (`src/app/qa/`) | Implemented |
+| Developer workspace (`src/app/developer/`) | In progress on a separate branch |
+| AI gateway (`src/lib/ai/`) and QA's AI feature | Implemented. Reporter and Developer features are configured in the gateway, but their UI is not built yet |
 
-Three authenticated roles share reports, revision history, test cases, decisions and audit events. Server-side authorization and database RLS must agree. A single AI gateway will handle SoC LLM calls, bounded context, validation, rate limits, timeouts, usage records and safe rendering. User code remains inert text. These are design targets, not claims about current code.
+## Design
+
+Three authenticated roles share reports, revision history, test cases, decisions and audit events. Every protected read runs as the signed-in user, so row-level security decides what each role may see. Status changes only through the security-definer functions `start_work`, `submit_fix` and `decide_fix`. Each one checks the caller's current role, assignment and the report status, and records a status event in the same transaction. User code and AI output are rendered as text and never executed.
+
+### QA workspace
+
+`src/lib/qa/queries.ts` loads the queue and the review page, and only returns reports where the caller is the assigned QA tester. `src/app/qa/[reportId]/actions.ts` records tests by inserting into `test_cases`. The insert policy only accepts the assigned QA tester and the latest revision awaiting QA. Decisions go through `decide_fix`. Migration `20261107000000_qa_feedback_to_reporter.sql` makes `decide_fix` also write non-empty feedback to `bug_feedback`, so the Reporter sees it. Any error is shown to the user as a plain message, never a database error.
+
+### AI gateway
+
+All SoC LLM calls go through `runAiFeature` in `src/lib/ai/gateway.ts`, which is server-only. `src/lib/ai/prompt.ts` holds the parts that can be tested on their own.
+
+1. **One feature per role.** `FEATURES` binds `reporter_code_explanation`, `developer_debugging` and `qa_test_suggestions` to a single role each. The gateway refuses a feature requested for another role. The caller must already have checked the role and loaded the context through the user's session, so RLS limits the data to reports the user may see.
+2. **Bounded input and output.** Each context field is at most 20,000 characters, the same limit the database puts on code, and the total is at most 45,000. Larger requests are refused rather than truncated. Each feature caps the tokens the model may return. An answer longer than 6,000 characters, or one the provider cut at the token cap, is marked as shortened.
+3. **Prompt boundaries.** The system prompt holds the fixed rules and the task. It is the same for every request, so the provider can reuse its prompt cache. Report data goes in the user message between a boundary marker that is random for each request. Copies of the marker are removed from the data, so text in a report cannot close the block and add instructions.
+4. **Limits.** Each call first inserts a `pending` row in `ai_usage`. It then counts recent rows: 3 a minute and 20 a day per user and feature, and 20 a minute across the app to stay under the provider's rate. Because the row is inserted before counting, simultaneous requests count against each other. Requests the app refuses (`rate_limited`, `daily_limit`, `busy`) do not use up quota. A provider 429 is recorded as `provider_busy` and does count, because it reached the provider. A row still `pending` after 2 minutes was abandoned and stops counting, so a crash cannot lock a user out.
+5. **Failures.** There is a 20-second timeout, which also covers reading the response. A server or network error is retried once. A 429 from the provider is not retried. `runAiFeature` never throws: a database or usage-store failure returns `unavailable`. If recording the result fails, the answer is still returned. Each failure maps to a fixed message that never contains provider, key or URL details.
+6. **Usage records.** `ai_usage` stores the feature, model, outcome, input, output and cached tokens (null when the provider does not report them), latency and retries. Prompts and answers are never stored. The table has RLS and no policies, so only the server's secret-key client (`src/lib/supabase/admin.ts`) can access it.
+
+To add a role's feature, write a server action that checks the role, loads the context through the user's session, and calls `runAiFeature({ feature, userId, role, reportId, context })`. Then show `text` labelled as an AI suggestion. `src/app/qa/[reportId]/actions.ts` (`suggestTests`) is the reference. The tests are in `src/lib/ai/gateway.test.ts`.
 
 ## Development process
 

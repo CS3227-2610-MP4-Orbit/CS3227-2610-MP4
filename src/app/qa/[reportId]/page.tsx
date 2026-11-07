@@ -8,8 +8,8 @@ import { getQaReview, type QaReview, type StatusEvent } from "@/lib/qa/queries";
 import { idSchema } from "@/lib/qa/validation";
 
 import { StatusBadge } from "../status-badge";
-import { decideFix, recordTestCase } from "./actions";
-import { DecisionForm, TestCaseForm } from "./qa-forms";
+import { decideFix, recordTestCase, suggestTests } from "./actions";
+import { DecisionForm, TestCaseForm, TestSuggestions } from "./qa-forms";
 
 // Shown after a decision redirect, only when the report's status agrees with the URL.
 const decidedMessage: Record<string, { status: string; text: string }> = {
@@ -83,6 +83,7 @@ async function Review({ params, searchParams }: {
         {awaiting ? (
           <>
             <TestList tests={testCases.filter((test) => test.revision_id === latest.id)} />
+            <TestSuggestions action={suggestTests.bind(null, report.id)} />
             <TestCaseForm action={recordTestCase.bind(null, report.id)} revisionId={latest.id} />
             <DecisionForm action={decideFix.bind(null, report.id)} revisionId={latest.id} revisionNumber={latest.revision_number} />
           </>

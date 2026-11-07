@@ -57,10 +57,10 @@ After integration with `develop`, `python_code` remains the form field while the
 
 **Independent Test**: Each role gets relevant advice; wrong role, injection, quota and provider failures are safe.
 
-- [ ] T015 [US4] Write gateway validation, injection, quota and failure tests in `src/lib/ai/gateway.test.ts`
-- [ ] T016 [US4] Implement server-only SoC LLM gateway, limits and usage recording in `src/lib/ai/gateway.ts`
-- [ ] T017 [US4] Implement role-bound AI server actions in `src/app/ai/actions.ts`
-- [ ] T018 [US4] Add labeled AI suggestion controls to `src/app/reports/[id]/page.tsx`
+- [x] T015 [US4] Write gateway validation, injection, quota and failure tests in `src/lib/ai/gateway.test.ts`
+- [x] T016 [US4] Implement server-only SoC LLM gateway, limits and usage recording in `src/lib/ai/gateway.ts`
+- [ ] T017 [US4] Implement role-bound AI server actions in `src/app/ai/actions.ts` (QA done in `src/app/qa/[reportId]/actions.ts`; Reporter and Developer pending)
+- [ ] T018 [US4] Add labeled AI suggestion controls to `src/app/reports/[id]/page.tsx` (QA done in `src/app/qa/[reportId]/qa-forms.tsx`; Reporter and Developer pending)
 
 ## Phase 6: Polish and Release
 
