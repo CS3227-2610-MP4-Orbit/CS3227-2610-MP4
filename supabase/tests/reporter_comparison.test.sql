@@ -15,6 +15,9 @@ insert into public.bug_reports (id, reporter_id, developer_id, title, code, expe
 values
   ('50000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000001', '40000000-0000-4000-8000-000000000003', 'Closed comparison', 'print(0)', 'Works', 'Fails', 'Run', 'closed'),
   ('50000000-0000-4000-8000-000000000002', '40000000-0000-4000-8000-000000000002', null, 'Other comparison', 'print(9)', 'Works', 'Fails', 'Run', 'open');
+-- Reports with no assignees are assigned automatically (20261107010000_assign_reports.sql);
+-- undo that here so the QA account below stays unassigned, as this test intends.
+update public.bug_reports set developer_id = null, qa_id = null where id = '50000000-0000-4000-8000-000000000002';
 insert into public.fix_revisions (id, report_id, revision_number, author_id, code, note, created_at)
 values
   ('60000000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000001', 1, '40000000-0000-4000-8000-000000000003', 'print(1)', 'First fix', '2026-11-06 10:00:00+00'),
