@@ -1,0 +1,68 @@
+{
+  "finished_at": "2026-11-07T05:29:40.977733Z",
+  "responses": 81,
+  "root_session_id": "1fe0e712-7024-4e94-a2b8-3553c0ae4f1a",
+  "schema_version": 1,
+  "sessions": {
+    "a7a510f5be44111a6": {
+      "agent_path": "/root/feature_dev_code_reviewer",
+      "model_ids": [
+        "claude-sonnet-5-5"
+      ],
+      "responses": 5,
+      "tool_calls": 16,
+      "usage": {
+        "cache_write_input_tokens": 36644,
+        "cached_input_tokens": 96691,
+        "input_tokens": 133345,
+        "output_tokens": 5793,
+        "reasoning_output_tokens": 2377,
+        "total_tokens": 139138
+      }
+    },
+    "af9e96214da174b50": {
+      "agent_path": "/root/general_purpose",
+      "model_ids": [
+        "claude-sonnet-5"
+      ],
+      "responses": 17,
+      "tool_calls": 29,
+      "usage": {
+        "cache_write_input_tokens": 141145,
+        "cached_input_tokens": 1897999,
+        "input_tokens": 2039178,
+        "output_tokens": 20304,
+        "reasoning_output_tokens": 9184,
+        "total_tokens": 2059482
+      }
+    },
+    "root": {
+      "agent_path": "root",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "responses": 59,
+      "tool_calls": 89,
+      "usage": {
+        "cache_write_input_tokens": 100431,
+        "cached_input_tokens": 14779954,
+        "input_tokens": 14880511,
+        "output_tokens": 51249,
+        "reasoning_output_tokens": 8092,
+        "total_tokens": 14931760
+      }
+    }
+  },
+  "source": "local_claude_code_transcript_window",
+  "started_at": "2026-11-07T05:03:41.936292Z",
+  "task_id": "QA001-qa-review",
+  "tool_calls": 134,
+  "total_usage": {
+    "cache_write_input_tokens": 278220,
+    "cached_input_tokens": 16774644,
+    "input_tokens": 17053034,
+    "output_tokens": 77346,
+    "reasoning_output_tokens": 19653,
+    "total_tokens": 17130380
+  }
+}

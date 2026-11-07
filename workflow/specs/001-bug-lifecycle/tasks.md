@@ -14,3 +14,5 @@ Status legend: TODO, BLOCKED, DONE. Role owners are confirmed; shared task owner
 | T10 | TODO | Team/shared | CI, dev/prod deployment, product website, guides, reflection experiments and logs | T03–T09 | Release checklist and live smoke test |
 
 Each owner contributes a review or test to shared tasks. A task moves to DONE only when its acceptance evidence is linked in a PR or handoff.
+
+Reporter submission and the bounded list/edit increment have implementation and verification handoffs at `workflow/evidence/T03-submission-handoff.json` and `workflow/evidence/T024-reporter-list-edit-handoff.json`. T03 remains TODO until its remaining status/feedback and comparison behavior is implemented and verified.

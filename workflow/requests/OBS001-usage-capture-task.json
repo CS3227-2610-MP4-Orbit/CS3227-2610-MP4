@@ -1,0 +1,24 @@
+{
+  "task_id": "OBS001-usage-capture",
+  "goal": "Capture counts-only Codex token usage for future bounded development tasks and make measured run records easy to fill",
+  "owner": "joseph",
+  "owned_paths": ["workflow/scripts/token_usage.py", "workflow/scripts/test_token_usage.py", "workflow/README.md", "workflow/experiments.md"],
+  "spec": "workflow/experiments.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Start snapshot identifies the current root Codex thread from CODEX_THREAD_ID or an explicit argument and records only safe session metadata and cumulative usage counts",
+    "Finish snapshot includes spawned agent descendants, excludes guardian/helper sessions, and computes non-negative deltas without summing cumulative snapshots",
+    "Raw prompts, messages, tool results, code snippets, file paths, and credentials never enter usage artifacts or terminal output",
+    "Counts can populate a draft workflow run record with provenance, while unknown fields remain null; documentation explains timing, model choice, quality metrics, and a controlled experiment",
+    "Synthetic tests cover task attribution, missing counters, duplicate snapshots, negative deltas, and private-content non-disclosure"
+  ],
+  "context_refs": [
+    {"path":"workflow/experiments.md","start_line":1,"end_line":10},
+    {"path":"workflow/README.md","start_line":18,"end_line":30},
+    {"path":"workflow/scripts/agent_workflow.py","start_line":149,"end_line":185},
+    {"path":"workflow/templates/run-record.json","start_line":1,"end_line":22},
+    {"path":"workflow/config.json","start_line":1,"end_line":15}
+  ]
+}

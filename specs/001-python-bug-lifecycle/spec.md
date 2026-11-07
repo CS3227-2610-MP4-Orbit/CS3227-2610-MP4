@@ -25,6 +25,16 @@ A Bug Reporter submits a Python code snippet, observed error, expected and actua
 3. **Given** a report owned by someone else, **when** a Reporter attempts to view or edit it directly, **then** access is denied.
 4. **Given** a report with a proposed fix, **when** its Reporter views it, **then** original and proposed code and developer feedback are visible.
 
+**Reporter list/edit slice (2026-11-05 clarification)**:
+
+5. **Given** a signed-in Reporter with several reports, **when** they open their report list, **then** they see only their own reports, newest first, with title, status, and creation time; an empty list has a clear next step.
+6. **Given** an open report they own, **when** they open its detail and save valid changes to the six report fields, **then** the changes are visible on that detail page without changing ownership or status.
+7. **Given** invalid or oversized edits, **when** they save, **then** field errors appear and all entered text remains available to correct.
+8. **Given** another user's report, a non-Reporter role, or a report no longer open, **when** they attempt an edit through the page or a direct request, **then** the change is denied. Another user's report is not revealed by its URL. A non-open report remains readable to its Reporter but has no edit form.
+
+This slice shows the submitted fields and current status. Proposed fixes and feedback appear when the Developer/QA history tasks are implemented. No user-supplied Python is executed.
+Python line endings are stored consistently as LF so saving an unchanged snippet through a browser textarea does not introduce a content change; indentation and other characters are retained.
+
 ---
 
 ### User Story 2 - Investigate and Revise a Fix (Priority: P1)
