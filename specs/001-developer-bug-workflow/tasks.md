@@ -93,15 +93,15 @@ RLS, security, and acceptance evidence.
 ### Tests for User Story 3
 
 - [X] T022 [P] [US3] Add submit-fix tests for valid code, empty/oversized code, wrong status, wrong assignment, and repeated revisions in `src/app/developer/[reportId]/actions.test.ts`
-- [ ] T023 [P] [US3] Add revision immutability, concurrent numbering, and direct-insert denial coverage in `supabase/tests/bug_lifecycle.test.sql`
+- [X] T023 [P] [US3] Add revision immutability, concurrent numbering, and direct-insert denial coverage in `supabase/tests/bug_lifecycle.test.sql`
 - [X] T024 [P] [US3] Add text-diff rendering tests for additions, removals, unchanged lines, and malformed/empty input in `src/app/developer/[reportId]/code-diff.test.tsx`
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Implement the submit-fix server action calling the approved `submit_fix` lifecycle function in `src/app/developer/[reportId]/actions.ts`
-- [ ] T026 [US3] Implement immutable revision history and original-versus-selected-revision comparison in `src/app/developer/[reportId]/code-diff.tsx`
-- [ ] T027 [US3] Implement corrected-code and submission-note form with 20,000-character code and 5,000-character note limits in `src/app/developer/[reportId]/fix-form.tsx`
-- [ ] T028 [US3] Add revision history and selected-revision data loading to `src/app/developer/[reportId]/page.tsx`
+- [X] T025 [US3] Implement the submit-fix server action calling the approved `submit_fix` lifecycle function in `src/app/developer/[reportId]/actions.ts`
+- [X] T026 [US3] Implement immutable revision history and original-versus-selected-revision comparison in `src/app/developer/[reportId]/code-diff.tsx`
+- [X] T027 [US3] Implement corrected-code and submission-note form with 20,000-character code and 5,000-character note limits in `src/app/developer/[reportId]/fix-form.tsx`
+- [X] T028 [US3] Add revision history and selected-revision data loading to `src/app/developer/[reportId]/page.tsx`
 
 **Checkpoint**: User Story 3 is independently demonstrable with immutable revisions and safe text comparison.
 
