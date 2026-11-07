@@ -1,3 +1,4 @@
+
 # Feature Specification: Developer Bug Workflow
 
 **Feature Branch**: `branch-developer-agent`
@@ -272,7 +273,8 @@ feedback, submit a new revision, and resubmit it while the rejected revision rem
   `awaiting_qa`; note edit history is out of scope for the MVP.
 - The Developer AI feature will use the shared limits of at most 8,000 characters of relevant code
   and 4,000 characters of other context per request, with provider quotas verified before enabling
-  live AI.
+  live AI. The Developer debugging advisor is advisory plain text, uses only the assigned report,
+  and records resource usage without storing prompts, code, or responses.
 - Normal web application expectations apply for response time and availability; detailed targets
   will be set during planning if the existing project requires them.
 
@@ -282,7 +284,7 @@ feedback, submit a new revision, and resubmit it while the rejected revision rem
 - Automatic deployment of a Developer fix.
 - Full QA review screens, test-case management, QA approval/rejection actions, and AI Unit Test
   Generator implementation.
-- AI Debugging Assistant implementation; it is tracked as Jordan's separate T08 task and will be
-  specified after the non-AI workflow is stable.
+- Automatic execution or application of AI-generated code. The Developer debugging advisor itself
+  is in scope, but remains isolated from lifecycle mutations and code execution.
 - Multi-developer collaboration on the same bug beyond assignment and audit history.
 - Support for programming languages other than Python.

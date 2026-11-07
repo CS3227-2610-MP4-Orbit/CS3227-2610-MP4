@@ -3,12 +3,17 @@ import { notFound } from "next/navigation";
 import { getAssignedDeveloperReportDetail } from "@/lib/developer/detail";
 
 import { AddNoteForm, EditNoteForm, StartWorkForm } from "./note-form";
+import { CodeDiff } from "./code-diff";
+import { FixForm } from "./fix-form";
+import { QaFeedback } from "./qa-feedback";
+import { QaHandoff } from "./qa-handoff";
+import { DeveloperAiAssistant } from "./ai-assistant";
 
 export default async function DeveloperReportPage({ params }: { params: Promise<{ reportId: string }> }) {
   const { reportId } = await params;
   const detail = await getAssignedDeveloperReportDetail(reportId);
   if (!detail) notFound();
-  const { report, notes } = detail;
+  const { report, notes, revisions, decisions } = detail;
   const canEditNotes = report.status === "open" || report.status === "in_progress";
 
   return (
@@ -47,6 +52,24 @@ export default async function DeveloperReportPage({ params }: { params: Promise<
         )}
         {canEditNotes && <AddNoteForm reportId={report.id} />}
       </section>
+
+      <QaHandoff status={report.status} revisionNumber={revisions.at(-1)?.revision_number} />
+      <DeveloperAiAssistant reportId={report.id} />
+
+      {decisions.filter((decision) => decision.verdict === "reject").map((decision) => {
+        const revision = revisions.find((item) => item.id === decision.revision_id);
+        return revision ? <QaFeedback key={decision.revision_id} feedback={decision.feedback} revisionNumber={revision.revision_number} /> : null;
+      })}
+
+      {revisions.length > 0 && <section className="rounded-xl border p-5"><h2 className="text-xl font-semibold">Revision history and comparison</h2>
+        <div className="mt-3 grid gap-3">{revisions.map((revision) => <details key={revision.id} open={revision.id === revisions.at(-1)?.id}>
+          <summary className="cursor-pointer font-medium">Revision {revision.revision_number} · {new Date(revision.created_at).toLocaleString()}</summary>
+          <p className="mt-2 whitespace-pre-wrap text-sm">{revision.note || "No submission note."}</p>
+          <CodeDiff original={report.code} revised={revision.code} />
+        </details>)}</div>
+      </section>}
+
+      {report.status === "in_progress" && <FixForm reportId={report.id} />}
     </main>
   );
 }

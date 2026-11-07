@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { investigationNoteSchema, reportIdSchema, safeValidationMessage } from "../../../lib/developer/validation";
+import { fixedPythonCodeSchema, investigationNoteSchema, reportIdSchema, safeValidationMessage, submissionNoteSchema } from "../../../lib/developer/validation";
 import { createClient } from "../../../lib/supabase/server";
 
 export type DeveloperActionState = { ok: boolean; message: string };
@@ -10,6 +10,20 @@ export type DeveloperActionState = { ok: boolean; message: string };
 function value(formData: FormData, key: string) {
   const entry = formData.get(key);
   return typeof entry === "string" ? entry : "";
+}
+
+export async function submitFix(_previousState: DeveloperActionState, formData: FormData): Promise<DeveloperActionState> {
+  const reportId = reportIdSchema.safeParse(value(formData, "reportId"));
+  const code = fixedPythonCodeSchema.safeParse(value(formData, "code"));
+  const note = submissionNoteSchema.safeParse(value(formData, "note"));
+  if (!reportId.success) return { ok: false, message: safeValidationMessage(reportId.error) };
+  if (!code.success) return { ok: false, message: "Corrected Python code is required and must be at most 20,000 characters." };
+  if (!note.success) return { ok: false, message: safeValidationMessage(note.error) };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("submit_fix", { report: reportId.data, fixed_code: code.data, submission_note: note.data });
+  if (error) return { ok: false, message: "The fix could not be submitted. Check that the report is assigned to you and in progress." };
+  revalidatePath(`/developer/${reportId.data}`);
+  return { ok: true, message: "Fix submitted to QA." };
 }
 
 export async function startWork(_previousState: DeveloperActionState, formData: FormData): Promise<DeveloperActionState> {

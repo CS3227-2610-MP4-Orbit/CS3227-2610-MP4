@@ -6,7 +6,7 @@ vi.mock("../../../lib/supabase/server", () => ({ createClient: vi.fn() }));
 
 import { createClient } from "../../../lib/supabase/server";
 
-import { addInvestigationNote, editInvestigationNote, startWork } from "./actions";
+import { addInvestigationNote, editInvestigationNote, startWork, submitFix } from "./actions";
 
 const initialState = { ok: false, message: "" };
 
@@ -53,5 +53,32 @@ describe("Developer investigation actions", () => {
 
     expect((await editInvestigationNote(initialState, form)).ok).toBe(false);
     expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it("rejects empty or oversized corrected code before calling Supabase", async () => {
+    const empty = new FormData();
+    empty.set("reportId", "00000000-0000-4000-8000-000000000001");
+    empty.set("code", "");
+    const oversized = new FormData();
+    oversized.set("reportId", "00000000-0000-4000-8000-000000000001");
+    oversized.set("code", "x".repeat(20001));
+    expect((await submitFix(initialState, empty)).ok).toBe(false);
+    expect((await submitFix(initialState, oversized)).ok).toBe(false);
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
+  it("uses the submit_fix lifecycle RPC and returns a safe success message", async () => {
+    const rpc = vi.fn().mockResolvedValue({ data: "revision-id", error: null });
+    vi.mocked(createClient).mockResolvedValue({ rpc } as never);
+    const form = new FormData();
+    form.set("reportId", "00000000-0000-4000-8000-000000000001");
+    form.set("code", "print('fixed')");
+    form.set("note", "Explains the correction");
+    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: true, message: "Fix submitted to QA." });
+    expect(rpc).toHaveBeenCalledWith("submit_fix", {
+      report: "00000000-0000-4000-8000-000000000001",
+      fixed_code: "print('fixed')",
+      submission_note: "Explains the correction",
+    });
   });
 });

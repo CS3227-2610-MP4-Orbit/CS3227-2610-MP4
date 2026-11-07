@@ -161,6 +161,14 @@ RLS, security, and acceptance evidence.
 - [ ] T044 Update `logs/jordan/` with the interaction summary and `docs/Reflections.md` with measured technique/context/resource evidence; do not invent unavailable metrics
 - [ ] T045 Run the manual scenarios in `specs/001-developer-bug-workflow/quickstart.md` and record the outcome in `workflow/evidence/developer-quickstart.md`
 
+## Phase 9: Developer AI Assistance
+
+- [ ] T046 Add gateway tests for bounded context, prompt-injection data, malformed output, provider failure, and timeout
+- [ ] T047 Implement the server-only Developer debugging gateway with context, output, timeout, and quota limits
+- [ ] T048 Implement assigned-report authorization and server-only AI usage accounting for the Developer action
+- [ ] T049 Add the labeled advisory UI and verify that AI responses cannot mutate reports, revisions, or status
+- [ ] T050 Run the AI security review and record actual adversarial test results in `workflow/evidence/developer-ai-security-review.json`
+
 ---
 
 ## Dependencies and Execution Order
@@ -194,5 +202,5 @@ code reviewer owns T040, and the verifier owns T041–T045. Handoffs use the rep
 6. Add US5 rejection/revision loop.
 7. Run independent security, code, and verification reviews before handoff.
 
-The Developer AI feature is intentionally excluded and should use a separate SDD and T08 workflow
-after this non-AI baseline is stable.
+The Developer AI assistance phase depends on the assigned-report authorization boundary and must
+remain advisory, bounded, server-only, and independently security-reviewed.
