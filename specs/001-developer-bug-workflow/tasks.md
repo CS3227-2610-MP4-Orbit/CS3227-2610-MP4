@@ -115,14 +115,14 @@ RLS, security, and acceptance evidence.
 
 ### Tests for User Story 4
 
-- [ ] T029 [P] [US4] Add handoff precondition and permission tests for missing notes, missing code, wrong status, and Developer approval attempts in `src/app/developer/[reportId]/actions.test.ts`
-- [ ] T030 [P] [US4] Add lifecycle evidence for `in_progress` to `awaiting_qa` and Developer denial of `decide_fix` in `supabase/tests/bug_lifecycle.test.sql`
+- [X] T029 [P] [US4] Add handoff precondition and permission tests for missing notes, missing code, wrong status, and Developer approval attempts in `src/app/developer/[reportId]/actions.test.ts`
+- [X] T030 [P] [US4] Add lifecycle evidence for `in_progress` to `awaiting_qa` and Developer denial of `decide_fix` in `supabase/tests/bug_lifecycle.test.sql`
 
 ### Implementation for User Story 4
 
-- [ ] T031 [US4] Implement the QA handoff action and success/error messages using the `submit_fix` result in `src/app/developer/[reportId]/actions.ts`
-- [ ] T032 [US4] Implement the read-only awaiting-QA handoff summary without approval/rejection controls in `src/app/developer/[reportId]/qa-handoff.tsx`
-- [ ] T033 [US4] Integrate the handoff summary and status into `src/app/developer/[reportId]/page.tsx`
+- [X] T031 [US4] Implement the QA handoff action and success/error messages using the `submit_fix` result in `src/app/developer/[reportId]/actions.ts`
+- [X] T032 [US4] Implement the read-only awaiting-QA handoff summary without approval/rejection controls in `src/app/developer/[reportId]/qa-handoff.tsx`
+- [X] T033 [US4] Integrate the handoff summary and status into `src/app/developer/[reportId]/page.tsx`
 
 **Checkpoint**: User Story 4 is independently demonstrable as the Developer-to-QA boundary.
 

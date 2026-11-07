@@ -76,6 +76,7 @@ Preconditions:
 
 - authenticated user is the assigned Developer
 - report status is `in_progress`
+- assigned Developer has recorded investigation notes for the report
 - code and note satisfy configured limits
 
 Effect: create the next immutable revision and transition `in_progress` → `awaiting_qa`.

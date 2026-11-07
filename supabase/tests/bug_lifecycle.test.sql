@@ -5,7 +5,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(49);
+select plan(53);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two of each role so cross-report and cross-assignment access can be checked.
@@ -157,6 +157,11 @@ select lives_ok(
   $$ select public.start_work(current_setting('test.report')::uuid) $$,
   'the assigned developer starts work'
 );
+select throws_ok(
+  $$ select public.submit_fix(current_setting('test.report')::uuid, 'print(1)') $$,
+  '42501', null,
+  'the developer cannot hand off without investigation notes'
+);
 select lives_ok(
   $$ insert into public.investigation_notes (report_id, author_id, body)
      values (current_setting('test.report')::uuid, '00000000-0000-4000-8000-0000000000b1',
@@ -215,6 +220,16 @@ select is(
   'submit_fix locks the report before numbering revisions'
 );
 select is(
+  (select status::text from public.bug_reports where id = current_setting('test.report')::uuid),
+  'awaiting_qa',
+  'submitting a revision creates the QA handoff state'
+);
+select is(
+  (select author_id from public.fix_revisions where report_id = current_setting('test.report')::uuid and revision_number = 1),
+  '00000000-0000-4000-8000-0000000000b1'::uuid,
+  'the QA handoff identifies the submitting developer'
+);
+select is(
   has_table_privilege('authenticated', 'public.fix_revisions', 'UPDATE'),
   false,
   'authenticated cannot update revisions directly'
@@ -245,6 +260,11 @@ select throws_ok(
   $$ select public.decide_fix((select id from public.fix_revisions limit 1), 'approve') $$,
   '42501', null,
   'the developer cannot approve their own fix'
+);
+select throws_ok(
+  $$ select public.decide_fix((select id from public.fix_revisions limit 1), 'reject', 'not a QA action') $$,
+  '42501', null,
+  'the developer cannot reject their own fix'
 );
 
 -- ---------------------------------------------------------------------------
