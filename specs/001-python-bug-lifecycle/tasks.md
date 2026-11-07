@@ -6,8 +6,8 @@
 
 ## Phase 1: Foundational
 
-- [ ] T001 Create role, report, revision, test, event and AI usage schema with constraints and RLS in `supabase/migrations/20261104000000_bug_lifecycle.sql`
-- [ ] T002 Write cross-role and cross-report RLS tests in `supabase/tests/rls_enabled.test.sql`
+- [x] T001 Create role, report, revision, test, event and AI usage schema with constraints and RLS in `supabase/migrations/20261104000000_bug_lifecycle.sql`
+- [x] T002 Write cross-role and cross-report RLS tests in `supabase/tests/rls_enabled.test.sql` (role and relationship tests in `supabase/tests/bug_lifecycle.test.sql`)
 - [ ] T003 Implement authenticated role lookup and relationship checks in `src/lib/auth.ts`
 - [ ] T004 Implement bounded report and workflow validation in `src/lib/reports/validation.ts`
 
@@ -47,9 +47,9 @@ After integration with `develop`, `python_code` remains the form field while the
 
 **Independent Test**: QA rejects revision 1, approves revision 2, and stale decisions are denied.
 
-- [ ] T012 [US3] Extend decision, history and role tests in `supabase/tests/bug_lifecycle.test.sql`
-- [ ] T013 [US3] Implement QA test and decision actions in `src/app/reports/actions.ts`
-- [ ] T014 [US3] Add QA queue, test form and history in `src/app/reports/page.tsx` and `src/app/reports/[id]/page.tsx`
+- [x] T012 [US3] Extend decision, history and role tests in `supabase/tests/bug_lifecycle.test.sql` (done in `supabase/tests/qa_review.test.sql`)
+- [x] T013 [US3] Implement QA test and decision actions in `src/app/reports/actions.ts` (done in `src/app/qa/[reportId]/actions.ts`, so QA does not share the Reporter's `actions.ts`)
+- [x] T014 [US3] Add QA queue, test form and history in `src/app/reports/page.tsx` and `src/app/reports/[id]/page.tsx` (done in `src/app/qa/page.tsx` and `src/app/qa/[reportId]/page.tsx`)
 
 ## Phase 5: User Story 4 - Role-Specific AI Help (P1)
 
