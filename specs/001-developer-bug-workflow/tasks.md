@@ -136,14 +136,14 @@ RLS, security, and acceptance evidence.
 
 ### Tests for User Story 5
 
-- [ ] T034 [P] [US5] Add rejection-feedback and revision-chain read tests in `src/app/developer/[reportId]/page.test.tsx`
-- [ ] T035 [P] [US5] Add rejection-to-revision lifecycle coverage in `supabase/tests/bug_lifecycle.test.sql`
+- [X] T034 [P] [US5] Add rejection-feedback and revision-chain read tests in `src/app/developer/[reportId]/page.test.tsx`
+- [X] T035 [P] [US5] Add rejection-to-revision lifecycle coverage in `supabase/tests/bug_lifecycle.test.sql`
 
 ### Implementation for User Story 5
 
-- [ ] T036 [US5] Implement participant-safe QA rejection feedback display linked to the affected revision in `src/app/developer/[reportId]/qa-feedback.tsx`
-- [ ] T037 [US5] Enable revision submission after QA rejection while preserving prior revisions in `src/app/developer/[reportId]/fix-form.tsx`
-- [ ] T038 [US5] Integrate rejection feedback, revision lineage, and `in_progress` state into `src/app/developer/[reportId]/page.tsx`
+- [X] T036 [US5] Implement participant-safe QA rejection feedback display linked to the affected revision in `src/app/developer/[reportId]/qa-feedback.tsx`
+- [X] T037 [US5] Enable revision submission after QA rejection while preserving prior revisions in `src/app/developer/[reportId]/fix-form.tsx`
+- [X] T038 [US5] Integrate rejection feedback, revision lineage, and `in_progress` state into `src/app/developer/[reportId]/page.tsx`
 
 **Checkpoint**: User Story 5 is independently demonstrable as a complete Developer revision loop.
 

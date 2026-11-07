@@ -5,7 +5,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(53);
+select plan(55);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two of each role so cross-report and cross-assignment access can be checked.
@@ -314,6 +314,17 @@ select lives_ok(
   $$ select public.submit_fix(current_setting('test.report')::uuid,
        'def avg(xs):\n    return sum(xs) / len(xs) if xs else 0.0', 'Return 0.0') $$,
   'the developer submits revision 2'
+);
+select is(
+  (select code from public.fix_revisions where report_id = current_setting('test.report')::uuid and revision_number = 1),
+  'def avg(xs):\n    return sum(xs) / len(xs) if xs else 0',
+  'revision 1 remains available after revision 2 is submitted'
+);
+select is(
+  (select feedback from public.qa_decisions d join public.fix_revisions f on f.id = d.revision_id
+   where f.report_id = current_setting('test.report')::uuid and f.revision_number = 1),
+  'Return a float: avg([]) should be 0.0',
+  'rejection feedback remains linked to revision 1'
 );
 
 select pg_temp.act_as('00000000-0000-4000-8000-0000000000c1');
