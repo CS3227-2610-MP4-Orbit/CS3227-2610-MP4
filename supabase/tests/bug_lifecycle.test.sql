@@ -5,7 +5,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(48);
+select plan(49);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two of each role so cross-report and cross-assignment access can be checked.
@@ -208,6 +208,11 @@ select lives_ok(
   $$ select public.submit_fix(current_setting('test.report')::uuid,
        'def avg(xs):\n    return sum(xs) / len(xs) if xs else 0', 'Guard the empty case') $$,
   'the developer submits revision 1'
+);
+select is(
+  (select position('for update' in lower(pg_get_functiondef('public.submit_fix(uuid, text, text)'::regprocedure))) > 0),
+  true,
+  'submit_fix locks the report before numbering revisions'
 );
 select is(
   has_table_privilege('authenticated', 'public.fix_revisions', 'UPDATE'),
