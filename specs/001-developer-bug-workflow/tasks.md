@@ -92,9 +92,9 @@ RLS, security, and acceptance evidence.
 
 ### Tests for User Story 3
 
-- [ ] T022 [P] [US3] Add submit-fix tests for valid code, empty/oversized code, wrong status, wrong assignment, and repeated revisions in `src/app/developer/[reportId]/actions.test.ts`
+- [X] T022 [P] [US3] Add submit-fix tests for valid code, empty/oversized code, wrong status, wrong assignment, and repeated revisions in `src/app/developer/[reportId]/actions.test.ts`
 - [ ] T023 [P] [US3] Add revision immutability, concurrent numbering, and direct-insert denial coverage in `supabase/tests/bug_lifecycle.test.sql`
-- [ ] T024 [P] [US3] Add text-diff rendering tests for additions, removals, unchanged lines, and malformed/empty input in `src/app/developer/[reportId]/code-diff.test.tsx`
+- [X] T024 [P] [US3] Add text-diff rendering tests for additions, removals, unchanged lines, and malformed/empty input in `src/app/developer/[reportId]/code-diff.test.tsx`
 
 ### Implementation for User Story 3
 

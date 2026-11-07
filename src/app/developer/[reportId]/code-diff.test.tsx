@@ -7,11 +7,19 @@ describe("CodeDiff", () => {
     expect(result).toBeTruthy();
     const rendered = JSON.stringify(result);
     expect(rendered).toContain("same");
+    expect(rendered).toContain("removed");
     expect(rendered).toContain("added");
     expect(rendered).toContain("new");
+    expect(rendered).toContain('"-"');
+    expect(rendered).toContain('"+"');
   });
 
   it("renders an empty comparison safely", () => {
     expect(CodeDiff({ original: "", revised: "" })).toBeTruthy();
+  });
+
+  it("renders one-sided text as inert comparison data", () => {
+    expect(CodeDiff({ original: "", revised: "added" })).toBeTruthy();
+    expect(CodeDiff({ original: "removed", revised: "" })).toBeTruthy();
   });
 });

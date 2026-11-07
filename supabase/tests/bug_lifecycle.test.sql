@@ -5,7 +5,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(45);
+select plan(48);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two of each role so cross-report and cross-assignment access can be checked.
@@ -192,6 +192,12 @@ select is(
   'avg() crashes on an empty list',
   'the developer cannot edit the report itself'
 );
+update public.bug_reports set code = 'hijacked' where id = current_setting('test.report')::uuid;
+select is(
+  (select code from public.bug_reports where id = current_setting('test.report')::uuid),
+  'def avg(xs):\n    return sum(xs) / len(xs)',
+  'the developer cannot edit original code'
+);
 select throws_ok(
   $$ insert into public.investigation_notes (report_id, author_id, body, created_at)
      values (current_setting('test.report')::uuid, '00000000-0000-4000-8000-0000000000b1', 'old', '2020-01-01') $$,
@@ -202,6 +208,16 @@ select lives_ok(
   $$ select public.submit_fix(current_setting('test.report')::uuid,
        'def avg(xs):\n    return sum(xs) / len(xs) if xs else 0', 'Guard the empty case') $$,
   'the developer submits revision 1'
+);
+select is(
+  has_table_privilege('authenticated', 'public.fix_revisions', 'UPDATE'),
+  false,
+  'authenticated cannot update revisions directly'
+);
+select is(
+  (select code from public.fix_revisions where report_id = current_setting('test.report')::uuid and revision_number = 1),
+  'def avg(xs):\n    return sum(xs) / len(xs) if xs else 0',
+  'revision 1 remains immutable'
 );
 select lives_ok(
   $$ update public.investigation_notes set body = 'late edit'

@@ -81,4 +81,24 @@ describe("Developer investigation actions", () => {
       submission_note: "Explains the correction",
     });
   });
+
+  it("maps wrong status or assignment errors without exposing report details", async () => {
+    const rpc = vi.fn().mockResolvedValue({ error: new Error("report not available for a fix") });
+    vi.mocked(createClient).mockResolvedValue({ rpc } as never);
+    const form = new FormData();
+    form.set("reportId", "00000000-0000-4000-8000-000000000001");
+    form.set("code", "print('fixed')");
+    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "The fix could not be submitted. Check that the report is assigned to you and in progress." });
+  });
+
+  it("creates each repeated revision through the lifecycle boundary", async () => {
+    const rpc = vi.fn().mockResolvedValueOnce({ data: "revision-1", error: null }).mockResolvedValueOnce({ data: "revision-2", error: null });
+    vi.mocked(createClient).mockResolvedValue({ rpc } as never);
+    const first = new FormData(); first.set("reportId", "00000000-0000-4000-8000-000000000001"); first.set("code", "print('first')");
+    const second = new FormData(); second.set("reportId", "00000000-0000-4000-8000-000000000001"); second.set("code", "print('second')");
+    await submitFix(initialState, first); await submitFix(initialState, second);
+    expect(rpc).toHaveBeenCalledTimes(2);
+    expect(rpc).toHaveBeenNthCalledWith(1, "submit_fix", expect.objectContaining({ fixed_code: "print('first')" }));
+    expect(rpc).toHaveBeenNthCalledWith(2, "submit_fix", expect.objectContaining({ fixed_code: "print('second')" }));
+  });
 });
