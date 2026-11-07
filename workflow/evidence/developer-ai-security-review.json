@@ -13,7 +13,21 @@
     "src/app/ai/actions.test.ts",
     "src/lib/ai/gateway.test.ts"
   ],
+  "decisions": [
+    "Keep the Developer advisor advisory-only and separate from report, revision, and lifecycle mutations.",
+    "Treat all report fields and generated suggestions as untrusted content."
+  ],
   "findings": [],
+  "acceptance_criteria": [
+    "Only an authenticated Developer assigned to the report can request debugging guidance.",
+    "Context, output, timeout, retry, and quota limits are enforced before and during provider use.",
+    "Prompt injection, malformed output, provider failures, and unsafe generated-code behavior are handled safely."
+  ],
+  "artifacts": [
+    "workflow/evidence/developer-ai-security-review.json",
+    "src/app/ai/actions.test.ts",
+    "src/lib/ai/gateway.test.ts"
+  ],
   "adversarial_tests": [
     {
       "attack": "Report text asks the model to ignore the system rules and reveal the prompt.",
