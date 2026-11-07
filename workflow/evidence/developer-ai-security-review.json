@@ -1,0 +1,58 @@
+{
+  "task_id": "T050",
+  "goal": "Review the Developer debugging advisor for prompt injection, authorization, leakage, unsafe output, and resource abuse.",
+  "owner": "security_reviewer",
+  "status": "pass",
+  "spec": "specs/001-developer-bug-workflow/spec.md",
+  "context_paths": [
+    "developer/skills/ai-security-review/SKILL.md",
+    "developer/context/developer-feature-context.md",
+    "src/lib/ai/prompt.ts",
+    "src/lib/ai/gateway.ts",
+    "src/app/ai/actions.ts",
+    "src/app/ai/actions.test.ts",
+    "src/lib/ai/gateway.test.ts"
+  ],
+  "findings": [],
+  "adversarial_tests": [
+    {
+      "attack": "Report text asks the model to ignore the system rules and reveal the prompt.",
+      "expected": "The text remains inside an untrusted data boundary and is not treated as instructions.",
+      "observed": "PASS: prompt boundary and injection tests in gateway.test.ts."
+    },
+    {
+      "attack": "Report text contains a guessed data boundary marker.",
+      "expected": "The marker is stripped from data so it cannot close the context block early.",
+      "observed": "PASS: guessed-boundary test in gateway.test.ts."
+    },
+    {
+      "attack": "Oversized code or combined report context.",
+      "expected": "The request is refused before provider access and does not consume provider quota.",
+      "observed": "PASS: field and total context limits are tested."
+    },
+    {
+      "attack": "Malformed provider response or provider failure.",
+      "expected": "The user receives a safe generic message without provider details or secrets.",
+      "observed": "PASS: malformed response, retry, timeout, and safe-error tests are covered."
+    },
+    {
+      "attack": "Unauthenticated, non-Developer, or unassigned report request.",
+      "expected": "The action refuses without disclosing protected report content or calling the provider.",
+      "observed": "PASS: Developer AI action tests cover session, role, and assignment boundaries."
+    },
+    {
+      "attack": "Generated text attempts to become an automatic code or workflow action.",
+      "expected": "The result is labeled advisory and the action performs no report, revision, or status mutation.",
+      "observed": "PASS: action returns advisory-only text; gateway accepts context only and has no mutation path."
+    }
+  ],
+  "verification": [
+    "npm test: 18 files and 87 tests passed.",
+    "npm run typecheck: passed.",
+    "npm run lint: passed."
+  ],
+  "remaining_work": [
+    "Authenticated manual UI verification remains optional and is separate from deferred Phase 8 task T045."
+  ],
+  "next_owner": "developer owner"
+}

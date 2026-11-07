@@ -163,11 +163,11 @@ RLS, security, and acceptance evidence.
 
 ## Phase 9: Developer AI Assistance
 
-- [ ] T046 Add gateway tests for bounded context, prompt-injection data, malformed output, provider failure, and timeout
-- [ ] T047 Implement the server-only Developer debugging gateway with context, output, timeout, and quota limits
-- [ ] T048 Implement assigned-report authorization and server-only AI usage accounting for the Developer action
-- [ ] T049 Add the labeled advisory UI and verify that AI responses cannot mutate reports, revisions, or status
-- [ ] T050 Run the AI security review and record actual adversarial test results in `workflow/evidence/developer-ai-security-review.json`
+- [X] T046 Add gateway tests for bounded context, prompt-injection data, malformed output, provider failure, and timeout
+- [X] T047 Implement the server-only Developer debugging gateway with context, output, timeout, and quota limits
+- [X] T048 Implement assigned-report authorization and server-only AI usage accounting for the Developer action
+- [X] T049 Add the labeled advisory UI and verify that AI responses cannot mutate reports, revisions, or status
+- [X] T050 Run the AI security review and record actual adversarial test results in `workflow/evidence/developer-ai-security-review.json`
 
 ---
 
