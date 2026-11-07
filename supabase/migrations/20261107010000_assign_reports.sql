@@ -71,7 +71,13 @@ security definer
 set search_path = ''
 as $$
 begin
-  if (select auth.role()) = 'authenticated' and (
+  if (select auth.role()) is distinct from 'authenticated' then
+    return new;
+  end if;
+  -- One lock per Reporter, so simultaneous submissions by the same account count each other
+  -- instead of all seeing 19 and all passing. Other Reporters are not blocked.
+  perform pg_advisory_xact_lock(hashtext('public.limit_report_submissions'), hashtext(new.reporter_id::text));
+  if (
     select count(*) from public.bug_reports
     where reporter_id = new.reporter_id and created_at > now() - interval '1 hour'
   ) >= 20 then
