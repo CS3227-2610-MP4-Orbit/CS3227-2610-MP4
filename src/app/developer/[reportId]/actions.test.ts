@@ -67,6 +67,15 @@ describe("Developer investigation actions", () => {
     expect(createClient).not.toHaveBeenCalled();
   });
 
+  it("rejects corrected code with invalid Python syntax", async () => {
+    const form = new FormData();
+    form.set("reportId", "00000000-0000-4000-8000-000000000001");
+    form.set("code", "def broken(:");
+
+    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "Corrected code must be valid Python syntax." });
+    expect(createClient).not.toHaveBeenCalled();
+  });
+
   it("uses the submit_fix lifecycle RPC and returns a safe success message", async () => {
     const rpc = vi.fn().mockResolvedValue({ data: "revision-id", error: null });
     vi.mocked(createClient).mockResolvedValue({ rpc } as never);
@@ -91,6 +100,16 @@ describe("Developer investigation actions", () => {
     await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "The fix could not be submitted. Check that the report is assigned to you and in progress." });
   });
 
+  it("maps missing investigation notes to the safe handoff error", async () => {
+    const rpc = vi.fn().mockResolvedValue({ error: new Error("investigation notes required before QA handoff") });
+    vi.mocked(createClient).mockResolvedValue({ rpc } as never);
+    const form = new FormData();
+    form.set("reportId", "00000000-0000-4000-8000-000000000001");
+    form.set("code", "print('fixed')");
+
+    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "The fix could not be submitted. Check that the report is assigned to you and in progress." });
+  });
+
   it("creates each repeated revision through the lifecycle boundary", async () => {
     const rpc = vi.fn().mockResolvedValueOnce({ data: "revision-1", error: null }).mockResolvedValueOnce({ data: "revision-2", error: null });
     vi.mocked(createClient).mockResolvedValue({ rpc } as never);
@@ -100,5 +119,17 @@ describe("Developer investigation actions", () => {
     expect(rpc).toHaveBeenCalledTimes(2);
     expect(rpc).toHaveBeenNthCalledWith(1, "submit_fix", expect.objectContaining({ fixed_code: "print('first')" }));
     expect(rpc).toHaveBeenNthCalledWith(2, "submit_fix", expect.objectContaining({ fixed_code: "print('second')" }));
+  });
+
+  it("hands off through submit_fix without exposing QA decision mutations", async () => {
+    const rpc = vi.fn().mockResolvedValue({ data: "revision-id", error: null });
+    vi.mocked(createClient).mockResolvedValue({ rpc } as never);
+    const form = new FormData();
+    form.set("reportId", "00000000-0000-4000-8000-000000000001");
+    form.set("code", "print('ready for QA')");
+
+    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: true, message: "Fix submitted to QA." });
+    expect(rpc).toHaveBeenCalledWith("submit_fix", expect.objectContaining({ fixed_code: "print('ready for QA')" }));
+    expect(rpc).not.toHaveBeenCalledWith("decide_fix", expect.anything());
   });
 });

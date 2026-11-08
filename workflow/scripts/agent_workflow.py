@@ -8,12 +8,18 @@ from __future__ import annotations
 
 import argparse
 import csv
-import fcntl
 import json
 import re
 import sys
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
+
+try:
+    import fcntl
+except ImportError:  # Windows
+    fcntl = None
+    import msvcrt
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -23,6 +29,24 @@ BOARD = ROOT / "workflow/assignments.json"
 ROLES = tuple(CONFIG["role_budgets"])
 SENSITIVE_PARTS = {".env", ".git", "node_modules", ".next", "secrets"}
 TASK_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{1,63}$")
+
+
+@contextmanager
+def exclusive_lock(handle):
+    """Lock a file on both POSIX and Windows for workflow state writes."""
+    if fcntl is not None:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+    else:
+        handle.seek(0)
+        msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+    try:
+        yield
+    finally:
+        if fcntl is not None:
+            fcntl.flock(handle, fcntl.LOCK_UN)
+        else:
+            handle.seek(0)
+            msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
 
 
 def fail(message: str) -> None:
@@ -184,8 +208,8 @@ def record(run: dict) -> None:
     validate_run(run)
     RUNS.parent.mkdir(parents=True, exist_ok=True)
     with RUNS.open("a", encoding="utf-8") as output:
-        fcntl.flock(output, fcntl.LOCK_EX)
-        output.write(json.dumps(run, separators=(",", ":")) + "\n")
+        with exclusive_lock(output):
+            output.write(json.dumps(run, separators=(",", ":")) + "\n")
 
 
 def paths_overlap(left: str, right: str) -> bool:
@@ -220,25 +244,25 @@ def validate_board(board: dict) -> None:
 def update_assignment(task: dict, status: str) -> None:
     validate_task(task)
     lock_path = BOARD.with_suffix(".lock")
-    with lock_path.open("w", encoding="utf-8") as lock:
-        fcntl.flock(lock, fcntl.LOCK_EX)
-        board = read_json(BOARD)
-        validate_board(board)
-        previous = next((item for item in board["assignments"] if item["task_id"] == task["task_id"]), None)
-        if status == "active":
-            if previous and previous["status"] == "active":
-                fail("task is already active")
-            candidate = {"task_id": task["task_id"], "owner": task["owner"],
-                         "owned_paths": task["owned_paths"], "status": "active"}
-            if previous:
-                board["assignments"].remove(previous)
-            board["assignments"].append(candidate)
-        else:
-            if not previous or previous["status"] != "active" or previous["owner"] != task["owner"]:
-                fail("only an active assignment with the same owner can be released")
-            previous["status"] = "done"
-        validate_board(board)
-        BOARD.write_text(json.dumps(board, indent=2) + "\n", encoding="utf-8")
+    with lock_path.open("a+", encoding="utf-8") as lock:
+        with exclusive_lock(lock):
+            board = read_json(BOARD)
+            validate_board(board)
+            previous = next((item for item in board["assignments"] if item["task_id"] == task["task_id"]), None)
+            if status == "active":
+                if previous and previous["status"] == "active":
+                    fail("task is already active")
+                candidate = {"task_id": task["task_id"], "owner": task["owner"],
+                             "owned_paths": task["owned_paths"], "status": "active"}
+                if previous:
+                    board["assignments"].remove(previous)
+                board["assignments"].append(candidate)
+            else:
+                if not previous or previous["status"] != "active" or previous["owner"] != task["owner"]:
+                    fail("only an active assignment with the same owner can be released")
+                previous["status"] = "done"
+            validate_board(board)
+            BOARD.write_text(json.dumps(board, indent=2) + "\n", encoding="utf-8")
 
 
 def export() -> None:

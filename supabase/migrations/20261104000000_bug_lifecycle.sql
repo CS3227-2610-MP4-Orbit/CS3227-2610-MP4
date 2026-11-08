@@ -300,6 +300,13 @@ begin
     raise exception 'report not available for a fix' using errcode = '42501';
   end if;
 
+  if not exists (
+    select 1 from public.investigation_notes
+    where report_id = report and author_id = me
+  ) then
+    raise exception 'investigation notes required before QA handoff' using errcode = '42501';
+  end if;
+
   select coalesce(max(revision_number), 0) + 1 into next_number
   from public.fix_revisions where report_id = report;
 

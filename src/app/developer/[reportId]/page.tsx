@@ -53,7 +53,12 @@ export default async function DeveloperReportPage({ params }: { params: Promise<
         {canEditNotes && <AddNoteForm reportId={report.id} />}
       </section>
 
-      <QaHandoff status={report.status} revisionNumber={revisions.at(-1)?.revision_number} />
+      <QaHandoff
+        status={report.status}
+        revisionNumber={revisions.at(-1)?.revision_number}
+        submittedBy={revisions.at(-1)?.author_name}
+        submittedAt={revisions.at(-1)?.created_at}
+      />
       <DeveloperAiAssistant reportId={report.id} />
 
       {decisions.filter((decision) => decision.verdict === "reject").map((decision) => {

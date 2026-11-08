@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { fixedPythonCodeSchema, investigationNoteSchema, reportIdSchema, safeValidationMessage, submissionNoteSchema } from "../../../lib/developer/validation";
+import { isValidPythonSyntax } from "../../../lib/developer/python-validation";
 import { createClient } from "../../../lib/supabase/server";
 
 export type DeveloperActionState = { ok: boolean; message: string };
@@ -18,6 +19,7 @@ export async function submitFix(_previousState: DeveloperActionState, formData: 
   const note = submissionNoteSchema.safeParse(value(formData, "note"));
   if (!reportId.success) return { ok: false, message: safeValidationMessage(reportId.error) };
   if (!code.success) return { ok: false, message: "Corrected Python code is required and must be at most 20,000 characters." };
+  if (!isValidPythonSyntax(code.data)) return { ok: false, message: "Corrected code must be valid Python syntax." };
   if (!note.success) return { ok: false, message: safeValidationMessage(note.error) };
   const supabase = await createClient();
   const { error } = await supabase.rpc("submit_fix", { report: reportId.data, fixed_code: code.data, submission_note: note.data });

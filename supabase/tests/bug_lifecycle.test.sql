@@ -5,7 +5,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(49);
+select plan(58);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: two of each role so cross-report and cross-assignment access can be checked.
@@ -143,6 +143,23 @@ select throws_ok(
   'an unassigned developer cannot start work'
 );
 
+reset role;
+update public.profiles set role = 'reporter' where id = '00000000-0000-4000-8000-0000000000b1';
+select pg_temp.act_as('00000000-0000-4000-8000-0000000000b1');
+select throws_ok(
+  $$ select public.start_work(current_setting('test.report')::uuid) $$,
+  '42501', null,
+  'a demoted assigned user cannot start Developer work'
+);
+select throws_ok(
+  $$ insert into public.investigation_notes (report_id, author_id, body)
+     values (current_setting('test.report')::uuid, '00000000-0000-4000-8000-0000000000b1', 'should be denied') $$,
+  '42501', null,
+  'a demoted assigned user cannot add Developer notes'
+);
+reset role;
+update public.profiles set role = 'developer' where id = '00000000-0000-4000-8000-0000000000b1';
+
 select pg_temp.act_as('00000000-0000-4000-8000-0000000000b1');
 select isnt_empty(
   $$ select 1 from public.bug_reports where id = current_setting('test.report')::uuid $$,
@@ -156,6 +173,11 @@ select throws_ok(
 select lives_ok(
   $$ select public.start_work(current_setting('test.report')::uuid) $$,
   'the assigned developer starts work'
+);
+select throws_ok(
+  $$ select public.submit_fix(current_setting('test.report')::uuid, 'print(1)') $$,
+  '42501', null,
+  'the developer cannot hand off without investigation notes'
 );
 select lives_ok(
   $$ insert into public.investigation_notes (report_id, author_id, body)
@@ -186,6 +208,18 @@ select is(
   'len([]) is 0; guard the empty case',
   'an unauthorized note edit changes nothing'
 );
+reset role;
+update public.profiles set role = 'reporter' where id = '00000000-0000-4000-8000-0000000000b1';
+select pg_temp.act_as('00000000-0000-4000-8000-0000000000b1');
+select throws_ok(
+  $$ select public.submit_fix(current_setting('test.report')::uuid,
+       'def avg(xs):\n    return 0', 'demoted') $$,
+  '42501', null,
+  'a demoted assigned user cannot submit a fix'
+);
+reset role;
+update public.profiles set role = 'developer' where id = '00000000-0000-4000-8000-0000000000b1';
+select pg_temp.act_as('00000000-0000-4000-8000-0000000000b1');
 update public.bug_reports set title = 'changed by dev' where id = current_setting('test.report')::uuid;
 select is(
   (select title from public.bug_reports where id = current_setting('test.report')::uuid),
@@ -213,6 +247,16 @@ select is(
   (select position('for update' in lower(pg_get_functiondef('public.submit_fix(uuid, text, text)'::regprocedure))) > 0),
   true,
   'submit_fix locks the report before numbering revisions'
+);
+select is(
+  (select status::text from public.bug_reports where id = current_setting('test.report')::uuid),
+  'awaiting_qa',
+  'submitting a revision creates the QA handoff state'
+);
+select is(
+  (select author_id from public.fix_revisions where report_id = current_setting('test.report')::uuid and revision_number = 1),
+  '00000000-0000-4000-8000-0000000000b1'::uuid,
+  'the QA handoff identifies the submitting developer'
 );
 select is(
   has_table_privilege('authenticated', 'public.fix_revisions', 'UPDATE'),
@@ -245,6 +289,11 @@ select throws_ok(
   $$ select public.decide_fix((select id from public.fix_revisions limit 1), 'approve') $$,
   '42501', null,
   'the developer cannot approve their own fix'
+);
+select throws_ok(
+  $$ select public.decide_fix((select id from public.fix_revisions limit 1), 'reject', 'not a QA action') $$,
+  '42501', null,
+  'the developer cannot reject their own fix'
 );
 
 -- ---------------------------------------------------------------------------
@@ -294,6 +343,17 @@ select lives_ok(
   $$ select public.submit_fix(current_setting('test.report')::uuid,
        'def avg(xs):\n    return sum(xs) / len(xs) if xs else 0.0', 'Return 0.0') $$,
   'the developer submits revision 2'
+);
+select is(
+  (select code from public.fix_revisions where report_id = current_setting('test.report')::uuid and revision_number = 1),
+  'def avg(xs):\n    return sum(xs) / len(xs) if xs else 0',
+  'revision 1 remains available after revision 2 is submitted'
+);
+select is(
+  (select feedback from public.qa_decisions d join public.fix_revisions f on f.id = d.revision_id
+   where f.report_id = current_setting('test.report')::uuid and f.revision_number = 1),
+  'Return a float: avg([]) should be 0.0',
+  'rejection feedback remains linked to revision 1'
 );
 
 select pg_temp.act_as('00000000-0000-4000-8000-0000000000c1');
