@@ -20,7 +20,7 @@ export const WORKSPACES: Record<AppRole, Workspace> = {
     home: "/reports",
     headline: "Track a Python bug from report to feedback.",
     summary: "Share a reproducible snippet, follow its status, and read Developer or QA feedback in one place.",
-    links: [{ href: "/", label: "Home" }, { href: "/reports", label: "My reports" }, { href: "/reports/new", label: "New report" }],
+    links: [{ href: "/reports", label: "My reports" }, { href: "/reports/new", label: "New report" }],
     actions: [{ href: "/reports/new", label: "Submit a bug report" }, { href: "/reports", label: "View my reports" }],
   },
   developer: {
@@ -28,7 +28,7 @@ export const WORKSPACES: Record<AppRole, Workspace> = {
     home: "/developer",
     headline: "Fix the bugs assigned to you.",
     summary: "Investigate each report, record notes, and submit a fix for QA. Rejected fixes come back with QA feedback.",
-    links: [{ href: "/", label: "Home" }, { href: "/developer", label: "Assigned bugs" }],
+    links: [{ href: "/developer", label: "Assigned bugs" }],
     actions: [{ href: "/developer", label: "Open assigned bugs" }],
   },
   qa: {
@@ -36,7 +36,7 @@ export const WORKSPACES: Record<AppRole, Workspace> = {
     home: "/qa",
     headline: "Verify fixes before they close.",
     summary: "Compare each fix with the original code, record your tests, and approve it or send it back with feedback.",
-    links: [{ href: "/", label: "Home" }, { href: "/qa", label: "QA queue" }],
+    links: [{ href: "/qa", label: "QA queue" }],
     actions: [{ href: "/qa", label: "Open the QA queue" }],
   },
 };

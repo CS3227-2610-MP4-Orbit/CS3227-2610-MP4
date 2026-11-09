@@ -11,7 +11,7 @@ Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-lev
 | QA tester: queue, review, tests, decisions, history (`src/app/qa/`) | Implemented |
 | Developer workspace (`src/app/developer/`) | Implemented |
 | Automatic assignment, role home and navigation, demo accounts | Implemented |
-| AI gateway (`src/lib/ai/`) and QA's AI feature | Implemented. Reporter and Developer features are configured in the gateway, but their UI is not built yet |
+| AI gateway (`src/lib/ai/`) and role-specific AI features | Implemented. The Reporter has a report-detail code explanation and a separate pre-submission quality check; QA has test suggestions. Check the Developer workspace separately for its current AI UI. |
 
 ## Design
 
@@ -21,7 +21,7 @@ Three authenticated roles share reports, revision history, test cases, decisions
 
 Migration `20261107010000_assign_reports.sql` adds an after-insert trigger to `bug_reports`. When a report has no assignees, which is true of every Reporter submission, it is given to the Developer and the QA tester with the fewest unclosed reports, oldest account first. It is never given to the person who filed it. An advisory lock spreads reports submitted at the same moment. The trigger runs after the insert because row-level security checks an insert's `WITH CHECK` after `BEFORE` triggers, and a Reporter's insert must carry no assignees. Reports the team assigns explicitly with the secret key are left as set. A second trigger, `limit_report_submissions`, refuses a Reporter's 21st report within an hour (error `54000`), so one account cannot flood the queue or the assignment lock. Secret-key inserts are not limited. The tests are in `supabase/tests/assign_reports.test.sql`.
 
-`src/lib/roles.ts` is the single map from each role to its workspace, its navigation links and its home-page text. `src/lib/session.ts` (`getSignedInRole`) reads the signed-in role. The sign-in action redirects to the role's workspace, the layout's `SignedInNav` shows that role's links, and the home page shows its actions.
+`src/lib/roles.ts` is the single map from each role to its workspace and navigation links. `src/lib/session.ts` (`getSignedInRole`) reads the signed-in role. The sign-in action redirects to the role's workspace, the layout's `SignedInNav` shows that role's links, and `/` redirects to the same workspace.
 
 Demo accounts: `DEMO_PASSWORD=... npm run seed:demo -- <local|dev|prod>` (`scripts/seed-demo-accounts.mjs`) creates or updates two accounts per role and sets their roles. It reads `.env.local` or the `DEV_`/`PROD_` keys in `.env.setup`, and prints only emails and roles.
 
@@ -33,7 +33,7 @@ Demo accounts: `DEMO_PASSWORD=... npm run seed:demo -- <local|dev|prod>` (`scrip
 
 All SoC LLM calls go through `runAiFeature` in `src/lib/ai/gateway.ts`, which is server-only. `src/lib/ai/prompt.ts` holds the parts that can be tested on their own.
 
-1. **One feature per role.** `FEATURES` binds `reporter_code_explanation`, `developer_debugging` and `qa_test_suggestions` to a single role each. The gateway refuses a feature requested for another role. The caller must already have checked the role and loaded the context through the user's session, so RLS limits the data to reports the user may see.
+1. **Role-bound features.** `FEATURES` binds each feature identifier to its allowed role, including separate Reporter code-explanation and draft-quality tasks. The gateway refuses a feature requested for another role. Each caller checks the role before requesting AI. Report-detail callers load context through the user's session, so RLS limits the data to reports the user may see. The draft-quality action accepts only the six current form fields and has no report ID or report read.
 2. **Bounded input and output.** Each context field is at most 20,000 characters, the same limit the database puts on code, and the total is at most 45,000. Larger requests are refused rather than truncated. Each feature caps the tokens the model may return. An answer longer than 6,000 characters, or one the provider cut at the token cap, is marked as shortened.
 3. **Prompt boundaries.** The system prompt holds the fixed rules and the task. It is the same for every request, so the provider can reuse its prompt cache. Report data goes in the user message between a boundary marker that is random for each request. Copies of the marker are removed from the data, so text in a report cannot close the block and add instructions.
 4. **Limits.** Each call first inserts a `pending` row in `ai_usage`. It then counts recent rows: 3 a minute and 20 a day per user and feature, and 20 a minute across the app to stay under the provider's rate. Because the row is inserted before counting, simultaneous requests count against each other. Requests the app refuses (`rate_limited`, `daily_limit`, `busy`) do not use up quota. A provider 429 is recorded as `provider_busy` and does count, because it reached the provider. A row still `pending` after 2 minutes was abandoned and stops counting, so a crash cannot lock a user out.
@@ -41,6 +41,8 @@ All SoC LLM calls go through `runAiFeature` in `src/lib/ai/gateway.ts`, which is
 6. **Usage records.** `ai_usage` stores the feature, model, outcome, input, output and cached tokens (null when the provider does not report them), latency and retries. Prompts and answers are never stored. The table has RLS and no policies, so only the server's secret-key client (`src/lib/supabase/admin.ts`) can access it.
 
 To add a role's feature, write a server action that checks the role, loads the context through the user's session, and calls `runAiFeature({ feature, userId, role, reportId, context })`. Then show `text` labelled as an AI suggestion. `src/app/qa/[reportId]/actions.ts` (`suggestTests`) is the reference. The tests are in `src/lib/ai/gateway.test.ts`.
+
+The New Report quality check is an optional action separate from `createReport`. It checks the signed-in Reporter, validates the six current draft fields, and calls the gateway with `reportId: null`. A blank draft is refused before the gateway. No draft or response is written to `bug_reports` or usage logs. The browser keeps the draft and marks a prior suggestion stale after any field changes, including the Python editor. The normal submission action remains the only way this page creates a report.
 
 ## Development process
 

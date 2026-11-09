@@ -9,10 +9,10 @@ describe("WORKSPACES", () => {
     expect(WORKSPACES.qa.home).toBe("/qa");
   });
 
-  it("links every role to Home and to its own workspace only", () => {
+  it("links every role to its own workspace only", () => {
     for (const [role, workspace] of Object.entries(WORKSPACES)) {
       const hrefs = workspace.links.map((link) => link.href);
-      expect(hrefs[0]).toBe("/");
+      expect(hrefs).not.toContain("/");
       expect(hrefs).toContain(workspace.home);
       const others = Object.entries(WORKSPACES).filter(([other]) => other !== role).map(([, w]) => w.home);
       for (const href of hrefs) expect(others.some((home) => href === home || href.startsWith(`${home}/`))).toBe(false);
@@ -30,8 +30,8 @@ describe("activeRoute", () => {
     expect(activeRoute("/reports/abc", WORKSPACES.reporter.links)).toBe("/reports");
   });
 
-  it("matches Home only on itself, and nothing on sign-in or unrelated paths", () => {
-    expect(activeRoute("/", qa)).toBe("/");
+  it("does not match sign-in or unrelated paths", () => {
+    expect(activeRoute("/", qa)).toBeNull();
     expect(activeRoute("/qanything", qa)).toBeNull();
     expect(activeRoute("/reports", qa)).toBeNull();
     expect(activeRoute("/login", qa)).toBeNull();

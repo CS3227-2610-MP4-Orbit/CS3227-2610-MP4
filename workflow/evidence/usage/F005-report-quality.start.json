@@ -1,0 +1,22 @@
+{
+  "captured_at": "2026-11-09T06:44:45.090714Z",
+  "root_thread_id": "01a1bb08-23fc-7a10-9abf-62f593a733df",
+  "schema_version": 1,
+  "sessions": {
+    "01a1bb08-23fc-7a10-9abf-62f593a733df": {
+      "agent_path": "root",
+      "created_at": "2026-11-08T12:00:35.953Z",
+      "model_ids": [],
+      "parent_thread_id": null,
+      "usage": {
+        "cache_write_input_tokens": 0,
+        "cached_input_tokens": 14006272,
+        "input_tokens": 14252894,
+        "output_tokens": 50394,
+        "reasoning_output_tokens": 10276,
+        "total_tokens": 14303288
+      }
+    }
+  },
+  "task_id": "F005-report-quality"
+}

@@ -1,0 +1,7 @@
+# Reporter draft quality check implementation — 2026-11-09
+
+Implemented feature 005 from `specs/005-check-report-quality/`: a Reporter-only Check my report action on New Report. It validates only six bounded draft fields, uses the existing AI gateway and quotas, returns plain-text suggestions, and does not submit or edit the report. The form keeps a previous suggestion after a failed repeat request and marks it stale after edits, including Python editor changes. Normal Submit report remains separate. Developer and QA users are redirected before seeing the New Report form; the server action checks role again.
+
+Used a generator for bounded code ownership and independent code and AI-boundary reviewers. Security review found a role visibility issue that was fixed. Code review found static form tests do not establish interaction behavior, so browser acceptance remains outstanding. The prompt asks for field-grouped suggestions; field headings are not mechanically guaranteed if a provider deviates.
+
+Final checks: typecheck and lint passed; Vitest passed 108/108. Local database tests ran with 141/143 assertions passing; two existing profile-count assertions failed with seeded users. Production build failed on Turbopack's OS port binding error. Browser and live AI checks, SC-001 live examples, and SC-004 human participants were unrun. See `workflow/evidence/005-check-report-quality-verification.md` for exact scope and limits. No usage or participant metrics were invented.
