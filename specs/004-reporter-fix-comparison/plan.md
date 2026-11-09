@@ -4,7 +4,7 @@
 
 ## Summary
 
-Read existing `fix_revisions` only after the Reporter detail page verifies role and ownership. Show a client-side revision selector and side-by-side line comparison against the report's original `code`, with revision author/time/note. An explicit empty state remains until a real revision exists. A clearly labeled fixed sample preview is available only in development for UI inspection; it is never stored or shown in production.
+Read existing `fix_revisions` only after the Reporter detail page verifies role and ownership. Show a client-side revision selector and side-by-side line comparison against the report's original `code`, with revision author/time/note. An explicit empty state remains until a real revision exists. The 2026-11-09 user update removes the earlier development sample preview.
 
 ## Technical Context
 

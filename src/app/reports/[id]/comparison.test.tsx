@@ -27,21 +27,14 @@ describe("FixComparison", () => {
     expect(html).not.toContain("No proposed fix yet");
   });
 
-  it("distinguishes empty, sample preview and load failure", () => {
+  it("distinguishes empty and load failure without sample data", () => {
     const empty = renderToStaticMarkup(<FixComparison original="print(0)" revisions={[]} />);
     expect(empty).toContain("No proposed fix yet");
-    expect(empty).not.toContain("Sample Developer note");
-    const preview = renderToStaticMarkup(<FixComparison original="print(0)" revisions={[]} sample={{
-      original: "x = 1", proposed: "x = 2", note: "Sample only",
-    }} />);
-    expect(preview).toContain("Preview sample comparison (development only)");
-    expect(preview).toContain("Sample data only");
-    const failed = renderToStaticMarkup(<FixComparison original="print(0)" revisions={[]} loadError sample={{
-      original: "x = 1", proposed: "x = 2", note: "Sample only",
-    }} />);
+    expect(empty).not.toContain("Preview sample comparison");
+    const failed = renderToStaticMarkup(<FixComparison original="print(0)" revisions={[]} loadError />);
     expect(failed).toContain("Could not load proposed fixes");
     expect(failed).not.toContain("No proposed fix yet");
-    expect(failed).not.toContain("Sample only");
+    expect(failed).not.toContain("Preview sample comparison");
   });
 
   it("renders code and Developer notes as inert text", () => {

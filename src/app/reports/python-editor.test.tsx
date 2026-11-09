@@ -24,4 +24,10 @@ describe("PythonEditor server fallback", () => {
     syncSubmissionValue(textarea, "new\n    code");
     expect(textarea.value).toBe("new\n    code");
   });
+
+  it("accepts a change callback while retaining the native textarea fallback", () => {
+    const html = renderToStaticMarkup(<PythonEditor id="python-code" value="print(1)" maxLength={20000} invalid={false} onValueChange={() => {}} />);
+    expect(html).toContain('name="python_code"');
+    expect(html).toContain('>print(1)</textarea>');
+  });
 });

@@ -1,0 +1,38 @@
+{
+  "task_id": "F005-report-quality",
+  "goal": "Implement the approved pre-submission Reporter AI quality check from Spec 005 without changing normal report submission",
+  "owner": "joseph",
+  "owned_paths": [
+    "src/lib/ai/prompt.ts",
+    "src/lib/ai/prompt.test.ts",
+    "src/lib/reports/quality-check.ts",
+    "src/lib/reports/quality-check.test.ts",
+    "src/app/reports/new/quality-check.fixtures.ts",
+    "src/app/reports/new/check-quality.ts",
+    "src/app/reports/new/check-quality.test.ts",
+    "src/app/reports/new/page.tsx",
+    "src/app/reports/report-form.tsx",
+    "src/app/reports/report-form.test.tsx",
+    "src/app/reports/python-editor.tsx",
+    "src/app/reports/python-editor.test.tsx",
+    "docs/UserGuide.md",
+    "docs/DeveloperGuide.md",
+    "specs/005-check-report-quality/tasks.md",
+    "specs/005-check-report-quality/quickstart.md"
+  ],
+  "spec": "specs/005-check-report-quality/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Only a signed-in Reporter may request a check on the six current draft fields",
+    "The check never edits or submits a report and does not block normal submission",
+    "Suggestions are bounded plain text; failures preserve draft and previous suggestion",
+    "Relevant automated, database security, build, and browser checks are recorded truthfully"
+  ],
+  "context_refs": [
+    { "path": "specs/005-check-report-quality/spec.md", "start_line": 63, "end_line": 72 },
+    { "path": "specs/005-check-report-quality/plan.md", "start_line": 84, "end_line": 89 },
+    { "path": "specs/005-check-report-quality/contracts/draft-quality-check.md", "start_line": 3, "end_line": 13 }
+  ]
+}

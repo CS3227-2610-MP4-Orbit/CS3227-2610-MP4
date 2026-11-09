@@ -4,6 +4,7 @@ import { connection } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { ReportForm } from "../report-form";
 import { createReport } from "./actions";
+import { checkReportQuality } from "./check-quality";
 
 export default function NewReportPage() {
   return (
@@ -20,5 +21,8 @@ async function AuthenticatedReportForm() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
-  return <main className="mx-auto w-full max-w-4xl px-5 py-8 sm:px-8"><p className="text-sm font-semibold uppercase tracking-widest text-blue-700">New report</p><h1 className="mb-2 mt-1 text-3xl font-semibold tracking-tight">Submit a Python bug</h1><p className="mb-6 max-w-2xl text-sm text-slate-600">Describe the issue and paste a small Python example. Code is stored as text and is never run.</p><ReportForm action={createReport} submitLabel="Submit report" /></main>;
+  const { data: profile, error: profileError } = await supabase.from("profiles")
+    .select("role").eq("id", user.id).single();
+  if (profileError || profile?.role !== "reporter") redirect("/reports");
+  return <main className="mx-auto w-full max-w-4xl px-5 py-8 sm:px-8"><p className="text-sm font-semibold uppercase tracking-widest text-blue-700">New report</p><h1 className="mb-2 mt-1 text-3xl font-semibold tracking-tight">Submit a Python bug</h1><p className="mb-6 max-w-2xl text-sm text-slate-600">Describe the issue and paste a small Python example. Code is stored as text and is never run.</p><ReportForm action={createReport} qualityCheck={checkReportQuality} submitLabel="Submit report" /></main>;
 }

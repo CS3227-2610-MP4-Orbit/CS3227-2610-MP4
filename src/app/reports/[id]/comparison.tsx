@@ -14,13 +14,10 @@ export type FixRevision = {
   created_at: string;
 };
 
-export type SampleComparison = { original: string; proposed: string; note: string };
-
 type Props = {
   original: string;
   revisions: FixRevision[];
   loadError?: boolean;
-  sample?: SampleComparison;
 };
 
 export function selectRevision(revisions: FixRevision[], id?: string): FixRevision | undefined {
@@ -63,7 +60,7 @@ function CodeComparison({ original, proposed }: { original: string; proposed: st
   </div>;
 }
 
-export function FixComparison({ original, revisions, loadError = false, sample }: Props) {
+export function FixComparison({ original, revisions, loadError = false }: Props) {
   const [selectedId, setSelectedId] = useState<string | undefined>();
   const ordered = useMemo(() => [...revisions].sort((a, b) => b.revision_number - a.revision_number), [revisions]);
   const selected = selectRevision(ordered, selectedId);
@@ -80,16 +77,6 @@ export function FixComparison({ original, revisions, loadError = false, sample }
       <p className="text-sm text-slate-700">Version {selected.revision_number} by {selected.author_name?.trim() || `Developer account ${selected.author_id}`} · <time dateTime={selected.created_at}>{selected.created_at}</time></p>
       {selected.note && <p className="rounded border border-slate-200 bg-slate-50 p-3 text-sm whitespace-pre-wrap break-words">Developer note: {selected.note}</p>}
       <CodeComparison original={original} proposed={selected.code} />
-    </> : <>
-      <p className="text-slate-600">No proposed fix yet. A Developer revision will appear here when one is submitted.</p>
-      {sample && <details className="rounded border border-amber-300 bg-amber-50 p-4">
-        <summary className="cursor-pointer font-medium text-amber-950">Preview sample comparison (development only)</summary>
-        <div className="mt-4 space-y-3">
-          <p className="text-sm font-semibold text-amber-950">Sample data only — no Developer has submitted this fix.</p>
-          <p className="text-sm text-amber-950 whitespace-pre-wrap">Sample Developer note: {sample.note}</p>
-          <CodeComparison original={sample.original} proposed={sample.proposed} />
-        </div>
-      </details>}
-    </>}
+    </> : <p className="text-slate-600">No proposed fix yet. A Developer revision will appear here when one is submitted.</p>}
   </section>;
 }

@@ -20,11 +20,21 @@ Roles are set by the team, so use these accounts. They all share one password: *
 
 ### Signing in
 
-After signing in you land on your role's workspace: Reporters on **My bug reports** (`/reports`), Developers on **Assigned bugs** (`/developer`), and QA testers on the **QA queue** (`/qa`). The bar at the top shows only your role's pages. **Home** describes your role and links to your workspace.
+After signing in you land on your role's workspace: Reporters on **My bug reports** (`/reports`), Developers on **Assigned bugs** (`/developer`), and QA testers on the **QA queue** (`/qa`). The bar at the top shows only your role's pages and a Sign out button. The root page redirects to your workspace.
 
 ### How a bug moves between roles
 
 When a Reporter submits a report, it is assigned automatically to the Developer and the QA tester with the fewest unclosed reports. Nobody is assigned a report they filed. The Developer fixes it, the QA tester verifies the fix, and a rejected fix goes back to the Developer with feedback. When both people in a role have the same number of unclosed reports, the older account gets it, which is `developer1` or `qa1` in the demo accounts. To follow one bug through every step, find it in the queue of each Developer and QA tester account.
+
+## Reporter
+
+### Check a draft before submitting
+
+On **New report** (`/reports/new`), enter some report details and select **Check my report**. This optional AI check looks at the current title, Python code, error message, expected behavior, actual behavior, and reproduction steps. It can suggest how to make the report clearer or easier to reproduce, including fields you have not filled in yet. An entirely blank draft is not sent to the AI.
+
+Suggestions are labeled as AI generated and grouped by report field. They do not edit the form, run your code, or submit a report. If you change the draft after a check, the previous suggestion is marked as based on an earlier version; check again if you want updated advice. Use **Submit report** separately when you are ready. The existing required-field checks still apply to submission.
+
+The check uses the same AI request limits as other features: 3 requests per minute and 20 per day for this feature. If it is unavailable or over a limit, you can still submit a valid report, and any earlier suggestion stays visible. The **AI code explanation** on a submitted report is a separate feature that explains the likely cause of the Python bug.
 
 ## QA tester
 
