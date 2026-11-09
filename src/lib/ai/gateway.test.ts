@@ -91,6 +91,14 @@ describe("runAiFeature", () => {
     expect(store.rows).toHaveLength(0);
   });
 
+  it("binds the QA feedback draft to QA, with a smaller output cap", async () => {
+    expect(await runAiFeature(request({ feature: "qa_feedback_draft", role: "developer" }), deps))
+      .toMatchObject({ ok: false, reason: "wrong_role" });
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(await runAiFeature(request({ feature: "qa_feedback_draft" }), deps)).toMatchObject({ ok: true });
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body).max_tokens).toBe(400);
+  });
+
   it("reports not configured when the provider settings are missing", async () => {
     expect(await runAiFeature(request(), { ...deps, env: { baseUrl: "", apiKey: SECRET, model: "m" } }))
       .toMatchObject({ ok: false, reason: "not_configured" });

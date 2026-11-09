@@ -81,4 +81,12 @@ Under **Decide version N**:
 
 Feedback can be up to 2,000 characters. It is shown to the Developer, and to the Reporter under **Developer and QA feedback** on their report.
 
+### AI feedback draft
+
+Once you have recorded at least one test on the version you are deciding, select **Draft from my test results** in the **AI feedback draft** box under **Decide version N**. The AI reads only the expected behavior, the Developer's note on that version and your recorded tests. It drafts a short note that names each failed test with its expected and actual result and says what to check, or says what was verified when everything passed. Without recorded tests you see "Record at least one test first. The draft is based on your test results.", and no AI request is made.
+
+The draft is labelled **AI draft · not checked** and is not sent anywhere. Select **Use this draft** to put it in the feedback box. If you already wrote feedback, the draft is added below it, so nothing you wrote is replaced. Edit it as needed. It is only sent when you select **Approve and close** or **Reject and return to Developer**. Links in a draft are replaced by "[link removed]", because a note based on test results never needs one. If you record another test, the draft disappears, because it no longer matches your results. Select **Draft from my test results** again.
+
+The draft has its own limits of 3 times a minute and 20 times a day, separate from AI test ideas.
+
 After deciding, a green message confirms it: "Fix approved. The report is closed." or "Fix rejected. The report is back with the Developer." Each version can be decided once. After you reject, the report waits for the Developer's next version, which then appears as **Awaiting QA** again. If the report was already decided, for example in another tab, you see "This decision could not be saved. The fix may already have been decided."

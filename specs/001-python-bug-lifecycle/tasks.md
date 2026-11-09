@@ -61,6 +61,8 @@ After integration with `develop`, `python_code` remains the form field while the
 - [x] T016 [US4] Implement server-only SoC LLM gateway, limits and usage recording in `src/lib/ai/gateway.ts`
 - [ ] T017 [US4] Implement role-bound AI server actions in `src/app/ai/actions.ts` (QA done in `src/app/qa/[reportId]/actions.ts`; Reporter and Developer pending)
 - [ ] T018 [US4] Add labeled AI suggestion controls to `src/app/reports/[id]/page.tsx` (QA done in `src/app/qa/[reportId]/qa-forms.tsx`; Reporter and Developer pending)
+- [x] T026 [US4] Write tests for the QA feedback draft: context built only from the latest version's recorded tests, no request without tests, draft capped to the feedback limit, feature bound to QA, in `src/lib/qa/feedback-draft.test.ts` and `src/lib/ai/gateway.test.ts`
+- [x] T027 [US4] Implement the QA feedback draft (`qa_feedback_draft`): server action in `src/app/qa/[reportId]/actions.ts`, a labelled draft with an explicit "Use this draft" step in `src/app/qa/[reportId]/qa-forms.tsx`; nothing is sent until the tester decides (depends on T026)
 
 ## Phase 6: Polish and Release
 

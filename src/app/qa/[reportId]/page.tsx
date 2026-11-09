@@ -8,7 +8,7 @@ import { getQaReview, type QaReview, type StatusEvent } from "@/lib/qa/queries";
 import { idSchema } from "@/lib/qa/validation";
 
 import { StatusBadge } from "../status-badge";
-import { decideFix, recordTestCase, suggestTests } from "./actions";
+import { decideFix, draftFeedback, recordTestCase, suggestTests } from "./actions";
 import { DecisionForm, TestCaseForm, TestSuggestions } from "./qa-forms";
 
 // Shown after a decision redirect, only when the report's status agrees with the URL.
@@ -45,6 +45,7 @@ async function Review({ params, searchParams }: {
   const { report, revisions, testCases, names } = review;
   const latest = revisions[0];
   const awaiting = report.status === "awaiting_qa" && latest;
+  const latestTests = latest ? testCases.filter((test) => test.revision_id === latest.id) : [];
   const outcome = typeof decided === "string" ? decidedMessage[decided] : undefined;
   const confirmation = outcome?.status === report.status ? outcome.text : null;
   const named = (id: string | null) => (id && names[id]?.trim()) || "Team member";
@@ -82,10 +83,11 @@ async function Review({ params, searchParams }: {
         <h2 id="verify-heading" className="text-xl font-semibold">Verify the latest fix</h2>
         {awaiting ? (
           <>
-            <TestList tests={testCases.filter((test) => test.revision_id === latest.id)} />
+            <TestList tests={latestTests} />
             <TestSuggestions action={suggestTests.bind(null, report.id)} />
             <TestCaseForm action={recordTestCase.bind(null, report.id)} revisionId={latest.id} />
-            <DecisionForm action={decideFix.bind(null, report.id)} revisionId={latest.id} revisionNumber={latest.revision_number} />
+            <DecisionForm action={decideFix.bind(null, report.id)} draftAction={draftFeedback.bind(null, report.id)}
+              revisionId={latest.id} revisionNumber={latest.revision_number} testsKey={latestTests.map((test) => test.id).join(",")} />
           </>
         ) : (
           <p className="text-slate-600">{report.status === "closed" ? "This report is closed." : "No fix is awaiting QA. It is with the Developer."}</p>
