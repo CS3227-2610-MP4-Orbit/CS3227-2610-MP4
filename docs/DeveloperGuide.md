@@ -2,7 +2,7 @@
 
 ## Current state
 
-Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. Requirements and tasks are in `specs/001-python-bug-lifecycle/`.
+Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. Requirements and tasks are in `specs/001-developer-bug-workflow/`.
 
 | Area | State |
 |---|---|
@@ -11,7 +11,9 @@ Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-lev
 | QA tester: queue, review, tests, decisions, history (`src/app/qa/`) | Implemented |
 | Developer workspace (`src/app/developer/`) | Implemented |
 | Automatic assignment, role home and navigation, demo accounts | Implemented |
-| AI gateway (`src/lib/ai/`) and QA's AI feature | Implemented. Reporter and Developer features are configured in the gateway, but their UI is not built yet |
+| AI gateway (`src/lib/ai/`) and Developer/QA AI features | Implemented; the Developer debugging advisor is available from the Developer report page |
+
+The Developer implementation covers User Stories 1–5, Phase 8 security and verification work, and Phase 9 Developer AI assistance. T045, the authenticated manual quickstart, is intentionally still deferred; it must not be reported as completed until run and recorded.
 
 ## Design
 
@@ -40,11 +42,19 @@ All SoC LLM calls go through `runAiFeature` in `src/lib/ai/gateway.ts`, which is
 5. **Failures.** There is a 20-second timeout, which also covers reading the response. A server or network error is retried once. A 429 from the provider is not retried. `runAiFeature` never throws: a database or usage-store failure returns `unavailable`. If recording the result fails, the answer is still returned. Each failure maps to a fixed message that never contains provider, key or URL details.
 6. **Usage records.** `ai_usage` stores the feature, model, outcome, input, output and cached tokens (null when the provider does not report them), latency and retries. Prompts and answers are never stored. The table has RLS and no policies, so only the server's secret-key client (`src/lib/supabase/admin.ts`) can access it.
 
-To add a role's feature, write a server action that checks the role, loads the context through the user's session, and calls `runAiFeature({ feature, userId, role, reportId, context })`. Then show `text` labelled as an AI suggestion. `src/app/qa/[reportId]/actions.ts` (`suggestTests`) is the reference. The tests are in `src/lib/ai/gateway.test.ts`.
+The Developer entry point is `requestDeveloperDebuggingAdvice` in `src/app/ai/actions.ts`. It authenticates the caller, checks the `developer` role, restricts the report query to the caller's assigned report, loads recent investigation notes, bounds the code and supporting context, and calls `runAiFeature` with `developer_debugging`. The UI in `src/app/developer/[reportId]/ai-assistant.tsx` labels the result as advisory text and has no mutation path.
+
+The shared gateway uses a maximum of 20,000 characters per context field and 45,000 characters per request. The Developer action sends at most 8,000 characters of original code and 4,000 characters of supporting report context. Responses are capped by the feature configuration and marked as shortened if the provider or application limit cuts them. Per-user limits are three requests per minute and 20 per day per feature, with a 20-request-per-minute application limit.
+
+To add another role's feature, write a server action that checks the role, loads the context through the user's session, and calls `runAiFeature({ feature, userId, role, reportId, context })`. Then show `text` labelled as an AI suggestion. The tests are in `src/lib/ai/gateway.test.ts` and `src/app/ai/actions.test.ts`.
 
 ## Development process
 
 Start at `workflow/README.md`. `.agents/skills/agent-coordination` and `agent-handoff` provide reusable Codex instructions. `workflow/config.json` defines role budgets; `workflow/agents/prompts/` defines specialist boundaries; `workflow/scripts/agent_workflow.py` plans routes, packs bounded context, records real usage and exports a CSV table. `workflow/templates/` holds task, handoff, memory and log formats; `workflow/scripts/check_workflow.py` validates structure and evidence; `workflow/experiments.md` defines comparisons. The existing `.github/workflows/` contains CI and deployment automation for the legacy starter and must be reviewed when the domain migration is implemented. Development and production must use separate configuration and data.
+
+### Developer verification status
+
+The recorded automated verification in `workflow/evidence/developer-command-results.txt` reports passing lint, typecheck, unit tests, database tests and build. The AI security evidence in `workflow/evidence/developer-ai-security-review.json` records passing checks for prompt injection, authorization, bounded input, malformed provider output, timeout/retry handling and advisory-only behaviour. Authenticated manual UI verification remains outstanding under T045.
 
 ## Acknowledgements
 

@@ -1,6 +1,6 @@
 # User guide
 
-The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide is being written role by role as features are verified. Sections for roles not listed below are not ready for testing yet.
+The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. The role sections below describe the implemented workflow. Automated checks have passed; authenticated browser quickstart testing remains a separate manual check.
 
 ## Getting started
 
@@ -25,6 +25,34 @@ After signing in you land on your role's workspace: Reporters on **My bug report
 ### How a bug moves between roles
 
 When a Reporter submits a report, it is assigned automatically to the Developer and the QA tester with the fewest unclosed reports. Nobody is assigned a report they filed. The Developer fixes it, the QA tester verifies the fix, and a rejected fix goes back to the Developer with feedback. When both people in a role have the same number of unclosed reports, the older account gets it, which is `developer1` or `qa1` in the demo accounts. To follow one bug through every step, find it in the queue of each Developer and QA tester account.
+
+## Developer
+
+A Developer works only on reports assigned to that account. Open **`/developer`** after signing in to see the assigned-report queue. A non-Developer account cannot use the Developer workspace, and a report that is not assigned to the signed-in Developer is not disclosed.
+
+### Investigating a report
+
+Select **Open report** to view the original Python code, error message, expected and actual behaviour, and reproduction steps. Select **Start investigation** to move an `open` report to `in_progress`.
+
+Under **Investigation notes**, add a non-empty note describing the investigation. The note shows its author and timestamps. The author may edit the note while the report is `open` or `in_progress`; notes become read-only after the fix is handed to QA.
+
+### Submitting a fix
+
+Under **Submit corrected Python to QA**, enter valid Python syntax and an optional submission note, then select **Submit to QA**. The corrected code is stored as a new immutable revision. The original Reporter code is never overwritten, and earlier revisions remain available.
+
+The **Revision history and comparison** section shows each revision and compares it with the original code. Added lines are highlighted in green and removed lines in red. The latest revision is expanded first.
+
+Before handoff, the Developer must provide investigation information and corrected code. After submission, the report shows **Awaiting QA** with the selected revision and submission details. The Developer cannot approve or reject the fix; those decisions belong to the QA tester.
+
+### Responding to QA feedback
+
+If QA rejects a revision, the Developer sees the feedback and the affected revision. Submit a new revision rather than editing the rejected code. The rejected revision, feedback, authorship and timestamps remain in history. A new revision returns the report to `in_progress`, after which it can be submitted to QA again.
+
+### AI debugging advisor
+
+On an assigned report, select **Get debugging guidance** in **AI debugging advisor**. The result is labelled **ADVISORY GUIDANCE — review manually; no code was run or applied.** It can suggest a likely cause, checks and the shape of a fix, but it cannot modify reports, revisions or workflow status. Submitted code, report text, notes and AI output are treated as untrusted text.
+
+The advisor uses only the current assigned report and recent investigation notes. Requests are bounded, authenticated and rate-limited. If AI is unavailable, times out, or reaches a limit, the page shows a safe message and the normal Developer workflow remains available.
 
 ## QA tester
 
