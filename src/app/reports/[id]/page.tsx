@@ -18,7 +18,7 @@ export default function ReportPage({ params, searchParams }: {
   params: Promise<{ id: string }>;
   searchParams: Promise<{ saved?: string }>;
 }) {
-  return <Suspense fallback={<main className="mx-auto max-w-4xl p-6">Loading report…</main>}><ReporterReport params={params} searchParams={searchParams} /></Suspense>;
+  return <Suspense fallback={<main className="mx-auto max-w-7xl p-6">Loading report…</main>}><ReporterReport params={params} searchParams={searchParams} /></Suspense>;
 }
 
 async function ReporterReport({ params, searchParams }: {
@@ -52,11 +52,6 @@ async function ReporterReport({ params, searchParams }: {
     .select("id,report_id,revision_number,author_id,code,note,created_at")
     .eq("report_id", report.id)
     .order("revision_number", { ascending: false });
-  const sample = process.env.NODE_ENV === "development" ? {
-    original: "def average(values):\n    return sum(values) / len(values)\n",
-    proposed: "def average(values):\n    if not values:\n        return 0\n    return sum(values) / len(values)\n",
-    note: "Handle an empty list before dividing by its length.",
-  } : undefined;
   const { data: feedback, error: feedbackError } = await supabase.from("bug_feedback")
     .select("id,author_role,body,created_at")
     .eq("report_id", report.id)
@@ -64,36 +59,43 @@ async function ReporterReport({ params, searchParams }: {
     .order("id", { ascending: false });
   const { saved } = await searchParams;
   return (
-    <main className="mx-auto w-full max-w-4xl px-5 py-8 sm:px-8">
+    <main className="mx-auto w-full max-w-7xl px-5 py-8 sm:px-8">
       <Link href="/reports" className="text-sm font-medium text-blue-700 hover:underline">← My reports</Link>
       <div className="mt-5 flex flex-wrap items-start justify-between gap-3">
         <h1 className="text-3xl font-semibold tracking-tight text-slate-950">{report.title}</h1>
         <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium capitalize text-blue-800">{report.status.replaceAll("_", " ")}</span>
       </div>
       <p className="mb-6 mt-2 text-sm text-slate-600">Created {new Date(report.created_at).toLocaleString()}</p>
-      <nav aria-label="Report sections" className="mb-6 flex gap-1 border-b border-slate-200">
+      <nav aria-label="Report sections" className="mb-6 flex flex-wrap gap-1 border-b border-slate-200">
         <a href="#report-details" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Details</a>
-        <a href="#report-comparison" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Fix comparison</a>
-        <a href="#report-feedback" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Feedback</a>
         <a href="#report-ai" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">AI explanation</a>
+        <a href="#report-feedback" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Feedback</a>
+        <a href="#report-comparison" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Fix comparison</a>
       </nav>
       {saved === "1" && <p role="status" className="mb-4 text-green-700">Report saved.</p>}
-      <section id="report-details" aria-label="Report details">
-      {report.status === "open" ? <ReportForm action={updateReport.bind(null, id)} initialValues={values} submitLabel="Save changes" /> : (
-        <div className="space-y-4">{([
-          ["Python code", "python_code"], ["Error message", "error_message"],
-          ["Expected behavior", "expected_behavior"], ["Actual behavior", "actual_behavior"],
-          ["Reproduction steps", "reproduction_steps"],
-        ] as const).map(([label, key]) => <section key={key}><h2 className="font-semibold">{label}</h2><pre className="whitespace-pre-wrap break-words rounded border p-3">{values[key]}</pre></section>)}</div>
-      )}
-      </section>
+      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.65fr)_minmax(19rem,1fr)]">
+        <section id="report-details" aria-label="Report details" className="min-w-0">
+          {report.status === "open" ? <ReportForm action={updateReport.bind(null, id)} initialValues={values} submitLabel="Save changes" /> : (
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+              <h2 className="text-xl font-semibold">Your report</h2>
+              <div className="mt-4 grid gap-4 xl:grid-cols-2">
+                <section className="min-w-0"><h3 className="font-semibold">Python code</h3><pre className="mt-2 max-h-[28rem] overflow-auto whitespace-pre rounded-lg border bg-slate-50 p-3 text-sm"><code>{values.python_code}</code></pre></section>
+                <div className="space-y-4">{([
+                  ["Error message", "error_message"], ["Expected behavior", "expected_behavior"],
+                  ["Actual behavior", "actual_behavior"], ["Reproduction steps", "reproduction_steps"],
+                ] as const).map(([label, key]) => <section key={key}><h3 className="font-semibold">{label}</h3><p className="mt-1 whitespace-pre-wrap break-words text-sm text-slate-700">{values[key]}</p></section>)}</div>
+              </div>
+            </div>
+          )}
+        </section>
+        <aside aria-label="Report guidance and feedback" className="min-w-0 space-y-5">
+          <AiExplanation action={explainReport.bind(null, id)} />
+          <FeedbackSection entries={feedbackError ? [] : (feedback ?? []) as FeedbackEntry[]} loadError={!!feedbackError} />
+        </aside>
+      </div>
       <div id="report-comparison">
-        <FixComparison original={values.python_code} revisions={revisionError ? [] : (revisions ?? []) as FixRevision[]} loadError={!!revisionError} sample={sample} />
+        <FixComparison original={values.python_code} revisions={revisionError ? [] : (revisions ?? []) as FixRevision[]} loadError={!!revisionError} />
       </div>
-      <div id="report-feedback">
-      <FeedbackSection entries={feedbackError ? [] : (feedback ?? []) as FeedbackEntry[]} loadError={!!feedbackError} />
-      </div>
-      <AiExplanation action={explainReport.bind(null, id)} />
     </main>
   );
 }

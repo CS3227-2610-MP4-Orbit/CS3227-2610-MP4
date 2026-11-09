@@ -12,7 +12,7 @@ type Props = {
 
 export function FeedbackSection({ entries, loadError = false }: Props) {
   return (
-    <section aria-labelledby="feedback-heading" className="mt-10 border-t pt-6">
+    <section id="report-feedback" aria-labelledby="feedback-heading" className="rounded-xl border border-slate-200 bg-white p-4">
       <h2 id="feedback-heading" className="text-xl font-semibold">Developer and QA feedback</h2>
       {loadError ? (
         <p role="alert" className="mt-3 text-red-700">Could not load feedback. Please try again later.</p>

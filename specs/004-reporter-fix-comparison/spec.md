@@ -7,6 +7,10 @@
 
 ## Clarifications
 
+### Session 2026-11-09
+
+- The Reporter withdrew the earlier sample-preview request. Remove the fixed sample from the report page in every environment. When no real revision exists, show only the waiting state. This supersedes the 2026-11-06 sample-preview requirements below.
+
 ### Session 2026-11-06
 
 - User explicitly approved building the Reporter comparison first and assuming agreement on the revision read contract.

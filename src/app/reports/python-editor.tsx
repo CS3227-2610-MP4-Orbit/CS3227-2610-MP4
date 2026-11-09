@@ -8,19 +8,23 @@ type Props = {
   value: string;
   maxLength: number;
   invalid: boolean;
+  onValueChange?: (value: string) => void;
 };
 
 export function syncSubmissionValue(textarea: Pick<HTMLTextAreaElement, "value"> | null, next: string) {
   if (textarea) textarea.value = next;
 }
 
-export function PythonEditor({ id, value, maxLength, invalid }: Props) {
+export function PythonEditor({ id, value, maxLength, invalid, onValueChange }: Props) {
   const [current, setCurrent] = useState(value);
   const [ready, setReady] = useState(false);
   const hostRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const lastPropRef = useRef(value);
+  const onValueChangeRef = useRef(onValueChange);
+
+  useEffect(() => { onValueChangeRef.current = onValueChange; }, [onValueChange]);
 
   useEffect(() => {
     viewRef.current?.contentDOM.setAttribute("aria-invalid", String(invalid));
@@ -61,6 +65,7 @@ export function PythonEditor({ id, value, maxLength, invalid }: Props) {
               const next = update.state.doc.toString();
               syncSubmissionValue(textareaRef.current, next);
               setCurrent(next);
+              onValueChangeRef.current?.(next);
             }
           }),
           EditorView.theme({
@@ -94,7 +99,7 @@ export function PythonEditor({ id, value, maxLength, invalid }: Props) {
         id={id}
         name="python_code"
         value={current}
-        onChange={(event) => setCurrent(event.target.value)}
+        onChange={(event) => { setCurrent(event.target.value); onValueChangeRef.current?.(event.target.value); }}
         maxLength={maxLength}
         rows={12}
         required={!ready}

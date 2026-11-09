@@ -118,6 +118,29 @@
         "src/app/reports/[id]/page.tsx"
       ],
       "status": "done"
+    },
+    {
+      "task_id": "F005-report-quality",
+      "owner": "joseph",
+      "owned_paths": [
+        "src/lib/ai/prompt.ts",
+        "src/lib/ai/prompt.test.ts",
+        "src/lib/reports/quality-check.ts",
+        "src/lib/reports/quality-check.test.ts",
+        "src/app/reports/new/quality-check.fixtures.ts",
+        "src/app/reports/new/check-quality.ts",
+        "src/app/reports/new/check-quality.test.ts",
+        "src/app/reports/new/page.tsx",
+        "src/app/reports/report-form.tsx",
+        "src/app/reports/report-form.test.tsx",
+        "src/app/reports/python-editor.tsx",
+        "src/app/reports/python-editor.test.tsx",
+        "docs/UserGuide.md",
+        "docs/DeveloperGuide.md",
+        "specs/005-check-report-quality/tasks.md",
+        "specs/005-check-report-quality/quickstart.md"
+      ],
+      "status": "done"
     }
   ]
 }

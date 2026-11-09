@@ -9,7 +9,7 @@ const initialState: ExplanationState = { ok: false, text: "", message: "" };
 export function AiExplanation({ action }: { action: (previous: ExplanationState) => Promise<ExplanationState> }) {
   const [state, formAction, pending] = useActionState(action, initialState);
   return (
-    <section id="report-ai" aria-labelledby="report-ai-heading" className="mt-6 space-y-3 rounded-xl border border-violet-200 bg-violet-50/40 p-4">
+    <section id="report-ai" aria-labelledby="report-ai-heading" className="space-y-3 rounded-xl border border-violet-200 bg-violet-50/40 p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id="report-ai-heading" className="font-semibold">AI code explanation</h2>
         <form action={formAction}>
