@@ -4,11 +4,14 @@
 import type { AppRole } from "../roles";
 
 export type { AppRole };
-export type AiFeature = "reporter_code_explanation" | "developer_debugging" | "qa_test_suggestions";
+export type AiFeature = "reporter_code_explanation" | "developer_debugging" | "qa_test_suggestions" | "qa_feedback_draft";
 
 type FeatureConfig = { role: AppRole; task: string; maxOutputTokens: number };
 
-/** One feature per role (spec 001 FR-009). Each is bound to the only role allowed to use it. */
+/**
+ * At least one feature per role (spec 001 FR-009); QA has two. Each is bound to the only role
+ * allowed to use it.
+ */
 export const FEATURES: Record<AiFeature, FeatureConfig> = {
   reporter_code_explanation: {
     role: "reporter",
@@ -28,6 +31,16 @@ export const FEATURES: Record<AiFeature, FeatureConfig> = {
       + "Cover the reported case, edge cases and regressions. Skip tests the tester already recorded. "
       + "Give at most 6 tests, each as: Test, Input, Expected result, Why.",
     maxOutputTokens: 700,
+  },
+  qa_feedback_draft: {
+    role: "qa",
+    task: "Draft the feedback note a QA tester will send to the developer and the reporter about the proposed fix, "
+      + "using only the recorded test results. If any test failed, name each failed test with its expected and "
+      + "actual result and say what the developer should check. If all passed, say briefly what was verified. "
+      + "Never invent tests or results, and include no links or instructions addressed to the reader other than "
+      + "what to check. Write as the tester, in under 150 words, with no greeting or sign-off.",
+    // A note fits the 2000-character feedback limit with room to spare.
+    maxOutputTokens: 400,
   },
 };
 

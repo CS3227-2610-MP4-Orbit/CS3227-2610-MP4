@@ -4,11 +4,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { runAiFeature } from "@/lib/ai/gateway";
+import { feedbackDraftContext, fitFeedback } from "@/lib/qa/feedback-draft";
 import { getQaReview } from "@/lib/qa/queries";
 import { createClient } from "@/lib/supabase/server";
 import { decisionSchema, fieldErrors, formFields, idSchema, testCaseSchema } from "@/lib/qa/validation";
 
-import { type AiSuggestionState, emptyState, type QaActionState } from "./state";
+import { type AiSuggestionState, emptyState, emptySuggestion, type QaActionState } from "./state";
 
 
 // Database errors are never shown: they can describe the schema. Each action maps them to a
@@ -53,23 +54,28 @@ export async function decideFix(reportId: string, _previous: QaActionState, form
   redirect(`/qa/${reportId}?decided=${verdict}`);
 }
 
+/** The fix this QA tester may get AI help on: their assigned report, awaiting QA, latest version. */
+async function awaitingFix(reportId: string) {
+  if (!idSchema.safeParse(reportId).success) return null;
+  const review = await getQaReview(reportId);
+  if (!review || review.kind !== "ok") return null;
+  const latest = review.revisions[0];
+  if (review.report.status !== "awaiting_qa" || !latest) return null;
+  return { ...review, latest };
+}
+
 /**
- * QA's AI feature (spec 001 FR-009): suggested tests for the latest fix. The context is loaded
- * through the QA tester's own session, so only an assigned QA tester gets any, and only the
- * fields needed for testing are sent. The answer is shown as a labelled suggestion; nothing is
- * recorded or run automatically.
+ * QA's AI features (spec 001 FR-009). The context is loaded through the QA tester's own session,
+ * so only an assigned QA tester gets any, and only the fields each feature needs are sent. Answers
+ * are shown as labelled suggestions; nothing is recorded, sent or run automatically. A refused
+ * test-ideas request keeps the last ideas on screen and explains why no new ones came.
  */
 export async function suggestTests(reportId: string, previous: AiSuggestionState): Promise<AiSuggestionState> {
-  // A refusal keeps the last suggestion on screen and explains why no new one came.
   const failed = (message: string): AiSuggestionState => ({ ...previous, message });
-  const unavailable = failed("Suggestions are only available for a fix awaiting your QA.");
-  if (!idSchema.safeParse(reportId).success) return unavailable;
   try {
-    const review = await getQaReview(reportId);
-    if (!review || review.kind !== "ok") return unavailable;
-    const { report, revisions, testCases, userId } = review;
-    const latest = revisions[0];
-    if (report.status !== "awaiting_qa" || !latest) return unavailable;
+    const fix = await awaitingFix(reportId);
+    if (!fix) return failed("Suggestions are only available for a fix awaiting your QA.");
+    const { report, latest, testCases, userId } = fix;
 
     const recorded = testCases.filter((test) => test.revision_id === latest.id).map((test) => `- ${test.description}`).join("\n");
     const result = await runAiFeature({
@@ -91,5 +97,26 @@ export async function suggestTests(reportId: string, previous: AiSuggestionState
     return result.ok ? { ok: true, text: result.text, message: "" } : failed(result.message);
   } catch {
     return failed("The AI could not produce a suggestion. Try again later.");
+  }
+}
+
+/**
+ * Drafts the decision feedback from the tests recorded on the latest version. The draft only
+ * reaches the feedback box when the tester chooses to use it, and only reaches the Developer and
+ * Reporter when the tester submits a decision. Without recorded tests no request is made, so no
+ * quota is used on a draft that could only be guessed.
+ */
+export async function draftFeedback(reportId: string): Promise<AiSuggestionState> {
+  // Unlike test ideas, a refusal clears the old draft: it may no longer match the recorded tests.
+  const failed = (message: string): AiSuggestionState => ({ ...emptySuggestion, message });
+  try {
+    const fix = await awaitingFix(reportId);
+    if (!fix) return failed("Drafts are only available for a fix awaiting your QA.");
+    const context = feedbackDraftContext(fix.report, fix.latest, fix.testCases);
+    if (!context) return failed("Record at least one test first. The draft is based on your test results.");
+    const result = await runAiFeature({ feature: "qa_feedback_draft", userId: fix.userId, role: "qa", reportId, context });
+    return result.ok ? { ok: true, text: fitFeedback(result.text), message: "" } : failed(result.message);
+  } catch {
+    return failed("The AI could not produce a draft. Try again later.");
   }
 }

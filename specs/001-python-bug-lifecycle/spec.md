@@ -84,6 +84,7 @@ Each role can request relevant AI advice: a Reporter gets a code explanation or 
 1. **Given** an authorized user and relevant report, **when** they request their role's AI help, **then** the response is shown as a suggestion with only relevant report context sent.
 2. **Given** hostile instructions inside a submitted code comment or error message, **when** AI help is requested, **then** the instruction is treated as report data and does not alter authorization or system behavior.
 3. **Given** exhausted quota or unavailable AI provider, **when** help is requested, **then** the user sees a clear failure and can continue the manual workflow.
+4. **Given** a QA tester has recorded test results for the latest fix, **when** they ask for a feedback draft, **then** a draft based only on those results is shown as a suggestion, and it reaches the feedback box only when the tester chooses to use it and is sent only when they submit their decision. With no recorded tests, no AI request is made.
 
 ### Edge Cases
 
@@ -137,6 +138,6 @@ Each role can request relevant AI advice: a Reporter gets a code explanation or 
 - Each account holds one product role for MVP. The team will provision one or more test accounts per role.
 - Assignment is made by a controlled team process; an unassigned Developer or QA Tester cannot act on a report.
 - The initial product handles Python snippets as text and does not run them.
-- The MVP AI feature choice is code explanation for Reporter, debugging advice for Developer, and test suggestion for QA. Additional proposed AI features can follow later.
+- The MVP AI feature choice is code explanation for Reporter, debugging advice for Developer, and test suggestion for QA. Additional proposed AI features can follow later. QA has a second feature: drafting decision feedback from recorded test results (T026-T027).
 - The existing application stack may be retained. The new bug-domain data model must be created during implementation.
 - Exact provider quotas and field limits are set during planning using verified service constraints.
