@@ -7,6 +7,8 @@ import { ReportForm } from "../report-form";
 import { updateReport } from "./actions";
 import { FixComparison, type FixRevision } from "./comparison";
 import { FeedbackSection, type FeedbackEntry } from "./feedback-section";
+import { AiExplanation } from "./ai-explanation";
+import { explainReport } from "./ai-actions";
 import type { ReportValues } from "@/lib/reports/validation";
 import { canUseLegacyLocalReports } from "@/lib/reports/legacy-local";
 
@@ -73,6 +75,7 @@ async function ReporterReport({ params, searchParams }: {
         <a href="#report-details" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Details</a>
         <a href="#report-comparison" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Fix comparison</a>
         <a href="#report-feedback" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">Feedback</a>
+        <a href="#report-ai" className="border-b-2 border-transparent px-4 py-3 text-sm font-medium text-slate-700 hover:border-blue-600 hover:text-blue-700 focus-visible:outline-2 focus-visible:outline-blue-600">AI explanation</a>
       </nav>
       {saved === "1" && <p role="status" className="mb-4 text-green-700">Report saved.</p>}
       <section id="report-details" aria-label="Report details">
@@ -90,6 +93,7 @@ async function ReporterReport({ params, searchParams }: {
       <div id="report-feedback">
       <FeedbackSection entries={feedbackError ? [] : (feedback ?? []) as FeedbackEntry[]} loadError={!!feedbackError} />
       </div>
+      <AiExplanation action={explainReport.bind(null, id)} />
     </main>
   );
 }
