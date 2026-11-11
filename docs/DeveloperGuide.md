@@ -2,7 +2,7 @@
 
 ## Current state
 
-Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. Requirements and tasks are in `specs/001-python-bug-lifecycle/`.
+Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. The current role workflow requirements and tasks are in `specs/001-developer-bug-workflow/`, with the shared lifecycle specification in `workflow/specs/001-bug-lifecycle/`.
 
 | Area | State |
 |---|---|
@@ -24,6 +24,44 @@ Migration `20261107010000_assign_reports.sql` adds an after-insert trigger to `b
 `src/lib/roles.ts` is the single map from each role to its workspace and navigation links. `src/lib/session.ts` (`getSignedInRole`) reads the signed-in role. The sign-in action redirects to the role's workspace, the layout's `SignedInNav` shows that role's links, and `/` redirects to the same workspace.
 
 Demo accounts: `DEMO_PASSWORD=... npm run seed:demo -- <local|dev|prod>` (`scripts/seed-demo-accounts.mjs`) creates or updates two accounts per role and sets their roles. It reads `.env.local` or the `DEV_`/`PROD_` keys in `.env.setup`, and prints only emails and roles.
+
+### Developer workspace
+
+The Developer workspace is implemented under `src/app/developer/` and uses the assigned
+Developer as the access boundary. `/developer` lists only reports assigned to the signed-in
+Developer. `/developer/[reportId]` loads the original report, investigation notes, immutable
+fix revisions, QA decisions and the current lifecycle status through the signed-in Supabase
+session. Unassigned or unknown reports are returned as not found so the page does not disclose
+whether another report exists.
+
+The Developer workflow is:
+
+1. Start an `open` report through the `start_work` security-definer function.
+2. Add investigation notes while the report is `open` or `in_progress`. A note author may edit
+   their own note before QA handoff; notes are read-only after `awaiting_qa` or `closed`.
+3. Submit corrected Python through the `submit_fix` lifecycle function. The original code is
+   never replaced; each submission creates the next immutable revision and moves the report to
+   `awaiting_qa`.
+4. Review the alignment-aware original-versus-revision comparison and revision history.
+5. Wait for QA. The Developer workspace exposes the handoff state but does not expose QA
+   approval or rejection controls.
+6. If QA rejects a revision, read the feedback, create another revision, and repeat the cycle.
+
+Developer input is bounded to 20,000 characters for Python code and 5,000 characters for notes
+and submission notes. Corrected Python is syntax-checked as data; submitted code is never
+executed or automatically applied. Authentication, role checks, assignment checks, lifecycle
+transitions, immutable revisions and note-edit restrictions are enforced server-side and by
+Supabase RLS rather than only by hidden UI controls.
+
+The Developer currently has one AI feature: **AI debugging advisor**. It reads only the assigned
+report's bounded code/context and recent investigation notes, returns advisory text, and cannot
+change reports, revisions or status. The result is labelled as advisory guidance and must be
+reviewed manually. A second Developer AI feature is planned on the `developer-ai-code` branch
+and should be documented here only after its implementation and security review are complete.
+
+The automated Developer review evidence is stored under `workflow/evidence/`. The authenticated
+manual quickstart remains a separate verification step and must be recorded before claiming the
+full end-to-end workflow has been manually validated.
 
 ### QA workspace
 
