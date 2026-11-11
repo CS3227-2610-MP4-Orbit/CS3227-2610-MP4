@@ -69,6 +69,19 @@ does not change the report, create a revision, or change the workflow status. Tr
 submitted report content and the generated advice as untrusted text. The request is bounded and
 subject to the shared AI limits of 3 requests per minute and 20 requests per day per feature.
 
+### AI code improvement advisor
+
+Select **Suggest code improvements** in the **AI code improvement advisor** box. This separate
+feature reviews the assigned Python code and relevant report context for readability,
+maintainability, performance, SRP and DRY opportunities. Each suggestion includes a category,
+rationale, expected benefit and any material trade-off. If no clear improvement is found, the
+advisor says so instead of inventing a defect.
+
+The result is advisory guidance only. Suggested code is displayed as inert text for manual review;
+it is never executed, applied, saved as a revision, or used to change the report. The request is
+available only to the assigned Developer, uses the shared limits of 3 requests per minute and 20
+requests per day per feature, and safely refuses oversized input or malformed provider output.
+
 ### Submitting a fix
 
 When the report is **in progress**, enter corrected Python and an optional submission note, then

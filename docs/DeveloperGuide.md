@@ -53,11 +53,14 @@ executed or automatically applied. Authentication, role checks, assignment check
 transitions, immutable revisions and note-edit restrictions are enforced server-side and by
 Supabase RLS rather than only by hidden UI controls.
 
-The Developer currently has one AI feature: **AI debugging advisor**. It reads only the assigned
-report's bounded code/context and recent investigation notes, returns advisory text, and cannot
-change reports, revisions or status. The result is labelled as advisory guidance and must be
-reviewed manually. A second Developer AI feature is planned on the `developer-ai-code` branch
-and should be documented here only after its implementation and security review are complete.
+The Developer has two separate AI features. The **AI debugging advisor** reads only the assigned
+report's bounded code/context and recent investigation notes to suggest possible causes and fix
+directions. The **AI code improvement advisor** reviews the same bounded assigned context for
+readability, maintainability, performance, SRP and DRY opportunities. It returns categorized
+structured suggestions with rationale, benefits and trade-offs. Both features are advisory-only:
+they cannot execute code, create revisions, change notes, or change report status. Code
+improvement output is normalized and rejected if it is not valid structured content, and any
+illustrative code is rendered as inert suggested text.
 
 The automated Developer review evidence is stored under `workflow/evidence/`. The authenticated
 manual quickstart remains a separate verification step and must be recorded before claiming the
@@ -71,7 +74,7 @@ full end-to-end workflow has been manually validated.
 
 All SoC LLM calls go through `runAiFeature` in `src/lib/ai/gateway.ts`, which is server-only. `src/lib/ai/prompt.ts` holds the parts that can be tested on their own.
 
-1. **Each feature belongs to one role.** `FEATURES` binds `reporter_code_explanation` and `reporter_quality_check` to the Reporter, `developer_debugging` to the Developer, and `qa_test_suggestions` and `qa_feedback_draft` to QA. The gateway refuses a feature requested for another role. Each caller checks the role before requesting AI. Report-detail callers load context through the user's session, so RLS limits the data to reports the user may see. The draft-quality action accepts only the six current form fields and has no report ID or report read.
+1. **Each feature belongs to one role.** `FEATURES` binds `reporter_code_explanation` and `reporter_quality_check` to the Reporter, `developer_debugging` and `developer_code_improvement` to the Developer, and `qa_test_suggestions` and `qa_feedback_draft` to QA. The gateway refuses a feature requested for another role. Each caller checks the role before requesting AI. Report-detail callers load context through the user's session, so RLS limits the data to reports the user may see. The draft-quality action accepts only the six current form fields and has no report ID or report read.
 2. **Bounded input and output.** Each context field is at most 20,000 characters, the same limit the database puts on code, and the total is at most 45,000. Larger requests are refused rather than truncated. Each feature caps the tokens the model may return. An answer longer than 6,000 characters, or one the provider cut at the token cap, is marked as shortened.
 3. **Prompt boundaries.** The system prompt holds the fixed rules and the task. It is the same for every request, so the provider can reuse its prompt cache. Report data goes in the user message between a boundary marker that is random for each request. Copies of the marker are removed from the data, so text in a report cannot close the block and add instructions.
 4. **Limits.** Each call first inserts a `pending` row in `ai_usage`. It then counts recent rows: 3 a minute and 20 a day per user and feature, and 20 a minute across the app to stay under the provider's rate. Because the row is inserted before counting, simultaneous requests count against each other. Requests the app refuses (`rate_limited`, `daily_limit`, `busy`) do not use up quota. A provider 429 is recorded as `provider_busy` and does count, because it reached the provider. A row still `pending` after 2 minutes was abandoned and stops counting, so a crash cannot lock a user out.
