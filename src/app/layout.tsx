@@ -1,18 +1,26 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
+import { Geist, Geist_Mono } from "next/font/google";
+
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+
 import "./globals.css";
-import { RoleNavFallback } from "./reporter-nav";
-import { SignedInNav } from "./signed-in-nav";
+
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
 export const metadata: Metadata = {
-  title: "Python Bug Workflow",
-  description: "CS3227 MP4 project workspace.",
+  title: { default: "BugFlow", template: "%s · BugFlow" },
+  description: "Report, fix and verify Python bugs in one workflow.",
 };
 
+// The workspace layouts (reports, developer, qa) add the sidebar; sign-in is full screen.
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col"><Suspense fallback={<RoleNavFallback />}><SignedInNav /></Suspense>{children}</body>
+    <html lang="en" className={cn("h-full antialiased", geist.variable, geistMono.variable)}>
+      <body className="min-h-full font-sans">
+        <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+      </body>
     </html>
   );
 }

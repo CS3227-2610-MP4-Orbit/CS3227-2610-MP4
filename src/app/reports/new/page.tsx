@@ -1,16 +1,27 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
+
+import { PageContainer, PageHeader } from "@/components/app/page-header";
+import { TopBar } from "@/components/app/top-bar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { createClient } from "@/lib/supabase/server";
+
 import { ReportForm } from "../report-form";
 import { createReport } from "./actions";
 import { checkReportQuality } from "./check-quality";
 
+export const metadata: Metadata = { title: "New report" };
+
 export default function NewReportPage() {
   return (
-    <Suspense fallback={<main className="mx-auto w-full max-w-4xl p-6">Loading report form…</main>}>
-      <AuthenticatedReportForm />
-    </Suspense>
+    <>
+      <TopBar crumbs={[{ label: "Reporter" }, { label: "My reports", href: "/reports" }, { label: "New report" }]} />
+      <Suspense fallback={<PageContainer><p className="sr-only">Loading report form…</p><Skeleton className="h-16 w-80" /><Skeleton className="h-[32rem] w-full" /></PageContainer>}>
+        <AuthenticatedReportForm />
+      </Suspense>
+    </>
   );
 }
 
@@ -24,5 +35,10 @@ async function AuthenticatedReportForm() {
   const { data: profile, error: profileError } = await supabase.from("profiles")
     .select("role").eq("id", user.id).single();
   if (profileError || profile?.role !== "reporter") redirect("/reports");
-  return <main className="mx-auto w-full max-w-4xl px-5 py-8 sm:px-8"><p className="text-sm font-semibold uppercase tracking-widest text-blue-700">New report</p><h1 className="mb-2 mt-1 text-3xl font-semibold tracking-tight">Submit a Python bug</h1><p className="mb-6 max-w-2xl text-sm text-slate-600">Describe the issue and paste a small Python example. Code is stored as text and is never run.</p><ReportForm action={createReport} qualityCheck={checkReportQuality} submitLabel="Submit report" /></main>;
+  return (
+    <PageContainer>
+      <PageHeader eyebrow="New report" title="Submit a Python bug" description="Describe the issue and paste a small Python example. Code is stored as text and is never run." />
+      <ReportForm action={createReport} qualityCheck={checkReportQuality} submitLabel="Submit report" />
+    </PageContainer>
+  );
 }

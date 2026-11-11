@@ -69,11 +69,13 @@ export function PythonEditor({ id, value, maxLength, invalid, onValueChange }: P
             }
           }),
           EditorView.theme({
-            "&": { borderRadius: "0.75rem", border: "1px solid #cbd5e1", backgroundColor: "#fff", fontSize: "0.875rem" },
-            ".cm-content": { fontFamily: "var(--font-geist-mono), monospace", minHeight: "15rem", padding: "0.75rem 0" },
-            ".cm-scroller": { maxHeight: "34rem", overflow: "auto" },
-            ".cm-gutters": { backgroundColor: "#f8fafc", borderRight: "1px solid #e2e8f0" },
-            "&.cm-focused": { outline: "2px solid #2563eb", outlineOffset: "2px" },
+            "&": { borderRadius: "0.5rem", border: "1px solid var(--input)", backgroundColor: "var(--card)", fontSize: "0.8125rem" },
+            ".cm-content": { fontFamily: "var(--font-geist-mono), ui-monospace, monospace", minHeight: "18rem", padding: "0.75rem 0", caretColor: "var(--foreground)" },
+            ".cm-scroller": { maxHeight: "34rem", overflow: "auto", borderRadius: "0.5rem" },
+            ".cm-gutters": { backgroundColor: "var(--muted)", color: "var(--muted-foreground)", borderRight: "1px solid var(--border)", borderTopLeftRadius: "0.5rem", borderBottomLeftRadius: "0.5rem" },
+            ".cm-activeLine": { backgroundColor: "oklch(0.585 0.2 268 / 0.05)" },
+            ".cm-activeLineGutter": { backgroundColor: "oklch(0.585 0.2 268 / 0.08)", color: "var(--foreground)" },
+            "&.cm-focused": { outline: "none", borderColor: "var(--ring)", boxShadow: "0 0 0 3px oklch(0.585 0.2 268 / 0.2)" },
           }),
         ],
       });
@@ -106,12 +108,12 @@ export function PythonEditor({ id, value, maxLength, invalid, onValueChange }: P
         aria-invalid={invalid}
         aria-hidden={ready}
         tabIndex={ready ? -1 : undefined}
-        className={ready ? "hidden" : "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 font-mono text-sm"}
+        className={ready ? "hidden" : "w-full rounded-lg border border-input bg-card px-4 py-3 font-mono text-sm"}
         spellCheck={false}
         autoCapitalize="off"
         autoCorrect="off"
       />
-      <p className="text-xs text-slate-500">Python · {ready ? "Tab to indent · syntax highlighting · " : "Plain text editor · "}{current.length.toLocaleString()} / {maxLength.toLocaleString()} characters</p>
+      <p className="text-xs font-normal text-muted-foreground tabular-nums">Python · {ready ? "Tab to indent · syntax highlighting · " : "Plain text editor · "}{current.length.toLocaleString()} / {maxLength.toLocaleString()} characters</p>
     </div>
   );
 }
