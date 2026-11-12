@@ -20,3 +20,19 @@ The expected scenario sequence remains:
 
 No manual pass claim is made until the local Supabase environment and authentication fixtures are
 available.
+
+## Follow-up manual verification — 2026-11-12
+
+**Status:** PASS
+
+The Developer owner manually reran the Reporter → Developer → QA workflow after resetting the
+local Supabase database and reported that the scenarios above worked as intended. The completed
+flow covered assigned-report access, investigation, notes, fix submission, immutable revision
+comparison, QA test entry, QA feedback, and revision after rejection.
+
+The Developer owner also manually verified the AI Code Improvement quickstart: assigned access,
+advisory categorized suggestions, no workflow mutation, and denial for accounts outside the
+assigned Developer boundary worked as intended.
+
+This follow-up supersedes the earlier blocked attempt; the earlier note is retained as historical
+environment evidence.

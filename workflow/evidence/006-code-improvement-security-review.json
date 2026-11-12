@@ -70,7 +70,7 @@
     "workflow/evidence/006-code-improvement-security-review.json"
   ],
   "remaining_work": [
-    "Run database tests in an environment where the Supabase CLI can write telemetry or disable that CLI telemetry failure."
+    "Database regression verification is complete: 7 files and 143 tests passed after a clean local reset."
   ],
   "next_owner": "verification reviewer"
 }

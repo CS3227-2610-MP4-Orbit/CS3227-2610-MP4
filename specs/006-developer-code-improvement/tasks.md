@@ -36,7 +36,7 @@
 
 - [X] T018 Add adversarial prompt-injection, boundary-marker, oversized-input, and unsafe-code-display tests in `src/lib/ai/code-improvement.security.test.ts`.
 - [X] T019 Add unauthorized, stale-assignment, quota, timeout, provider-failure, malformed-response, and no-mutation tests in `src/app/ai/actions.security.test.ts`.
-- [ ] T020 Run or update the database/RLS regression test in `supabase/tests/bug_lifecycle.test.sql` to confirm the new feature preserves protected data access rules.
+- [X] T020 Run or update the database/RLS regression test in `supabase/tests/bug_lifecycle.test.sql` to confirm the new feature preserves protected data access rules.
 - [X] T021 Confirm the feature uses shared input, output, timeout, retry, and quota limits in `src/lib/ai/gateway.ts` and `src/app/ai/actions.ts`.
 - [X] T022 Confirm the feature records privacy-preserving usage metadata and makes no revision, note, status, assignment, or code-execution calls in `src/app/ai/actions.ts`.
 
@@ -47,8 +47,8 @@
 - [X] T025 Run the verification review using `developer/skills/verification-review/SKILL.md` and resolve findings.
 - [X] T026 Update `docs/DeveloperGuide.md`, `docs/UserGuide.md`, and the relevant `docs/developer-agentic-se/` evidence file to describe verified behavior.
 - [X] T027 Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build` from the repository root.
-- [ ] T028 Run the repository CI-equivalent workflow checks and database tests when applicable.
-- [ ] T029 Complete the manual scenarios in `specs/006-developer-code-improvement/quickstart.md` and record evidence.
+- [X] T028 Run the repository CI-equivalent workflow checks and database tests when applicable.
+- [X] T029 Complete the manual scenarios in `specs/006-developer-code-improvement/quickstart.md` and record evidence.
 
 ## Dependencies and implementation order
 
