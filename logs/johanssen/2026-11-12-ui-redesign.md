@@ -17,3 +17,9 @@ I asked Claude Code to redesign every screen with shadcn/ui so BugFlow looks lik
 - Vitest had no `@/` alias, so tests could not import the new components; `vitest.config.ts` adds it.
 
 **Verification.** `npm run lint`, `npm run typecheck` and `npm test` (117 tests) pass, `next build` succeeds, and every page was screenshotted signed in as each demo role at 1440px and 390px wide against local Supabase. No new AI calls were made, so there are no token figures for this task.
+
+## Browser check before the PR
+- Ran the full lifecycle through the UI on the local stack: submit, edit while open, start, note, fix, two QA tests, reject, re-fix, test, approve, then the Reporter's closed view and comparison. Also checked a wrong password, the 404s for other roles' pages, and sign-out. 30 of 31 checks passed.
+- The run found nested `<main>` landmarks: shadcn's `SidebarInset` renders `<main>` and each page renders its own. `SidebarInset` is now a `<div>`.
+- The one remaining error is React's dev-only Performance.measure "negative time stamp" on the 404 route. Production builds don't record it.
+- pgTAP: 141/143 locally. Both failures count every profile and the local database also holds the demo accounts. CI runs them on an empty database.
