@@ -7,9 +7,14 @@ AI-generated Python.
 
 - Node 24 and npm installed.
 - Local environment configured from `.env.example`.
+- For live AI checks, set `SOCLAAS_BASE_URL`, `SOCLAAS_API_KEY`, and `SOCLAAS_MODEL` in
+  `.env.local`, then restart the Next.js server.
 - A signed-in Developer assigned to a report containing Python code.
 - An unassigned Developer and a non-Developer account for denial tests.
 - AI provider configuration available, or deterministic gateway mocks for automated tests.
+
+The Developer syntax validator uses the Lezer Python grammar in JavaScript; a separate Python
+executable is not required.
 
 ## Automated checks
 

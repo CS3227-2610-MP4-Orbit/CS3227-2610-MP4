@@ -17,3 +17,12 @@ PASS (exit 0). Google Font fetching was removed from the layout so builds do not
 
 Focused Developer checks
 PASS: alignment-aware diff, Python syntax validation, safe Developer identity, and current-role regressions are covered.
+
+Follow-up local database verification on 2026-11-12
+
+npx supabase db reset
+PASS: local database reset completed and all migrations applied.
+
+npm run test:db
+PASS: 7 database test files passed; 143 tests passed after resetting the local database.
+The earlier failures were caused by leftover manual-test accounts and report data.

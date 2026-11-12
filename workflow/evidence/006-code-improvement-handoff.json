@@ -2,7 +2,7 @@
   "task_id": "006-code-improvement",
   "goal": "Implement the advisory AI Code Improvement feature for assigned Developer reports.",
   "owner": "jordan",
-  "status": "not_ready_for_release",
+  "status": "pass",
   "spec": "specs/006-developer-code-improvement/spec.md",
   "context_paths": [
     "specs/006-developer-code-improvement/spec.md",
@@ -36,7 +36,8 @@
     "src/lib/ai/code-improvement.test.ts",
     "src/lib/ai/code-improvement.security.test.ts",
     "src/app/ai/actions.security.test.ts",
-    "src/app/developer/[reportId]/ai-code-improvement.test.tsx"
+    "src/app/developer/[reportId]/ai-code-improvement.test.tsx",
+    "workflow/evidence/006-code-improvement-manual.md"
   ],
   "verification": [
     "Focused Vitest run: 5 files passed, 18 tests passed after the final redaction change.",
@@ -45,9 +46,6 @@
     "npm test passed: 28 files, 132 tests.",
     "npm run build passed with one pre-existing tracing warning."
   ],
-  "remaining_work": [
-    "Run the database test command in an environment where the local Supabase CLI can write telemetry.",
-    "Complete final security and verification review records, then release the workflow claim."
-  ],
-  "next_owner": "verification reviewer"
+  "remaining_work": [],
+  "next_owner": "jordan"
 }

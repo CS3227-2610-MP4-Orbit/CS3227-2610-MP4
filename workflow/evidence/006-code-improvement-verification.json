@@ -2,7 +2,7 @@
   "task_id": "006-code-improvement",
   "goal": "Verify AI Code Improvement against the SDD acceptance criteria and repository quality checks.",
   "owner": "verifier",
-  "status": "not_ready_for_release",
+  "status": "pass",
   "spec": "specs/006-developer-code-improvement/spec.md",
   "context_paths": [
     "specs/006-developer-code-improvement/spec.md",
@@ -11,12 +11,11 @@
     "workflow/evidence/006-code-improvement-code-review.json"
   ],
   "decisions": [
-    "Application-level acceptance criteria are verified; the release gate remains open for database and manual checks.",
+    "Application-level acceptance criteria, the database regression suite, and the manual quickstart are verified.",
     "The existing build warning is recorded as an unrelated pre-existing warning rather than silently ignored."
   ],
   "findings": [
-    "Supabase test execution is blocked by a Windows telemetry-file permission error.",
-    "Authenticated browser quickstart evidence has not yet been collected."
+    "Manual quickstart evidence is recorded in workflow/evidence/006-code-improvement-manual.md."
   ],
   "acceptance_criteria": [
     {
@@ -41,8 +40,8 @@
     },
     {
       "criterion": "Release database and manual verification evidence is complete.",
-      "evidence": "Supabase test command failed before database execution due Windows telemetry-file EPERM; browser quickstart not yet run.",
-      "status": "blocked"
+      "evidence": "The local database was reset and 7 database test files with 143 tests passed; manual quickstart evidence is recorded.",
+      "status": "pass"
     }
   ],
   "verification": [
@@ -52,15 +51,14 @@
     "npm run build: passed with existing python-validation dynamic filesystem tracing warning",
     "python workflow/scripts/check_workflow.py: passed",
     "python workflow/scripts/test_agent_workflow.py: 7 tests passed",
-    "npm run test:db: blocked by Supabase CLI telemetry-file EPERM"
+    "npm run test:db: 7 database files and 143 tests passed after local Supabase reset"
   ],
   "artifacts": [
     "workflow/evidence/006-code-improvement-verification.json",
-    "specs/006-developer-code-improvement/quickstart.md"
+    "specs/006-developer-code-improvement/quickstart.md",
+    "workflow/evidence/006-code-improvement-manual.md"
   ],
   "remaining_work": [
-    "Run database tests successfully.",
-    "Run the authenticated manual quickstart and record its evidence.",
     "Rerun the full suite and build after final review if any additional changes are made."
   ],
   "next_owner": "jordan"

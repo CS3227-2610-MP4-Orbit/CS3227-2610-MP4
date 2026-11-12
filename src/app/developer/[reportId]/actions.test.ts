@@ -97,7 +97,7 @@ describe("Developer investigation actions", () => {
     const form = new FormData();
     form.set("reportId", "00000000-0000-4000-8000-000000000001");
     form.set("code", "print('fixed')");
-    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "The fix could not be submitted. Check that the report is assigned to you and in progress." });
+    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "The fix could not be submitted. Check that the report is assigned to you, in progress, and has at least one investigation note." });
   });
 
   it("maps missing investigation notes to the safe handoff error", async () => {
@@ -107,7 +107,7 @@ describe("Developer investigation actions", () => {
     form.set("reportId", "00000000-0000-4000-8000-000000000001");
     form.set("code", "print('fixed')");
 
-    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "The fix could not be submitted. Check that the report is assigned to you and in progress." });
+    await expect(submitFix(initialState, form)).resolves.toEqual({ ok: false, message: "The fix could not be submitted. Check that the report is assigned to you, in progress, and has at least one investigation note." });
   });
 
   it("creates each repeated revision through the lifecycle boundary", async () => {

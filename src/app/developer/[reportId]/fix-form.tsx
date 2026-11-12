@@ -15,7 +15,7 @@ export function FixForm({ reportId, code = "", note = "" }: { reportId: string; 
   return <form action={action} className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
     <div className="border-b px-5 py-4">
       <h2 className="font-semibold">Submit corrected Python to QA</h2>
-      <p className="mt-0.5 text-sm text-muted-foreground">Each submission becomes a new version that QA tests and decides on.</p>
+      <p className="mt-0.5 text-sm text-muted-foreground">Add at least one investigation note first. Each submission becomes a new version that QA tests and decides on.</p>
     </div>
     <div className="grid gap-4 p-5">
       <input type="hidden" name="reportId" value={reportId} />
