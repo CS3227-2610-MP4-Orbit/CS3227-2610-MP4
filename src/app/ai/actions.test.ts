@@ -7,7 +7,7 @@ vi.mock("../../lib/ai/gateway", () => ({ runAiFeature: vi.fn() }));
 import { runAiFeature } from "../../lib/ai/gateway";
 import { createClient } from "../../lib/supabase/server";
 
-import { requestDeveloperDebuggingAdvice } from "./actions";
+import { requestDeveloperCodeImprovement, requestDeveloperDebuggingAdvice } from "./actions";
 
 const reportId = "00000000-0000-4000-8000-000000000001";
 const userId = "00000000-0000-4000-8000-0000000000b1";
@@ -111,6 +111,52 @@ describe("Developer AI action", () => {
     await expect(requestDeveloperDebuggingAdvice(previous, form())).resolves.toEqual({
       ok: false,
       message: "The AI could not produce a suggestion. Try again later.",
+    });
+  });
+
+  it("returns categorized advisory improvement guidance for the assigned Developer", async () => {
+    vi.mocked(createClient).mockResolvedValue(client() as never);
+    vi.mocked(runAiFeature).mockResolvedValue({ ok: true, text: JSON.stringify({
+      summary: "The empty-list behavior needs an explicit decision.",
+      suggestions: [{
+        category: "readability",
+        title: "Name the average calculation",
+        rationale: "The return expression combines the calculation and the failure point.",
+        benefit: "The intent is easier to review.",
+        tradeoff: "Adds one local variable.",
+      }],
+    }) });
+    await expect(requestDeveloperCodeImprovement(previous, form())).resolves.toMatchObject({
+      ok: true,
+      message: "Improvement guidance generated.",
+      review: { suggestions: [{ category: "readability" }] },
+    });
+    expect(runAiFeature).toHaveBeenCalledWith(expect.objectContaining({
+      feature: "developer_code_improvement",
+      role: "developer",
+      userId,
+      reportId,
+    }));
+  });
+
+  it("rejects oversized improvement input before the AI gateway", async () => {
+    const oversized = "x".repeat(5001);
+    vi.mocked(createClient).mockResolvedValue(client({
+      report: { data: { id: reportId, developer_id: userId, code: oversized, status: "open" }, error: null },
+    }) as never);
+    await expect(requestDeveloperCodeImprovement(previous, form())).resolves.toEqual({
+      ok: false,
+      message: "This report is too large for an AI suggestion.",
+    });
+    expect(runAiFeature).not.toHaveBeenCalled();
+  });
+
+  it("maps malformed improvement output to a safe message", async () => {
+    vi.mocked(createClient).mockResolvedValue(client() as never);
+    vi.mocked(runAiFeature).mockResolvedValue({ ok: true, text: "not valid structured output" });
+    await expect(requestDeveloperCodeImprovement(previous, form())).resolves.toEqual({
+      ok: false,
+      message: "The AI returned an unusable improvement review. Try again later.",
     });
   });
 });

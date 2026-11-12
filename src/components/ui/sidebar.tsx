@@ -161,7 +161,10 @@ function Sidebar({
   variant?: "sidebar" | "floating" | "inset"
   collapsible?: "offcanvas" | "icon" | "none"
 }) {
-  const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+  // Read the breakpoint here, not from context: this subtree hydrates later inside Suspense, and the
+  // hook returns the server value during its own hydration, so the first client render matches the HTML.
+  const isMobile = useIsMobile()
+  const { state, openMobile, setOpenMobile } = useSidebar()
 
   if (collapsible === "none") {
     return (
@@ -502,7 +505,8 @@ function SidebarMenuButton({
   tooltip?: string | React.ComponentProps<typeof TooltipContent>
 } & VariantProps<typeof sidebarMenuButtonVariants>) {
   const Comp = asChild ? Slot.Root : "button"
-  const { isMobile, state } = useSidebar()
+  const isMobile = useIsMobile()
+  const { state } = useSidebar()
 
   const button = (
     <Comp

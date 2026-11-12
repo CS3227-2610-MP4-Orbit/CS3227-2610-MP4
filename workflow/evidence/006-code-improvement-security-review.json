@@ -1,0 +1,76 @@
+{
+  "task_id": "006-code-improvement",
+  "goal": "Independently review AI Code Improvement for prompt injection, data leakage, unsafe output, authorization, and resource abuse.",
+  "owner": "security_reviewer",
+  "status": "pass_with_environment_blocker",
+  "spec": "specs/006-developer-code-improvement/spec.md",
+  "context_paths": [
+    "src/app/ai/actions.ts",
+    "src/lib/ai/prompt.ts",
+    "src/lib/ai/code-improvement.ts",
+    "src/app/developer/[reportId]/ai-code-improvement.tsx",
+    "src/lib/ai/code-improvement.security.test.ts",
+    "src/app/ai/actions.security.test.ts"
+  ],
+  "decisions": [
+    "The shared prompt boundary and server-side assignment filter are retained as the primary security controls.",
+    "Obvious credential-shaped values are redacted before this feature calls the provider."
+  ],
+  "findings": [
+    {
+      "attack": "Instruction-like report content and guessed boundary markers",
+      "expected": "Content remains untrusted data and cannot replace fixed review rules.",
+      "observed": "Prompt boundary tests passed; dynamic marker text is stripped from the data block.",
+      "severity": "high",
+      "remediation": "None required; covered by existing shared prompt construction and focused tests."
+    },
+    {
+      "attack": "Oversized code/context",
+      "expected": "Request is refused before provider use without echoing content.",
+      "observed": "Action tests passed; code and context limits reject before runAiFeature.",
+      "severity": "high",
+      "remediation": "None required."
+    },
+    {
+      "attack": "Unauthorized, non-Developer, reassigned, or closed report identifier",
+      "expected": "No report context reaches the provider.",
+      "observed": "Role and assignment-filter tests passed; provider mock was not called.",
+      "severity": "critical",
+      "remediation": "None required."
+    },
+    {
+      "attack": "Malformed provider JSON or generated HTML/code",
+      "expected": "Malformed output is rejected and illustrative code is inert text.",
+      "observed": "Normalizer and UI tests passed; React preformatted text does not provide execution controls.",
+      "severity": "high",
+      "remediation": "None required."
+    },
+    {
+      "attack": "Common credential-shaped values in report data",
+      "expected": "Obvious credentials are redacted before provider use.",
+      "observed": "Redaction test passed for API key, password, and AWS access-key patterns.",
+      "severity": "high",
+      "remediation": "None required for the covered patterns; this is heuristic redaction, not a secret scanner."
+    }
+  ],
+  "verification": [
+    "Focused security tests passed: 5 files, 18 tests in the implementation rerun.",
+    "Full unit suite passed: 28 files, 132 tests after the final redaction change.",
+    "Lint and typecheck passed after the final redaction change.",
+    "Database test command was blocked by Supabase telemetry-file EPERM on Windows."
+  ],
+  "acceptance_criteria": [
+    "Unauthorized and unassigned reports do not reach the provider.",
+    "Prompt injection and malformed output are handled safely.",
+    "Generated code remains inert and no workflow mutation is performed."
+  ],
+  "artifacts": [
+    "src/lib/ai/code-improvement.security.test.ts",
+    "src/app/ai/actions.security.test.ts",
+    "workflow/evidence/006-code-improvement-security-review.json"
+  ],
+  "remaining_work": [
+    "Run database tests in an environment where the Supabase CLI can write telemetry or disable that CLI telemetry failure."
+  ],
+  "next_owner": "verification reviewer"
+}

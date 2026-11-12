@@ -141,6 +141,27 @@
         "specs/005-check-report-quality/quickstart.md"
       ],
       "status": "done"
+    },
+    {
+      "task_id": "006-code-improvement",
+      "owner": "jordan",
+      "owned_paths": [
+        "src/lib/ai/prompt.ts",
+        "src/lib/ai/prompt.test.ts",
+        "src/lib/ai/code-improvement.ts",
+        "src/lib/ai/code-improvement.test.ts",
+        "src/lib/ai/code-improvement.security.test.ts",
+        "src/app/ai/actions.ts",
+        "src/app/ai/actions.test.ts",
+        "src/app/ai/actions.security.test.ts",
+        "src/app/developer/[reportId]/ai-code-improvement.tsx",
+        "src/app/developer/[reportId]/ai-code-improvement.test.tsx",
+        "src/app/developer/[reportId]/page.tsx",
+        "supabase/tests/bug_lifecycle.test.sql",
+        "docs/DeveloperGuide.md",
+        "docs/UserGuide.md"
+      ],
+      "status": "done"
     }
   ]
 }

@@ -6,6 +6,7 @@ import type { AppRole } from "../roles";
 export type { AppRole };
 export type AiFeature =
   | "reporter_code_explanation" | "reporter_quality_check" | "developer_debugging"
+  | "developer_code_improvement"
   | "qa_test_suggestions" | "qa_feedback_draft";
 
 type FeatureConfig = { role: AppRole; task: string; maxOutputTokens: number };
@@ -28,6 +29,16 @@ export const FEATURES: Record<AiFeature, FeatureConfig> = {
     task: "Suggest how a developer could debug and fix the reported Python bug: likely root cause, what to "
       + "check first, and the shape of a fix. Keep code snippets short.",
     maxOutputTokens: 700,
+  },
+  developer_code_improvement: {
+    role: "developer",
+    task: "Review the assigned Python code for safe improvement opportunities. Return JSON only, with this shape: "
+      + '{"summary":"string","suggestions":[{"category":"readability|maintainability|performance|SRP|DRY",'
+      + '"title":"string","rationale":"string","benefit":"string","tradeoff":"string",'
+      + '"illustrativeCode":"optional string"}]}. '
+      + "Use an empty suggestions array when no clear improvement is justified. Explain behavior risks or "
+      + "trade-offs, do not invent defects, do not execute code, and label illustrative code as suggested text.",
+    maxOutputTokens: 800,
   },
   qa_test_suggestions: {
     role: "qa",

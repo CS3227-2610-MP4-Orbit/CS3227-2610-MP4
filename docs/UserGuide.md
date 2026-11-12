@@ -36,6 +36,73 @@ Suggestions are labeled as AI generated and grouped by report field. They do not
 
 The check uses the same AI request limits as other features: 3 requests per minute and 20 per day for this feature. If it is unavailable or over a limit, you can still submit a valid report, and any earlier suggestion stays visible. The **AI code explanation** on a submitted report is a separate feature that explains the likely cause of the Python bug.
 
+## Developer
+
+### Your assigned bugs
+
+After signing in as a Developer, open **Assigned bugs** (`/developer`). You see only reports
+assigned to your account. Select a report to open its investigation page. A report assigned to a
+different Developer is not disclosed.
+
+### Investigating a report
+
+On the report page you can:
+
+1. Read the original Python code, error message, expected and actual behavior, and reproduction
+   steps.
+2. Select **Start investigation** for an `open` report. The status changes to **in progress**.
+3. Add investigation notes while the report is `open` or `in progress`.
+4. Edit your own notes while the report is still being investigated. Notes become read-only once
+   the fix is sent to QA.
+
+Notes are limited to 5,000 characters. The original report and its original Python code cannot
+be edited by the Developer.
+
+### AI debugging advisor
+
+Select **Get debugging guidance** in the **AI debugging advisor** box. The advisor uses the
+assigned report's Python code, error details, reproduction steps and recent investigation notes
+to suggest possible causes and debugging directions.
+
+The result is labelled **ADVISORY GUIDANCE — review manually; no code was run or applied.** It
+does not change the report, create a revision, or change the workflow status. Treat both the
+submitted report content and the generated advice as untrusted text. The request is bounded and
+subject to the shared AI limits of 3 requests per minute and 20 requests per day per feature.
+
+### AI code improvement advisor
+
+Select **Suggest code improvements** in the **AI code improvement advisor** box. This separate
+feature reviews the assigned Python code and relevant report context for readability,
+maintainability, performance, SRP and DRY opportunities. Each suggestion includes a category,
+rationale, expected benefit and any material trade-off. If no clear improvement is found, the
+advisor says so instead of inventing a defect.
+
+The result is advisory guidance only. Suggested code is displayed as inert text for manual review;
+it is never executed, applied, saved as a revision, or used to change the report. The request is
+available only to the assigned Developer, uses the shared limits of 3 requests per minute and 20
+requests per day per feature, and safely refuses oversized input or malformed provider output.
+
+### Submitting a fix
+
+When the report is **in progress**, enter corrected Python and an optional submission note, then
+select **Submit to QA**. Corrected code is limited to 20,000 characters and the submission note
+to 5,000 characters. The code is syntax-checked but never executed automatically.
+
+Each submission creates an immutable revision. The original code and earlier revisions remain
+unchanged. The report then moves to **awaiting QA**.
+
+### Comparing revisions and QA handoff
+
+The report page shows revision history and an original-versus-revision comparison. Added lines
+are shown in green and removed lines in red. The Developer can see the QA handoff status but
+cannot approve or reject a fix.
+
+### Revising a rejected fix
+
+If QA rejects a revision, the report returns to **in progress** and QA feedback appears on the
+Developer page. Read the feedback, update the corrected code, and submit a new revision. Earlier
+revisions and their feedback remain available for traceability.
+
 ## QA tester
 
 A QA tester verifies fixes. A report can only be closed by the QA tester assigned to it.

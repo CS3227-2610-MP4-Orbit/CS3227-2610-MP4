@@ -13,6 +13,7 @@ import { getAssignedDeveloperReportDetail } from "@/lib/developer/detail";
 import { formatDateTime } from "@/lib/format";
 
 import { DeveloperAiAssistant } from "./ai-assistant";
+import { DeveloperCodeImprovement } from "./ai-code-improvement";
 import { CodeDiff } from "./code-diff";
 import { FixForm } from "./fix-form";
 import { AddNoteForm, EditNoteForm, StartWorkForm } from "./note-form";
@@ -104,6 +105,7 @@ async function DeveloperReport({ params }: { params: Promise<{ reportId: string 
             )}
 
             {report.status === "in_progress" && <FixForm reportId={report.id} />}
+            <DeveloperCodeImprovement reportId={report.id} />
           </div>
 
           <aside aria-label="Status, notes and AI help" className="min-w-0 space-y-5 lg:sticky lg:top-20">

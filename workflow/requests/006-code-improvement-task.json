@@ -1,0 +1,37 @@
+{
+  "task_id": "006-code-improvement",
+  "goal": "Implement the approved Developer AI Code Improvement feature as advisory-only guidance for assigned Python bug reports.",
+  "owner": "jordan",
+  "owned_paths": [
+    "src/lib/ai/prompt.ts",
+    "src/lib/ai/prompt.test.ts",
+    "src/lib/ai/code-improvement.ts",
+    "src/lib/ai/code-improvement.test.ts",
+    "src/lib/ai/code-improvement.security.test.ts",
+    "src/app/ai/actions.ts",
+    "src/app/ai/actions.test.ts",
+    "src/app/ai/actions.security.test.ts",
+    "src/app/developer/[reportId]/ai-code-improvement.tsx",
+    "src/app/developer/[reportId]/ai-code-improvement.test.tsx",
+    "src/app/developer/[reportId]/page.tsx",
+    "supabase/tests/bug_lifecycle.test.sql",
+    "docs/DeveloperGuide.md",
+    "docs/UserGuide.md"
+  ],
+  "spec": "specs/006-developer-code-improvement/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Only an authenticated Developer assigned to the report can request the feature.",
+    "The feature sends bounded relevant context through the shared server-only gateway.",
+    "Suggestions are categorized, explained, advisory-only, and never executed or persisted as revisions.",
+    "Prompt injection, unauthorized access, oversize input, malformed output, provider failure, quota, and no-mutation cases are covered by tests.",
+    "Lint, typecheck, unit tests, and build pass; database regression checks are run when supported."
+  ],
+  "context_refs": [
+    { "path": "specs/006-developer-code-improvement/spec.md", "start_line": 1, "end_line": 80 },
+    { "path": "specs/006-developer-code-improvement/plan.md", "start_line": 1, "end_line": 60 },
+    { "path": "specs/006-developer-code-improvement/tasks.md", "start_line": 1, "end_line": 60 }
+  ]
+}
