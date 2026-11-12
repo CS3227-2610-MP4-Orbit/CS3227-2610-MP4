@@ -1,22 +1,35 @@
 "use client";
 
 import { useActionState } from "react";
+import { Loader2 } from "lucide-react";
+
+import { AiPanel, aiButton } from "@/components/app/ai-panel";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 import { requestDeveloperCodeImprovement, type AiActionState } from "../../ai/actions";
 
 const initialState: AiActionState = { ok: false, message: "" };
 
 export function ImprovementReviewContent({ review }: { review: NonNullable<AiActionState["review"]> }) {
-  return <div className="mt-4 grid gap-4">
-    <p className="whitespace-pre-wrap text-sm">{review.summary || "No summary provided."}</p>
-    {review.suggestions.length === 0 ? <p className="text-sm">No clear improvement was identified.</p> : review.suggestions.map((item, index) => (
-      <article key={`${item.category}-${index}`} className="rounded border border-blue-200 bg-white p-4">
-        <h3 className="font-medium">{item.title}</h3>
-        <p className="mt-1 text-xs font-semibold uppercase text-blue-800">{item.category}</p>
-        <p className="mt-2 whitespace-pre-wrap text-sm"><strong>Why:</strong> {item.rationale}</p>
-        <p className="mt-2 whitespace-pre-wrap text-sm"><strong>Benefit:</strong> {item.benefit}</p>
-        {item.tradeoff && <p className="mt-2 whitespace-pre-wrap text-sm"><strong>Trade-off:</strong> {item.tradeoff}</p>}
-        {item.illustrativeCode && <pre className="mt-2 overflow-x-auto rounded bg-gray-100 p-3 text-sm">Suggested text only — review before applying.{"\n\n"}{item.illustrativeCode}</pre>}
+  return <div role="status" aria-live="polite" className="grid gap-3">
+    <p className="text-[11px] font-semibold tracking-wide text-violet-700 uppercase">AI suggestions · not verified</p>
+    <p className="text-sm leading-relaxed whitespace-pre-wrap">{review.summary || "No summary provided."}</p>
+    {review.suggestions.length === 0 ? <p className="text-sm text-muted-foreground">No clear improvement was identified.</p> : review.suggestions.map((item, index) => (
+      <article key={`${item.category}-${index}`} className="min-w-0 space-y-2 rounded-lg border border-violet-200 bg-card p-4 text-sm">
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant="outline" className="border-violet-200 bg-violet-50 text-violet-800">{item.category}</Badge>
+          <h3 className="font-medium">{item.title}</h3>
+        </div>
+        <p className="whitespace-pre-wrap"><span className="font-medium">Why:</span> {item.rationale}</p>
+        <p className="whitespace-pre-wrap"><span className="font-medium">Benefit:</span> {item.benefit}</p>
+        {item.tradeoff && <p className="whitespace-pre-wrap text-muted-foreground"><span className="font-medium text-foreground">Trade-off:</span> {item.tradeoff}</p>}
+        {item.illustrativeCode && (
+          <div>
+            <p className="text-xs text-violet-800">Suggested text only — review before applying.</p>
+            <pre className="mt-1.5 overflow-x-auto rounded-lg bg-zinc-950 p-3 font-mono text-[13px] leading-6 text-zinc-100">{item.illustrativeCode}</pre>
+          </div>
+        )}
       </article>
     ))}
   </div>;
@@ -24,14 +37,12 @@ export function ImprovementReviewContent({ review }: { review: NonNullable<AiAct
 
 export function DeveloperCodeImprovement({ reportId }: { reportId: string }) {
   const [state, action, pending] = useActionState(requestDeveloperCodeImprovement, initialState);
-  return <section className="rounded-xl border border-blue-200 bg-blue-50 p-5">
-    <h2 className="font-semibold">AI code improvement advisor</h2>
-    <p className="mt-1 text-sm">ADVISORY GUIDANCE — review manually; no code was run or applied. Nothing is saved as a revision.</p>
-    <form action={action} className="mt-3">
-      <input type="hidden" name="reportId" value={reportId} />
-      <button disabled={pending} className="rounded bg-blue-800 px-4 py-2 text-white">{pending ? "Reviewing…" : "Suggest code improvements"}</button>
-    </form>
-    {state.message && <p role="status" className="mt-3 text-sm">{state.message}</p>}
-    {state.review && <ImprovementReviewContent review={state.review} />}
-  </section>;
+  return (
+    <AiPanel headingId="code-improvement-heading" title="AI code improvement advisor"
+      description="Advisory guidance on readability, maintainability, performance, SRP and DRY. No code is run or applied, and nothing is saved as a revision."
+      action={<form action={action}><input type="hidden" name="reportId" value={reportId} /><Button variant="outline" size="sm" disabled={pending} className={aiButton}>{pending && <Loader2 className="animate-spin" aria-hidden="true" />}{pending ? "Reviewing…" : "Suggest code improvements"}</Button></form>}>
+      {state.message && <p role="status" className="text-sm text-violet-950/80">{state.message}</p>}
+      {state.review && <ImprovementReviewContent review={state.review} />}
+    </AiPanel>
+  );
 }

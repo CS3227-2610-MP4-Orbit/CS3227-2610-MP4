@@ -1,18 +1,29 @@
 "use client";
 
 import { useActionState, useRef, useState, useTransition } from "react";
+import { Loader2, TriangleAlert } from "lucide-react";
+
+import { AiOutput, AiPanel, aiButton } from "@/components/app/ai-panel";
+import { Notice } from "@/components/app/notice";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
+
 import type { ReportState } from "./new/actions";
 import type { QualityCheckResult } from "./new/check-quality";
 import { emptyReport, type ReportField, type ReportValues } from "../../lib/reports/validation";
 import { PythonEditor } from "./python-editor";
 
-const fields: { name: ReportField; label: string; maxLength: number; rows?: number }[] = [
-  { name: "title", label: "Title", maxLength: 120 },
-  { name: "error_message", label: "Error message", maxLength: 2000, rows: 4 },
-  { name: "expected_behavior", label: "Expected behavior", maxLength: 2000, rows: 4 },
-  { name: "actual_behavior", label: "Actual behavior", maxLength: 2000, rows: 4 },
-  { name: "reproduction_steps", label: "Reproduction steps", maxLength: 2000, rows: 5 },
+const fields: { name: ReportField; label: string; hint: string; maxLength: number; rows?: number }[] = [
+  { name: "title", label: "Title", hint: "", maxLength: 120 },
+  { name: "error_message", label: "Error message", hint: "Paste the traceback, or write “No error” if the result is just wrong.", maxLength: 2000, rows: 3 },
+  { name: "expected_behavior", label: "Expected behavior", hint: "What should the code do?", maxLength: 2000, rows: 3 },
+  { name: "actual_behavior", label: "Actual behavior", hint: "What does it do instead?", maxLength: 2000, rows: 3 },
+  { name: "reproduction_steps", label: "Reproduction steps", hint: "Numbered steps someone else can follow.", maxLength: 2000, rows: 4 },
 ];
+
+const fieldError = "text-xs font-normal text-destructive";
 
 type ReportAction = (previous: ReportState, form: FormData) => Promise<ReportState>;
 
@@ -51,42 +62,52 @@ export function ReportForm({ action, initialValues = emptyReport, submitLabel, q
     });
   };
   return (
-    <form ref={formRef} action={formAction} onInput={markChanged} className="grid min-w-0 gap-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7 xl:grid-cols-2 xl:items-start">
-      <label className="flex flex-col gap-1 text-sm font-medium xl:col-span-2">
-        Title
-        <input name="title" defaultValue={state.values.title} maxLength={120} required aria-invalid={!!state.errors.title} className="rounded-xl border border-slate-300 px-3 py-2 font-normal" />
-        {state.errors.title && <span role="alert" className="text-red-700">{state.errors.title}</span>}
-      </label>
-      <div className="min-w-0 space-y-1 text-sm font-medium">
-        <label id="python-code-label" htmlFor="python-code">Python code</label>
-        <PythonEditor id="python-code" value={state.values.python_code} maxLength={20000} invalid={!!state.errors.python_code} onValueChange={markChanged} />
-        {state.errors.python_code && <span role="alert" className="text-red-700">{state.errors.python_code}</span>}
-      </div>
-      <div className="grid min-w-0 gap-4">
-      {fields.filter((field) => field.name !== "title").map(({ name, label, maxLength, rows }) => (
-        <label key={name} className="flex flex-col gap-1 text-sm font-medium">
-          {label}
-          {rows ? (
-            <textarea name={name} defaultValue={state.values[name]} maxLength={maxLength} rows={rows} required aria-invalid={!!state.errors[name]} className="rounded-xl border border-slate-300 px-3 py-2 font-normal" />
-          ) : (
-            <input name={name} defaultValue={state.values[name]} maxLength={maxLength} required aria-invalid={!!state.errors[name]} className="rounded-xl border border-slate-300 px-3 py-2 font-normal" />
-          )}
-          {state.errors[name] && <span role="alert" className="text-red-700">{state.errors[name]}</span>}
+    <form ref={formRef} action={formAction} onInput={markChanged} className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+      <div className="border-b p-5 sm:p-6">
+        <label className="grid gap-2 text-sm font-medium">
+          Title
+          <Input name="title" defaultValue={state.values.title} maxLength={120} required aria-invalid={!!state.errors.title} placeholder="e.g. average() crashes on an empty list" className="h-10 text-base font-normal md:text-sm" />
+          {state.errors.title && <span role="alert" className={fieldError}>{state.errors.title}</span>}
         </label>
-      ))}
       </div>
-      {state.error && <p role="alert" className="text-red-700 xl:col-span-2">{state.error}</p>}
-      {qualityCheck && <div className="space-y-3 xl:col-span-2">
-        <button type="button" onClick={requestCheck} disabled={checking} className="rounded border border-blue-700 px-4 py-2 font-medium text-blue-700 disabled:opacity-50">{checking ? "Checking…" : "Check my report"}</button>
-        <p className="text-sm text-slate-600">Optional AI feedback. Your draft stays as written until you edit or submit it.</p>
-        {suggestion && <section aria-label="AI suggestion" className="rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm">
-          <h2 className="font-semibold text-blue-950">AI suggestion</h2>
-          {stale && <p className="mt-1 font-medium text-amber-800">This suggestion is based on an earlier draft. Check again for updated feedback.</p>}
-          <p className="mt-2 whitespace-pre-wrap text-slate-800">{suggestion}</p>
-        </section>}
-        {checkError && <p role="alert" className="text-sm text-red-700">{checkError}</p>}
-      </div>}
-      <button type="submit" disabled={pending} className="w-fit rounded bg-black px-4 py-2 text-white disabled:opacity-50 xl:col-span-2">{pending ? "Saving…" : submitLabel}</button>
+      <div className="grid min-w-0 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+        <div className="min-w-0 space-y-2 border-b p-5 text-sm font-medium sm:p-6 xl:border-r xl:border-b-0">
+          <div className="flex items-baseline justify-between gap-3">
+            <label id="python-code-label" htmlFor="python-code">Python code</label>
+            <span className="text-xs font-normal text-muted-foreground">Stored as text, never run</span>
+          </div>
+          <PythonEditor id="python-code" value={state.values.python_code} maxLength={20000} invalid={!!state.errors.python_code} onValueChange={markChanged} />
+          {state.errors.python_code && <span role="alert" className={fieldError}>{state.errors.python_code}</span>}
+        </div>
+        <div className="grid min-w-0 content-start gap-5 p-5 sm:p-6">
+          {fields.filter((field) => field.name !== "title").map(({ name, label, hint, maxLength, rows }) => (
+            <label key={name} className="grid gap-1.5 text-sm font-medium">
+              {label}
+              <Textarea name={name} defaultValue={state.values[name]} maxLength={maxLength} rows={rows} required aria-invalid={!!state.errors[name]} className="min-h-20 font-normal" />
+              {state.errors[name] ? <span role="alert" className={fieldError}>{state.errors[name]}</span> : <span className="text-xs font-normal text-muted-foreground">{hint}</span>}
+            </label>
+          ))}
+        </div>
+      </div>
+      {qualityCheck && (
+        <div className="border-t p-5 sm:p-6">
+          <AiPanel as="div" headingId="quality-check-heading" title="Check my report with AI" description="Optional AI feedback. Your draft stays as written until you edit or submit it."
+            action={<Button type="button" variant="outline" onClick={requestCheck} disabled={checking} className={aiButton}>{checking && <Loader2 className="animate-spin" aria-hidden="true" />}{checking ? "Checking…" : "Check my report"}</Button>}>
+            {suggestion && (
+              <section aria-label="AI suggestion" className="space-y-2">
+                {stale && <p className="flex items-center gap-1.5 text-xs font-medium text-amber-800"><TriangleAlert className="size-3.5" aria-hidden="true" />This suggestion is based on an earlier draft. Check again for updated feedback.</p>}
+                <AiOutput label="AI suggestion · not verified">{suggestion}</AiOutput>
+              </section>
+            )}
+            {checkError && <Notice tone="error">{checkError}</Notice>}
+          </AiPanel>
+        </div>
+      )}
+      <div className={cn("flex flex-wrap items-center justify-between gap-3 border-t bg-muted/40 px-5 py-4 sm:px-6")}>
+        <p className="text-xs text-muted-foreground">All fields are required. Keep the snippet small enough to reproduce the bug.</p>
+        {state.error && <Notice tone="error" className="w-full">{state.error}</Notice>}
+        <Button type="submit" disabled={pending} size="lg" className="ml-auto">{pending && <Loader2 className="animate-spin" aria-hidden="true" />}{pending ? "Saving…" : submitLabel}</Button>
+      </div>
     </form>
   );
 }

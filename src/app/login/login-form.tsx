@@ -1,6 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
+import { CircleAlert, Loader2 } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import { authenticate, type LoginState } from "./actions";
 
@@ -8,34 +13,27 @@ export function LoginForm() {
   const [state, action, pending] = useActionState<LoginState, FormData>(authenticate, {});
 
   return (
-    <form action={action} className="flex flex-col gap-3">
-      <label className="flex flex-col gap-1 text-sm">
-        Email
-        <input name="email" type="email" required autoComplete="email" className="rounded border px-3 py-2" />
-      </label>
-      <label className="flex flex-col gap-1 text-sm">
-        Password
-        <input
-          name="password"
-          type="password"
-          required
-          minLength={8}
-          autoComplete="current-password"
-          className="rounded border px-3 py-2"
-        />
-      </label>
+    <form action={action} className="grid gap-5">
+      <div className="grid gap-2">
+        <Label htmlFor="email">Email</Label>
+        <Input id="email" name="email" type="email" required autoComplete="email" placeholder="you@example.com" className="h-10" />
+      </div>
+      <div className="grid gap-2">
+        <Label htmlFor="password">Password</Label>
+        <Input id="password" name="password" type="password" required minLength={8} autoComplete="current-password" className="h-10" />
+      </div>
       {state.error && (
-        <p role="alert" className="text-sm text-red-600">
-          {state.error}
+        <p role="alert" className="flex items-start gap-2 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          <CircleAlert className="mt-0.5 size-4 shrink-0" aria-hidden="true" />{state.error}
         </p>
       )}
-      <div className="flex gap-2">
-        <button name="intent" value="signin" disabled={pending} className="rounded bg-black px-4 py-2 text-white disabled:opacity-50">
-          Sign in
-        </button>
-        <button name="intent" value="signup" disabled={pending} className="rounded border px-4 py-2 disabled:opacity-50">
+      <div className="grid gap-2.5 pt-1">
+        <Button name="intent" value="signin" disabled={pending} size="lg" className="h-10">
+          {pending && <Loader2 className="animate-spin" aria-hidden="true" />}Sign in
+        </Button>
+        <Button name="intent" value="signup" disabled={pending} variant="outline" size="lg" className="h-10">
           Create account
-        </button>
+        </Button>
       </div>
     </form>
   );

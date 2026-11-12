@@ -1,61 +1,76 @@
 "use client";
 
 import { useActionState, useRef, useState } from "react";
+import { Check, CircleCheck, CircleX, Loader2, Undo2 } from "lucide-react";
 
+import { AiOutput, AiPanel, aiButton } from "@/components/app/ai-panel";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { FEEDBACK_MAX } from "@/lib/qa/validation";
+import { cn } from "@/lib/utils";
 
 import { type AiSuggestionState, emptyState, emptySuggestion, type QaActionState } from "./state";
 
 type Action = (previous: QaActionState, form: FormData) => Promise<QaActionState>;
 type SuggestAction = (previous: AiSuggestionState) => Promise<AiSuggestionState>;
 
-const input = "mt-1 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-blue-600";
-
-function Field({ name, label, state, rows = 2 }: { name: string; label: string; state: QaActionState; rows?: number }) {
+function Field({ name, label, state, rows = 2, placeholder }: { name: string; label: string; state: QaActionState; rows?: number; placeholder?: string }) {
   const error = state.errors[name];
   return (
-    <label className="block text-sm font-medium text-slate-800">
+    <label className="grid gap-1.5 text-sm font-medium">
       {label}
-      <textarea name={name} rows={rows} defaultValue={state.values[name] ?? ""} aria-invalid={!!error}
-        aria-describedby={error ? `${name}-error` : undefined} className={input} />
-      {error && <span id={`${name}-error`} className="mt-1 block text-sm text-red-700">{error}</span>}
+      <Textarea name={name} rows={rows} defaultValue={state.values[name] ?? ""} aria-invalid={!!error} placeholder={placeholder}
+        aria-describedby={error ? `${name}-error` : undefined} className="min-h-16 font-normal" />
+      {error && <span id={`${name}-error`} className="text-xs font-normal text-destructive">{error}</span>}
     </label>
   );
 }
 
 function Status({ state }: { state: QaActionState }) {
   if (!state.message) return null;
-  return <p role={state.ok ? "status" : "alert"} className={state.ok ? "text-sm text-green-700" : "text-sm text-red-700"}>{state.message}</p>;
+  return <p role={state.ok ? "status" : "alert"} className={cn("flex items-center gap-1.5 text-sm", state.ok ? "text-emerald-700" : "text-destructive")}>{state.ok && <Check className="size-4" aria-hidden="true" />}{state.message}</p>;
 }
+
+const OUTCOME_STYLE = {
+  pass: { icon: CircleCheck, checked: "has-checked:border-emerald-300 has-checked:bg-emerald-50 has-checked:text-emerald-800" },
+  fail: { icon: CircleX, checked: "has-checked:border-rose-300 has-checked:bg-rose-50 has-checked:text-rose-800" },
+} as const;
 
 export function TestCaseForm({ action, revisionId }: { action: Action; revisionId: string }) {
   const [state, formAction, pending] = useActionState(action, emptyState);
   return (
     // React resets an action form to its defaultValues after submitting: blank after a save,
     // the typed values after an error (the action returns them).
-    <form action={formAction} className="space-y-3 rounded-xl border border-slate-200 bg-white p-4">
-      <h3 className="font-semibold">Record a test case</h3>
-      <input type="hidden" name="revisionId" value={revisionId} />
-      <Field name="description" label="What you tested" state={state} />
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Field name="expectedResult" label="Expected result" state={state} />
-        <Field name="actualResult" label="Actual result" state={state} />
+    <form action={formAction} className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+      <div className="border-b px-4 py-3">
+        <h3 className="text-sm font-semibold">Record a test case</h3>
+        <p className="mt-0.5 text-xs text-muted-foreground">What you ran against this version, and what happened.</p>
       </div>
-      <fieldset>
-        <legend className="text-sm font-medium text-slate-800">Outcome</legend>
-        <div className="mt-1 flex gap-4 text-sm">
-          {(["pass", "fail"] as const).map((outcome) => (
-            <label key={outcome} className="flex items-center gap-2 capitalize">
-              <input type="radio" name="outcome" value={outcome} defaultChecked={state.values.outcome === outcome} /> {outcome}
-            </label>
-          ))}
+      <div className="grid gap-4 p-4">
+        <input type="hidden" name="revisionId" value={revisionId} />
+        <Field name="description" label="What you tested" state={state} placeholder="e.g. Even-length list [1, 2, 3, 4]" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field name="expectedResult" label="Expected result" state={state} />
+          <Field name="actualResult" label="Actual result" state={state} />
         </div>
-        {state.errors.outcome && <p className="mt-1 text-sm text-red-700">{state.errors.outcome}</p>}
-      </fieldset>
-      <div className="flex items-center gap-3">
-        <button disabled={pending} className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:opacity-60">
-          {pending ? "Saving…" : "Save test"}
-        </button>
+        <fieldset>
+          <legend className="text-sm font-medium">Outcome</legend>
+          <div className="mt-1.5 flex gap-2 text-sm">
+            {(["pass", "fail"] as const).map((outcome) => {
+              const { icon: Icon, checked } = OUTCOME_STYLE[outcome];
+              return (
+                <label key={outcome} className={cn("flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-1.5 font-medium text-muted-foreground capitalize transition-colors hover:bg-muted has-focus-visible:ring-3 has-focus-visible:ring-ring/50", checked)}>
+                  <input type="radio" name="outcome" value={outcome} defaultChecked={state.values.outcome === outcome} className="sr-only" />
+                  <Icon className="size-4" aria-hidden="true" /> {outcome}
+                </label>
+              );
+            })}
+          </div>
+          {state.errors.outcome && <p className="mt-1.5 text-xs text-destructive">{state.errors.outcome}</p>}
+        </fieldset>
+      </div>
+      <div className="flex items-center gap-3 border-t bg-muted/40 px-4 py-3">
+        <Button disabled={pending}>{pending && <Loader2 className="animate-spin" aria-hidden="true" />}{pending ? "Saving…" : "Save test"}</Button>
         <Status state={state} />
       </div>
     </form>
@@ -82,26 +97,34 @@ export function DecisionForm({ action, draftAction, revisionId, revisionNumber, 
   }
 
   return (
-    <div className="space-y-3 rounded-xl border border-blue-200 bg-blue-50/40 p-4">
-      <h3 className="font-semibold">Decide version {revisionNumber}</h3>
-      <FeedbackDraft key={testsKey} action={draftAction} onUse={applyDraft} />
-      <form action={formAction} className="space-y-3">
-        <input type="hidden" name="revisionId" value={revisionId} />
-        <label className="block text-sm font-medium text-slate-800">
-          Feedback for the Developer and Reporter <span className="font-normal text-slate-600">(required when rejecting)</span>
-          <textarea ref={box} name="feedback" rows={5} maxLength={FEEDBACK_MAX} value={feedback}
-            onChange={(event) => { setFeedback(event.target.value); setNotice(""); }}
-            aria-invalid={!!state.errors.feedback} aria-describedby={state.errors.feedback ? "feedback-error" : undefined} className={input} />
-          {state.errors.feedback && <span id="feedback-error" className="mt-1 block text-sm text-red-700">{state.errors.feedback}</span>}
-        </label>
-        <p role="status" className="text-sm text-violet-800">{notice}</p>
-        <div className="flex flex-wrap items-center gap-3">
-          <button name="verdict" value="approve" disabled={pending} className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 disabled:opacity-60">
-            Approve and close
-          </button>
-          <button name="verdict" value="reject" disabled={pending} className="rounded-lg bg-rose-700 px-4 py-2 text-sm font-medium text-white hover:bg-rose-800 disabled:opacity-60">
-            Reject and return to Developer
-          </button>
+    <div className="overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10">
+      <div className="border-b px-4 py-3">
+        <h3 className="text-sm font-semibold">Decide version {revisionNumber}</h3>
+        <p className="mt-0.5 text-xs text-muted-foreground">Approving closes the report. Sending it back reopens it for the Developer with your feedback.</p>
+      </div>
+      <div className="p-4 pb-0"><FeedbackDraft key={testsKey} action={draftAction} onUse={applyDraft} /></div>
+      <form action={formAction}>
+        <div className="space-y-2 p-4">
+          <input type="hidden" name="revisionId" value={revisionId} />
+          <label className="grid gap-1.5 text-sm font-medium">
+            <span>Feedback for the Developer and Reporter <span className="font-normal text-muted-foreground">(required when rejecting)</span></span>
+            <Textarea ref={box} name="feedback" rows={5} maxLength={FEEDBACK_MAX} value={feedback}
+              onChange={(event) => { setFeedback(event.target.value); setNotice(""); }}
+              aria-invalid={!!state.errors.feedback} aria-describedby={state.errors.feedback ? "feedback-error" : undefined} className="min-h-28 font-normal" />
+            {state.errors.feedback && <span id="feedback-error" className="text-xs font-normal text-destructive">{state.errors.feedback}</span>}
+          </label>
+          <div className="flex justify-between gap-3 text-xs text-muted-foreground">
+            <p role="status" className="text-violet-800">{notice}</p>
+            <span className="tabular-nums">{feedback.length.toLocaleString()} / {FEEDBACK_MAX.toLocaleString()}</span>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2 border-t bg-muted/40 px-4 py-3">
+          <Button name="verdict" value="approve" disabled={pending} className="bg-emerald-600 text-white hover:bg-emerald-700">
+            <CircleCheck aria-hidden="true" />Approve and close
+          </Button>
+          <Button name="verdict" value="reject" disabled={pending} variant="outline" className="border-rose-300 text-rose-700 hover:bg-rose-50 hover:text-rose-800">
+            <Undo2 aria-hidden="true" />Reject and return to Developer
+          </Button>
           <Status state={state} />
         </div>
       </form>
@@ -117,31 +140,19 @@ export function DecisionForm({ action, draftAction, revisionId, revisionNumber, 
 function FeedbackDraft({ action, onUse }: { action: SuggestAction; onUse: (text: string) => void }) {
   const [state, formAction, pending] = useActionState(action, emptySuggestion);
   return (
-    <section aria-labelledby="draft-heading" className="space-y-2 rounded-lg border border-violet-200 bg-white p-3">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h4 id="draft-heading" className="text-sm font-semibold">AI feedback draft</h4>
-        <form action={formAction}>
-          <button disabled={pending} className="rounded-lg border border-violet-300 bg-white px-3 py-1.5 text-sm font-medium text-violet-900 hover:bg-violet-100 disabled:opacity-60">
-            {pending ? "Drafting…" : state.ok ? "Draft again" : "Draft from my test results"}
-          </button>
-        </form>
-      </div>
-      <p className="text-sm text-slate-600">Uses only the tests recorded on this version. Check it against your results before you send it.</p>
-      {state.message && <p role="alert" className="text-sm text-red-700">{state.message}</p>}
+    <AiPanel level={4} headingId="draft-heading" title="AI feedback draft" description="Uses only the tests recorded on this version. Check it against your results before you send it."
+      action={<form action={formAction}><Button variant="outline" size="sm" disabled={pending} className={aiButton}>{pending && <Loader2 className="animate-spin" aria-hidden="true" />}{pending ? "Drafting…" : state.ok ? "Draft again" : "Draft from my test results"}</Button></form>}>
+      {state.message && <p role="alert" className="text-sm text-destructive">{state.message}</p>}
       {state.ok && (
-        <div className="space-y-2">
-          <div role="status" aria-live="polite">
-            <p className="text-xs font-semibold uppercase tracking-wide text-violet-800">AI draft · not checked</p>
-            <div className="mt-1 whitespace-pre-wrap break-words rounded-lg border border-violet-200 bg-violet-50/40 p-3 text-sm">{state.text}</div>
+        <div className="space-y-2.5">
+          <AiOutput label="AI draft · not checked">{state.text}</AiOutput>
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+            <Button type="button" size="sm" onClick={() => onUse(state.text)} aria-describedby="draft-use-hint" className="bg-violet-600 text-white hover:bg-violet-700">Use this draft</Button>
+            <span id="draft-use-hint" className="text-xs text-muted-foreground">Fills the feedback box, or adds below what you wrote. Read and edit it before deciding.</span>
           </div>
-          <button type="button" onClick={() => onUse(state.text)} aria-describedby="draft-use-hint"
-            className="rounded-lg bg-violet-700 px-3 py-1.5 text-sm font-medium text-white hover:bg-violet-800">
-            Use this draft
-          </button>
-          <span id="draft-use-hint" className="ml-2 text-xs text-slate-600">Fills the feedback box, or adds below what you wrote. Read and edit it before deciding.</span>
         </div>
       )}
-    </section>
+    </AiPanel>
   );
 }
 
@@ -149,23 +160,10 @@ function FeedbackDraft({ action, onUse }: { action: SuggestAction; onUse: (text:
 export function TestSuggestions({ action }: { action: SuggestAction }) {
   const [state, formAction, pending] = useActionState(action, emptySuggestion);
   return (
-    <section aria-labelledby="ai-heading" className="space-y-3 rounded-xl border border-violet-200 bg-violet-50/40 p-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 id="ai-heading" className="font-semibold">AI test ideas</h3>
-        <form action={formAction}>
-          <button disabled={pending} className="rounded-lg border border-violet-300 bg-white px-4 py-2 text-sm font-medium text-violet-900 hover:bg-violet-100 disabled:opacity-60">
-            {pending ? "Thinking…" : state.ok ? "Suggest again" : "Suggest test cases"}
-          </button>
-        </form>
-      </div>
-      <p className="text-sm text-slate-600">Uses the report and the latest fix. Suggestions can be wrong: run the ones you choose and record your own results.</p>
-      {state.message && <p role="alert" className="text-sm text-red-700">{state.message}</p>}
-      {state.ok && (
-        <div role="status" aria-live="polite">
-          <p className="text-xs font-semibold uppercase tracking-wide text-violet-800">AI suggestion · not checked</p>
-          <div className="mt-1 whitespace-pre-wrap break-words rounded-lg border border-violet-200 bg-white p-3 text-sm">{state.text}</div>
-        </div>
-      )}
-    </section>
+    <AiPanel level={3} headingId="ai-heading" title="AI test ideas" description="Uses the report and the latest fix. Suggestions can be wrong: run the ones you choose and record your own results."
+      action={<form action={formAction}><Button variant="outline" size="sm" disabled={pending} className={aiButton}>{pending && <Loader2 className="animate-spin" aria-hidden="true" />}{pending ? "Thinking…" : state.ok ? "Suggest again" : "Suggest test cases"}</Button></form>}>
+      {state.message && <p role="alert" className="text-sm text-destructive">{state.message}</p>}
+      {state.ok && <AiOutput label="AI suggestion · not checked">{state.text}</AiOutput>}
+    </AiPanel>
   );
 }

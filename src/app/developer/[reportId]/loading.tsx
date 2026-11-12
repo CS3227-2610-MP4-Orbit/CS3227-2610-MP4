@@ -1,3 +1,13 @@
+import { PageContainer } from "@/components/app/page-header";
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function Loading() {
-  return <main aria-busy="true" className="mx-auto w-full max-w-4xl flex-1 p-6"><div className="h-9 w-2/3 animate-pulse rounded bg-gray-200" /><div className="mt-6 h-64 animate-pulse rounded-xl bg-gray-100" /></main>;
+  return (
+    <PageContainer wide>
+      <div aria-busy="true" className="space-y-6">
+        <Skeleton className="h-16 w-2/3" />
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]"><Skeleton className="h-96" /><Skeleton className="h-72" /></div>
+      </div>
+    </PageContainer>
+  );
 }
