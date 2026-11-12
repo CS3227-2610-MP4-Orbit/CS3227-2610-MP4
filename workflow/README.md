@@ -13,6 +13,18 @@ This folder implements the **development-agent workflow** for the AI-powered bug
 
 GitHub Spec Kit manages specifications, plans and tasks in `.specify/` and `specs/`. This `workflow/` layer adds task-based agent routing, bounded context, handoffs and resource evidence. The team-approved product scope also remains readable in `workflow/specs/`.
 
+## Developer role package
+
+Role-specific Developer process assets live in `workflow/developer/` so they are included in the repository's workflow package:
+
+- `context/` — Developer role and feature context used to scope prompts.
+- `skills/` — reusable implementation, security, RBAC and verification instructions.
+- `sdd/` — the Developer feature SDD template.
+- `workflows/` — the Developer feature workflow and handoff sequence.
+- `reflection/` — tracked Developer process notes and experiment observations.
+
+The ignored `docs/developer-agentic-se/` directory is separate personal presentation tracking; it is not required by the workflow and is intentionally excluded from commits.
+
 ## Agent coordination
 
 The orchestrator owns the task plan and final integration. Explorer gathers narrow, read-only evidence. Generator edits only assigned files. Code and security reviewers inspect the completed artifact independently; verifier checks acceptance criteria and test evidence. Simple tasks can stay with one agent. See `agents/roles.md` and `templates/handoff.json`.

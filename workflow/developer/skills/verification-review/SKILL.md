@@ -1,6 +1,6 @@
 ---
 name: verification-review
-description: Verify HackHub Developer features against their SDD, tests, type checks, lint, build, and security acceptance criteria.
+description: Verify BugFlow Developer features against their SDD, tests, type checks, lint, build, and security acceptance criteria.
 ---
 
 # Verification review

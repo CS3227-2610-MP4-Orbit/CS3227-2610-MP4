@@ -1,4 +1,4 @@
--- Initial HackHub schema: hackathons, teams, submissions, judging and AI usage accounting.
+-- Initial legacy scaffold schema: hackathons, teams, submissions, judging and AI usage accounting.
 -- Roles are per hackathon (organiser or judge via hackathon_staff); everyone else is a participant.
 -- Row-level security is enabled on every table and access is denied unless a policy allows it.
 -- Multi-step writes (joining a team by invite code, auto-assigning judges, publishing results)

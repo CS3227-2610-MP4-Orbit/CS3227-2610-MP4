@@ -5,8 +5,8 @@
   "status": "pass",
   "spec": "specs/001-developer-bug-workflow/spec.md",
   "context_paths": [
-    "developer/skills/ai-security-review/SKILL.md",
-    "developer/context/developer-feature-context.md",
+    "workflow/developer/skills/ai-security-review/SKILL.md",
+    "workflow/developer/context/developer-feature-context.md",
     "src/lib/ai/prompt.ts",
     "src/lib/ai/gateway.ts",
     "src/app/ai/actions.ts",

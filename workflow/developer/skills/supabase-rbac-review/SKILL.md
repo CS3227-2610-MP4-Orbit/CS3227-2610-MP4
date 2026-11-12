@@ -1,6 +1,6 @@
 ---
 name: supabase-rbac-review
-description: Review HackHub Supabase migrations and RLS for assignment-based Developer access, immutable bug history, and role isolation.
+description: Review BugFlow Supabase migrations and RLS for assignment-based Developer access, immutable bug history, and role isolation.
 ---
 
 # Supabase RBAC review
