@@ -2,7 +2,7 @@
 
 ## Current state
 
-Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. The current role workflow requirements and tasks are in `specs/001-developer-bug-workflow/`, with the shared lifecycle specification in `workflow/specs/001-bug-lifecycle/`.
+Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. Each feature's Spec Kit specification, plan and tasks are in `specs/` (`001` to `006`), checked against the constitution in `.specify/memory/constitution.md`. The original shared lifecycle specification is in `workflow/specs/001-bug-lifecycle/`.
 
 | Area | State |
 |---|---|
@@ -94,6 +94,6 @@ Start at `workflow/README.md`. `.agents/skills/agent-coordination` and `agent-ha
 
 ## Acknowledgements
 
-The project requirements and three-role feature plan came from the team's supplied assignment text. The agent roles and resource-aware ideas were adapted from the supplied workflow PDF. The repository already contained a Next.js/Supabase/Vercel starter; its origin and any reused code must be cited by the team before release. GitHub Spec Kit is an optional toolkit; installation instructions are in `workflow/SpecKit.md`.
+The project requirements and three-role feature plan came from the team's supplied assignment text. The agent roles and resource-aware ideas were adapted from the supplied workflow PDF. The repository began from a Next.js/Supabase/Vercel scaffold for a hackathon app, committed by Johannsen on 31 Oct 2026 (`81dd011`, "Scaffold HackHub"). Its hackathon tables are dropped by `20261104000000_bug_lifecycle.sql` and its pages were rewritten. What is still used unchanged is infrastructure: the Supabase client helpers and session proxy (`src/lib/supabase/`, `src/proxy.ts`), `supabase/config.toml`, and the TypeScript, ESLint, Next.js and Vercel configuration. Every feature was specified, planned and broken into tasks with [GitHub Spec Kit](https://github.com/github/spec-kit) 1.3.0; installation is recorded in `workflow/SpecKit.md`.
 
 The interface is built with [shadcn/ui](https://ui.shadcn.com) (MIT): its components are copied into `src/components/ui/` and run on [Radix UI](https://www.radix-ui.com) primitives (MIT). Icons are [Lucide](https://lucide.dev) (ISC). Text uses the [Geist and Geist Mono](https://vercel.com/font) typefaces (SIL Open Font License), loaded through `next/font`. The layout drew on public examples rather than copied code: Linear's issue lists, Sentry's issue-details page, GitHub's split diff, the shadcn sidebar and dashboard blocks, and the Testify bug-tracking dashboard concept on Dribbble.

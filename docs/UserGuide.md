@@ -2,6 +2,8 @@
 
 The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide covers every feature in the current release, role by role.
 
+**Open the app:** [hackhub-orbit.vercel.app](https://hackhub-orbit.vercel.app)
+
 ## Getting started
 
 ### Test accounts
@@ -67,7 +69,7 @@ While a report is **Open**, its page shows "You can still edit this report. Edit
 
 ### AI bug explainer
 
-Every report page has an **AI bug explainer** panel, titled **AI code explanation**. The **AI explanation** tab jumps to it. Select **Explain this bug** to get a short, plain-language explanation of what is likely wrong with your Python code. The answer is labelled "AI suggestion · not verified": it is a guess based on the code and the error you entered, the code is not run, and nothing is changed. Select **Explain again** for a new answer. The limits are the same as for the AI report draft checker (3 a minute, 20 a day). If the AI is unavailable, the panel says "The AI could not produce an explanation. Try again later."
+Every report page has an **AI bug explainer** panel, titled **AI code explanation**. The **AI explanation** tab jumps to it. Select **Explain this bug** to get a short, plain-language explanation of what is likely wrong with your Python code. The answer is labelled "AI suggestion · not verified": it is a guess based on the code and the error you entered, the code is not run, and nothing is changed. Select **Explain again** for a new answer. The limits are the same as for the AI report draft checker (3 a minute, 20 a day). If the AI is unavailable, slow or busy, the panel shows a short message saying so, such as "The AI could not produce a suggestion. Try again later."
 
 ### Follow the fix
 
