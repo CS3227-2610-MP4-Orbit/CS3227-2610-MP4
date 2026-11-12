@@ -1,6 +1,6 @@
 # User guide
 
-The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide is being written role by role as features are verified. Sections for roles not listed below are not ready for testing yet.
+The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide covers every feature in the current release, role by role.
 
 ## Getting started
 
@@ -28,13 +28,55 @@ When a Reporter submits a report, it is assigned automatically to the Developer 
 
 ## Reporter
 
+### Your reports
+
+**My bug reports** (`/reports`) lists everything you have reported, newest first, with its status and the date it was created. The cards at the top count **All reports**, **Being fixed** (open or in progress), **Awaiting QA** and **Closed**. Select a report to open it.
+
+A report's status is shown the same way everywhere:
+
+| Status | Meaning |
+|---|---|
+| Open | Submitted and assigned, but the Developer has not started. You can still edit it. |
+| In progress | The Developer is working on it, or QA sent the fix back. |
+| Awaiting QA | The Developer submitted a fix and QA is testing it. |
+| Closed | QA approved the fix. |
+
+### Submit a report
+
+Select **New report** and fill in every field:
+
+- **Title** (up to 120 characters)
+- **Python code**, a small snippet that shows the bug (up to 20,000 characters)
+- **Error message**: paste the traceback, or write "No error" if the result is just wrong
+- **Expected behavior** and **Actual behavior**
+- **Reproduction steps**
+
+The other fields can each hold up to 2,000 characters. Your code is stored as text and is never run. Select **Submit report**. You return to **My bug reports** with the message "Your bug report was submitted." The report is assigned to a Developer and a QA tester straight away (see [How a bug moves between roles](#how-a-bug-moves-between-roles)).
+
 ### Check a draft before submitting
 
 On **New report** (`/reports/new`), enter some report details and select **Check my report**. This optional AI check looks at the current title, Python code, error message, expected behavior, actual behavior, and reproduction steps. It can suggest how to make the report clearer or easier to reproduce, including fields you have not filled in yet. An entirely blank draft is not sent to the AI.
 
 Suggestions are labeled as AI generated and grouped by report field. They do not edit the form, run your code, or submit a report. If you change the draft after a check, the previous suggestion is marked as based on an earlier version; check again if you want updated advice. Use **Submit report** separately when you are ready. The existing required-field checks still apply to submission.
 
-The check uses the same AI request limits as other features: 3 requests per minute and 20 per day for this feature. If it is unavailable or over a limit, you can still submit a valid report, and any earlier suggestion stays visible. The **AI code explanation** on a submitted report is a separate feature that explains the likely cause of the Python bug.
+The check uses the same AI request limits as other features: 3 requests per minute and 20 per day for this feature. If it is unavailable or over a limit, you can still submit a valid report, and any earlier suggestion stays visible.
+
+### Edit a report
+
+While a report is **Open**, its page shows "You can still edit this report. Editing locks once a Developer starts work." above the form. Change any field and select **Save changes**; the page shows "Report saved." As soon as the Developer starts work, the report becomes read-only and is shown under **Your report**.
+
+### AI code explanation
+
+Every report page has an **AI code explanation** panel. Select **Explain this bug** to get a short, plain-language explanation of what is likely wrong with your Python code. The answer is labelled "AI suggestion · not verified": it is a guess based on the code and the error you entered, the code is not run, and nothing is changed. Select **Explain again** for a new answer. The limits are the same as for the draft check (3 a minute, 20 a day). If the AI is unavailable, the panel says "The AI could not produce an explanation. Try again later."
+
+### Follow the fix
+
+Each report page shows where the bug is, with a progress bar: **Reported → In progress → QA review → Closed**. The tabs under it (**Details**, **AI explanation**, **Feedback**, **Fix comparison**) jump to each part of the page.
+
+- **Developer and QA feedback** lists the feedback QA writes when it approves or rejects a fix, newest first, marked **QA Tester**. It says "No feedback yet." until then. The Developer's investigation notes are private to the Developer and QA.
+- **Fix comparison** shows your original code next to the Developer's proposed fix, line by line. Removed lines are red and added lines are green. The Developer's submission note for that version is shown above it as **Developer note**. If the Developer submitted more than one version, choose the version from the list; the latest is selected first. Until a fix is submitted, it says "No proposed fix yet". Very large snippets are shown side by side as plain text.
+
+When QA approves, the status changes to **Closed** and the report stays read-only.
 
 ## Developer
 

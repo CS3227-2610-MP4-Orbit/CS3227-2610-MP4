@@ -1,0 +1,100 @@
+{
+  "finished_at": "2026-11-12T09:00:41.167719Z",
+  "responses": 87,
+  "root_session_id": "1fe0e712-7024-4e94-a2b8-3553c0ae4f1a",
+  "schema_version": 1,
+  "sessions": {
+    "a0f4e82151d94e5b1": {
+      "agent_path": "/root/general_purpose",
+      "model_ids": [
+        "claude-haiku-5-5"
+      ],
+      "responses": 3,
+      "tool_calls": 3,
+      "usage": {
+        "cache_write_input_tokens": 91582,
+        "cached_input_tokens": 161583,
+        "input_tokens": 253171,
+        "output_tokens": 4905,
+        "reasoning_output_tokens": 3744,
+        "total_tokens": 258076
+      }
+    },
+    "a7a02bfe8d94ca0b7": {
+      "agent_path": "/root/general_purpose",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "responses": 2,
+      "tool_calls": 1,
+      "usage": {
+        "cache_write_input_tokens": 91003,
+        "cached_input_tokens": 72398,
+        "input_tokens": 163405,
+        "output_tokens": 2273,
+        "reasoning_output_tokens": 1170,
+        "total_tokens": 165678
+      }
+    },
+    "a902a69b559fc7a41": {
+      "agent_path": "/root/general_purpose",
+      "model_ids": [
+        "claude-sonnet-5-5"
+      ],
+      "responses": 5,
+      "tool_calls": 4,
+      "usage": {
+        "cache_write_input_tokens": 81151,
+        "cached_input_tokens": 372586,
+        "input_tokens": 453747,
+        "output_tokens": 2623,
+        "reasoning_output_tokens": 605,
+        "total_tokens": 456370
+      }
+    },
+    "ababe224c0b6406e0": {
+      "agent_path": "/root/general_purpose",
+      "model_ids": [
+        "claude-sonnet-5-5"
+      ],
+      "responses": 2,
+      "tool_calls": 1,
+      "usage": {
+        "cache_write_input_tokens": 91594,
+        "cached_input_tokens": 72402,
+        "input_tokens": 164000,
+        "output_tokens": 1156,
+        "reasoning_output_tokens": 0,
+        "total_tokens": 165156
+      }
+    },
+    "root": {
+      "agent_path": "root",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "responses": 75,
+      "tool_calls": 80,
+      "usage": {
+        "cache_write_input_tokens": 128072,
+        "cached_input_tokens": 14118148,
+        "input_tokens": 14246373,
+        "output_tokens": 65178,
+        "reasoning_output_tokens": 12367,
+        "total_tokens": 14311551
+      }
+    }
+  },
+  "source": "local_claude_code_transcript_window",
+  "started_at": "2026-11-12T08:30:49.903000Z",
+  "task_id": "DOC001-final-docs",
+  "tool_calls": 89,
+  "total_usage": {
+    "cache_write_input_tokens": 483402,
+    "cached_input_tokens": 14797117,
+    "input_tokens": 15280696,
+    "output_tokens": 76135,
+    "reasoning_output_tokens": 17886,
+    "total_tokens": 15356831
+  }
+}

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BugFlow</title>
+  <meta name="description" content="BugFlow tracks a Python bug from report to verified fix, with a Reporter, a Developer and a QA tester, each helped by a labelled AI assistant.">
+  <style>
+    :root {
+      --bg: #fafafa; --card: #ffffff; --text: #18181b; --muted: #52525b; --line: #e4e4e7;
+      --accent: #4f46e5; --ai: #7c3aed; --ai-bg: #f5f3ff;
+      --open: #71717a; --progress: #0ea5e9; --qa: #f59e0b; --closed: #10b981;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #0b0b0e; --card: #16161a; --text: #f4f4f5; --muted: #a1a1aa; --line: #27272a; --accent: #818cf8; --ai: #a78bfa; --ai-bg: #1e1830; }
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: var(--accent); }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+    header { border-bottom: 1px solid var(--line); background: var(--card); }
+    nav { display: flex; align-items: center; gap: 20px; height: 60px; flex-wrap: wrap; }
+    nav .brand { font-weight: 700; color: var(--text); text-decoration: none; margin-right: auto; }
+    nav a:not(.brand) { color: var(--muted); text-decoration: none; font-size: 14px; }
+    .hero { padding: 64px 0 40px; }
+    h1 { font-size: clamp(32px, 5vw, 48px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
+    .lead { font-size: 19px; color: var(--muted); max-width: 680px; margin: 0 0 28px; }
+    .buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display: inline-block; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; }
+    .btn.primary { background: var(--accent); color: #fff; }
+    .btn.secondary { border: 1px solid var(--line); color: var(--text); background: var(--card); }
+    .shot { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); display: block; }
+    .hero .shot { margin-top: 40px; box-shadow: 0 20px 50px -20px rgb(0 0 0 / 0.25); }
+    section { padding: 48px 0; border-top: 1px solid var(--line); }
+    h2 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
+    h3 { margin: 0 0 8px; font-size: 20px; }
+    .sub { color: var(--muted); margin: 0 0 28px; max-width: 720px; }
+    .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; padding: 0; list-style: none; margin: 0; }
+    .flow li { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+    .flow b { display: flex; align-items: center; gap: 8px; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .flow span { color: var(--muted); font-size: 14px; }
+    .role { display: grid; grid-template-columns: 1fr 1.3fr; gap: 32px; align-items: start; margin-bottom: 48px; }
+    .role:last-child { margin-bottom: 0; }
+    .role ul { padding-left: 20px; margin: 8px 0 16px; }
+    .ai { background: var(--ai-bg); border: 1px solid color-mix(in srgb, var(--ai) 30%, transparent); border-radius: 10px; padding: 12px 14px; font-size: 15px; }
+    .ai b { color: var(--ai); }
+    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+    .card p { margin: 0; color: var(--muted); font-size: 15px; }
+    table { border-collapse: collapse; width: 100%; font-size: 15px; background: var(--card); }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    code { font: 14px ui-monospace, SFMono-Regular, Menlo, monospace; }
+    footer { padding: 32px 0 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+    @media (max-width: 760px) {
+      .flow, .grid3 { grid-template-columns: 1fr; }
+      .role { grid-template-columns: 1fr; gap: 16px; }
+      .hero { padding-top: 40px; }
+      .table-wrap { overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav aria-label="Main">
+        <a class="brand" href="#">BugFlow</a>
+        <a href="#roles">Features</a>
+        <a href="#security">Security</a>
+        <a href="#try">Try it</a>
+        <a href="https://github.com/CS3227-2610-MP4-Orbit/CS3227-2610-MP4">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap hero">
+      <h1>From a Python bug report to a verified fix</h1>
+      <p class="lead">BugFlow connects the person who found a bug, the Developer who fixes it and the QA tester who proves the fix works. Every step is recorded, and every role has an AI assistant that is clearly labelled as unverified advice.</p>
+      <div class="buttons">
+        <a class="btn primary" href="https://hackhub-orbit.vercel.app">Open the app</a>
+        <a class="btn secondary" href="https://github.com/CS3227-2610-MP4-Orbit/CS3227-2610-MP4/blob/master/docs/UserGuide.md">User Guide</a>
+        <a class="btn secondary" href="https://github.com/CS3227-2610-MP4-Orbit/CS3227-2610-MP4/blob/master/docs/DeveloperGuide.md">Developer Guide</a>
+      </div>
+      <img class="shot" src="images/qa-report.png" width="1440" height="900" alt="QA review page: the bug details, the original and proposed code side by side, test results and the status history.">
+    </div>
+
+    <section>
+      <div class="wrap">
+        <h2>How a bug moves</h2>
+        <p class="sub">A report is assigned to a Developer and a QA tester as soon as it is submitted. A rejected fix goes back to the Developer with QA's feedback, and the cycle repeats until QA approves.</p>
+        <ol class="flow">
+          <li><b><span class="dot" style="background:var(--open)"></span>Reported</b><span>The Reporter submits the code, the error and the expected behaviour.</span></li>
+          <li><b><span class="dot" style="background:var(--progress)"></span>In progress</b><span>The Developer investigates, keeps notes and submits a fix.</span></li>
+          <li><b><span class="dot" style="background:var(--qa)"></span>QA review</b><span>QA records pass/fail tests against that exact version.</span></li>
+          <li><b><span class="dot" style="background:var(--closed)"></span>Closed</b><span>QA approves, and the Reporter sees the fix and the feedback.</span></li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="roles">
+      <div class="wrap">
+        <h2>Features for each role</h2>
+        <p class="sub">Each account has one role, and each role sees only its own pages.</p>
+
+        <div class="role">
+          <div>
+            <h3>Reporter</h3>
+            <ul>
+              <li>Submit a bug with a Python snippet, the error and the expected and actual behaviour</li>
+              <li>Edit it until a Developer starts work</li>
+              <li>Follow its progress and read QA's feedback</li>
+              <li>See the fix as a line-by-line comparison with the original code</li>
+            </ul>
+            <p class="ai"><b>AI:</b> <em>Check my report</em> suggests how to make a draft clearer, and <em>Explain this bug</em> explains in plain language what is likely wrong.</p>
+          </div>
+          <img class="shot" src="images/reporter-report.png" width="1440" height="900" loading="lazy" alt="A closed bug report with the Reporter's code, the progress bar and an AI explanation labelled 'AI suggestion, not verified'.">
+        </div>
+
+        <div class="role">
+          <div>
+            <h3>Developer</h3>
+            <ul>
+              <li>A queue of assigned bugs, ordered by what needs action</li>
+              <li>Start an investigation and keep notes</li>
+              <li>Submit corrected code; each submission becomes a new version</li>
+              <li>Read QA's rejection and resubmit</li>
+            </ul>
+            <p class="ai"><b>AI:</b> a <em>debugging advisor</em> for likely causes and next steps, and a <em>code improvement advisor</em> for readability, performance and design.</p>
+          </div>
+          <img class="shot" src="images/developer-report.png" width="1440" height="900" loading="lazy" alt="Developer work page with the report, the fix history, investigation notes and the AI advisors.">
+        </div>
+
+        <div class="role">
+          <div>
+            <h3>QA tester</h3>
+            <ul>
+              <li>A queue of fixes that need review</li>
+              <li>Record pass/fail tests against the exact submitted version</li>
+              <li>Approve, or reject with feedback for the Developer and the Reporter</li>
+              <li>See the full status history</li>
+            </ul>
+            <p class="ai"><b>AI:</b> <em>test ideas</em> from the report and the fix, and a <em>feedback draft</em> written only from the tests you recorded.</p>
+          </div>
+          <img class="shot" src="images/qa-queue.png" width="1440" height="900" loading="lazy" alt="QA queue listing reports that need review.">
+        </div>
+      </div>
+    </section>
+
+    <section id="security">
+      <div class="wrap">
+        <h2>Built to be safe with AI and with code</h2>
+        <div class="grid3">
+          <div class="card"><h3>Code is never run</h3><p>Submitted Python is stored as text. Fixes are syntax-checked by a parser, not executed.</p></div>
+          <div class="card"><h3>Roles enforced by the database</h3><p>Row-level security and database functions decide who can read and change each report, not just the UI.</p></div>
+          <div class="card"><h3>Guarded AI</h3><p>One gateway for all AI calls, with per-user limits, input size limits, prompts that treat report text as data, and every answer labelled as unverified.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="try">
+      <div class="wrap">
+        <h2>Try it</h2>
+        <p class="sub">Sign in with a demo account. All of them use the password <code>BugFlow-Demo-2026</code>. This is a shared demo, so don't paste private code.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Role</th><th>Accounts</th></tr></thead>
+            <tbody>
+              <tr><td>Reporter</td><td><code>reporter1@example.com</code>, <code>reporter2@example.com</code></td></tr>
+              <tr><td>Developer</td><td><code>developer1@example.com</code>, <code>developer2@example.com</code></td></tr>
+              <tr><td>QA tester</td><td><code>qa1@example.com</code>, <code>qa2@example.com</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin-top:20px">Production: <a href="https://hackhub-orbit.vercel.app">hackhub-orbit.vercel.app</a> · Development: <a href="https://hackhub-orbit-dev.vercel.app">hackhub-orbit-dev.vercel.app</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      BugFlow is a CS3227 Mini Project 4 by team Orbit: Joseph (Reporter), Jordan (Developer) and Johannsen (QA tester).
+      Source and docs on <a href="https://github.com/CS3227-2610-MP4-Orbit/CS3227-2610-MP4">GitHub</a>.
+    </div>
+  </footer>
+</body>
+</html>
