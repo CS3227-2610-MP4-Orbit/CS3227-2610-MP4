@@ -1,0 +1,17 @@
+{
+  "task_id": "T-SECURITY-EXAMPLE",
+  "goal": "Implement an approved report-access change and obtain independent reviews",
+  "owner": "joseph",
+  "owned_paths": ["workflow/specs/001-bug-lifecycle/spec.md"],
+  "spec": "workflow/specs/001-bug-lifecycle/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": true,
+  "acceptance_criteria": [
+    "The implementation traces to the approved access rule",
+    "Independent review findings cite the affected access boundary"
+  ],
+  "context_refs": [
+    { "path": "workflow/specs/001-bug-lifecycle/spec.md", "start_line": 9, "end_line": 17 }
+  ]
+}

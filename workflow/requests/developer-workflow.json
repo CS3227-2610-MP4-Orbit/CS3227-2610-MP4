@@ -1,0 +1,29 @@
+{
+  "task_id": "T001-T014",
+  "goal": "Deliver the secure first Developer MVP slice: assigned-report dashboard and editable-note database guardrail.",
+  "owner": "JordanGoh4",
+  "owned_paths": [
+    "src/lib/developer/",
+    "src/app/developer/",
+    "supabase/migrations/20261105000000_editable_investigation_notes.sql",
+    "supabase/tests/bug_lifecycle.test.sql",
+    "workflow/evidence/",
+    "workflow/requests/developer-workflow.json"
+  ],
+  "spec": "specs/001-developer-bug-workflow/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": true,
+  "acceptance_criteria": [
+    "Only an authenticated user whose profile role is developer can load the dashboard.",
+    "The dashboard lists only reports assigned to the current developer and has loading, empty, error, and denied states.",
+    "Developer input limits are validated before lifecycle operations.",
+    "Investigation notes can be edited only by their author before QA handoff and are read-only after handoff."
+  ],
+  "context_refs": [
+    { "path": "specs/001-developer-bug-workflow/spec.md", "start_line": 1, "end_line": 180 },
+    { "path": "specs/001-developer-bug-workflow/data-model.md", "start_line": 1, "end_line": 160 },
+    { "path": "specs/001-developer-bug-workflow/contracts/developer-workflow.md", "start_line": 1, "end_line": 140 },
+    { "path": ".specify/memory/constitution.md", "start_line": 1, "end_line": 120 }
+  ]
+}

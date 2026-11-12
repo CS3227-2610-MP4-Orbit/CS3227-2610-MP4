@@ -1,0 +1,48 @@
+{
+  "task_id": "F004-local-report-compat",
+  "goal": "Restore owned reports on older local development schema while preserving canonical production behavior",
+  "owner": "joseph (orchestrator and generator)",
+  "status": "implemented; code/security reviewed and unit-verified; live UI check pending",
+  "spec": "specs/004-reporter-fix-comparison/spec.md",
+  "context_paths": [
+    "workflow/requests/F004-local-report-compat-task.json",
+    "src/app/reports/[id]/page.tsx",
+    "src/app/reports/[id]/actions.ts",
+    "src/app/reports/new/actions.ts"
+  ],
+  "decisions": [
+    "Retry legacy python_code only in development against localhost/127.0.0.1 when a specific missing-code-column error occurs.",
+    "Keep Reporter role, owner, and open-status filters on fallback queries.",
+    "Distinguish database load failure from a genuinely missing report.",
+    "Skip absent revision storage only when legacy schema is positively detected, so sample preview remains available."
+  ],
+  "findings": [
+    "Older local database uses bug_reports.python_code; canonical read of code caused database error treated as 404.",
+    "Independent code review found no blocker and requested live authenticated smoke.",
+    "Independent security review found no blocker; missing-column message matching was tightened.",
+    "Verifier could not access Docker from this environment, so live local UI behavior is unverified."
+  ],
+  "acceptance_criteria": [
+    "Owned old-schema reports render rather than 404.",
+    "Fallback is local development only and specific to missing code column.",
+    "Other database errors display load error; role and ownership checks remain.",
+    "Create and edit retain canonical production path and work with old schema."
+  ],
+  "artifacts": [
+    "src/lib/reports/legacy-local.ts",
+    "src/lib/reports/legacy-local.test.ts",
+    "src/app/reports/[id]/page.tsx",
+    "src/app/reports/[id]/actions.ts",
+    "src/app/reports/new/actions.ts"
+  ],
+  "verification": [
+    "Independent verifier: targeted Vitest 2 files/5 tests passed; ESLint and TypeScript passed.",
+    "Code and security reviewers: no blocker.",
+    "Live authenticated UI path not verified because Docker socket access was denied."
+  ],
+  "remaining_work": [
+    "Sign in locally and open the previously failing owned report; create and edit a report to confirm old-schema actions.",
+    "After this agent turn, finish existing F004 token capture and record actual usage; do not infer token counts."
+  ],
+  "next_owner": "joseph (local UI smoke and token capture)"
+}

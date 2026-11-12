@@ -1,0 +1,167 @@
+{
+  "assignments": [
+    {
+      "task_id": "T03-submission",
+      "owner": "joseph",
+      "owned_paths": [
+        "supabase/migrations/20261104000100_bug_reports.sql",
+        "supabase/tests/bug_reports.test.sql",
+        "src/app/page.tsx",
+        "src/app/reports/new/page.tsx",
+        "src/app/reports/new/report-form.tsx",
+        "src/app/reports/new/actions.ts",
+        "src/lib/reports/validation.ts",
+        "src/lib/reports/validation.test.ts"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "T024-reporter-list-edit",
+      "owner": "joseph",
+      "owned_paths": [
+        "supabase/migrations/20261105000100_reporter_edit.sql",
+        "supabase/tests/bug_reports.test.sql",
+        "src/app/page.tsx",
+        "src/app/reports/page.tsx",
+        "src/app/reports/[id]/page.tsx",
+        "src/app/reports/[id]/actions.ts",
+        "src/app/reports/report-form.tsx",
+        "src/app/reports/new/report-form.tsx",
+        "src/app/reports/new/page.tsx",
+        "src/app/reports/new/actions.ts",
+        "src/lib/reports/validation.ts",
+        "src/lib/reports/validation.test.ts"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "OBS001-usage-capture",
+      "owner": "joseph",
+      "owned_paths": [
+        "workflow/scripts/token_usage.py",
+        "workflow/scripts/test_token_usage.py",
+        "workflow/README.md",
+        "workflow/experiments.md"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "F004-reporter-code-diff",
+      "owner": "joseph",
+      "owned_paths": [
+        "package.json",
+        "package-lock.json",
+        "src/app/reports/[id]/page.tsx",
+        "src/app/reports/[id]/comparison.tsx",
+        "src/app/reports/[id]/comparison.test.tsx",
+        "src/lib/reports/line-diff.ts",
+        "src/lib/reports/line-diff.test.ts",
+        "supabase/tests/reporter_comparison.test.sql"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "F004-local-report-compat",
+      "owner": "joseph",
+      "owned_paths": [
+        "src/lib/reports/legacy-local.ts",
+        "src/lib/reports/legacy-local.test.ts",
+        "src/app/reports/[id]/page.tsx",
+        "src/app/reports/[id]/actions.ts",
+        "src/app/reports/new/actions.ts"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "F002-reporter-feedback",
+      "owner": "joseph",
+      "owned_paths": [
+        "supabase/migrations/20261105000200_reporter_feedback.sql",
+        "supabase/tests/reporter_feedback.test.sql",
+        "src/app/reports/[id]/feedback-section.tsx",
+        "src/app/reports/[id]/feedback-section.test.tsx",
+        "src/app/reports/[id]/page.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "F003-reporter-ui",
+      "owner": "joseph",
+      "owned_paths": [
+        "package.json",
+        "package-lock.json",
+        "src/app/layout.tsx",
+        "src/app/globals.css",
+        "src/app/reporter-nav.tsx",
+        "src/app/reporter-nav.test.tsx",
+        "src/app/page.tsx",
+        "src/app/reports/page.tsx",
+        "src/app/reports/new/page.tsx",
+        "src/app/reports/[id]/page.tsx",
+        "src/app/reports/report-form.tsx",
+        "src/app/reports/python-editor.tsx",
+        "src/app/reports/python-editor.test.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "C005-database-merge",
+      "owner": "joseph",
+      "owned_paths": [
+        "supabase/migrations/20261104000100_bug_reports.sql",
+        "supabase/migrations/20261105000100_reporter_edit.sql",
+        "supabase/migrations/20261105000300_reporter_role_access.sql",
+        "supabase/tests/bug_reports.test.sql",
+        "supabase/tests/reporter_feedback.test.sql",
+        "src/app/reports/new/actions.ts",
+        "src/app/reports/[id]/actions.ts",
+        "src/app/reports/[id]/page.tsx"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "F005-report-quality",
+      "owner": "joseph",
+      "owned_paths": [
+        "src/lib/ai/prompt.ts",
+        "src/lib/ai/prompt.test.ts",
+        "src/lib/reports/quality-check.ts",
+        "src/lib/reports/quality-check.test.ts",
+        "src/app/reports/new/quality-check.fixtures.ts",
+        "src/app/reports/new/check-quality.ts",
+        "src/app/reports/new/check-quality.test.ts",
+        "src/app/reports/new/page.tsx",
+        "src/app/reports/report-form.tsx",
+        "src/app/reports/report-form.test.tsx",
+        "src/app/reports/python-editor.tsx",
+        "src/app/reports/python-editor.test.tsx",
+        "docs/UserGuide.md",
+        "docs/DeveloperGuide.md",
+        "specs/005-check-report-quality/tasks.md",
+        "specs/005-check-report-quality/quickstart.md"
+      ],
+      "status": "done"
+    },
+    {
+      "task_id": "006-code-improvement",
+      "owner": "jordan",
+      "owned_paths": [
+        "src/lib/ai/prompt.ts",
+        "src/lib/ai/prompt.test.ts",
+        "src/lib/ai/code-improvement.ts",
+        "src/lib/ai/code-improvement.test.ts",
+        "src/lib/ai/code-improvement.security.test.ts",
+        "src/app/ai/actions.ts",
+        "src/app/ai/actions.test.ts",
+        "src/app/ai/actions.security.test.ts",
+        "src/app/developer/[reportId]/ai-code-improvement.tsx",
+        "src/app/developer/[reportId]/ai-code-improvement.test.tsx",
+        "src/app/developer/[reportId]/page.tsx",
+        "supabase/tests/bug_lifecycle.test.sql",
+        "docs/DeveloperGuide.md",
+        "docs/UserGuide.md"
+      ],
+      "status": "done"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "task_id": "F002-reporter-feedback",
+  "goal": "Implement the Reporter read-only Developer/QA feedback view on an owned report, with secure schema and tests, per Spec Kit 002 tasks T002-T008",
+  "owner": "joseph (orchestrator)",
+  "status": "implemented and independently verified locally, with build/smoke limitations",
+  "spec": "specs/002-reporter-feedback-view/spec.md",
+  "context_paths": [
+    "workflow/requests/F002-reporter-feedback-task.json",
+    "specs/002-reporter-feedback-view/spec.md",
+    "specs/002-reporter-feedback-view/plan.md",
+    "specs/002-reporter-feedback-view/tasks.md"
+  ],
+  "decisions": [
+    "Reporter views stored Developer/QA feedback only; this slice has no writer.",
+    "Add a provisional append-only bug_feedback read contract; future Developer/QA writers require team review and author/role binding.",
+    "Query only after Reporter-role and report-ownership checks; order by creation time and ID descending."
+  ],
+  "findings": [
+    "Code review found no blocker; same-timestamp tie-order test was added and passed.",
+    "Security review found no read-side blocker; privileged future writers could mismatch author_id and author_role unless their write contract validates both.",
+    "The initial database test failed because the pending migration was absent locally; migration up applied it without reset and the suite passed.",
+    "Production build failed on Turbopack process/port binding permission even with escalated execution; source build result remains unverified."
+  ],
+  "acceptance_criteria": [
+    "Owning Reporter sees Developer/QA entries, source role, time, newest-first and an honest empty state; existing reports remain readable after closure",
+    "Direct foreign-reporter, non-reporter and anonymous reads are denied; Reporter cannot write feedback",
+    "Markup-like feedback is inert; feedback read error is distinct from empty state",
+    "Relevant unit, database, lint and type/build checks are reported with actual outcomes"
+  ],
+  "artifacts": [
+    "supabase/migrations/20261105000200_reporter_feedback.sql",
+    "supabase/tests/reporter_feedback.test.sql",
+    "src/app/reports/[id]/feedback-section.tsx",
+    "src/app/reports/[id]/feedback-section.test.tsx",
+    "src/app/reports/[id]/page.tsx",
+    "specs/002-reporter-feedback-view/spec.md",
+    "specs/002-reporter-feedback-view/plan.md",
+    "specs/002-reporter-feedback-view/tasks.md"
+  ],
+  "verification": [
+    "Verifier independently ran npm test: 2 files, 8 tests passed.",
+    "Verifier independently ran npm run lint, npm run typecheck and git diff --check: passed.",
+    "Orchestrator applied local migration 20261105000200 and ran npx supabase test db: 3 files, 34 assertions passed.",
+    "Signed-in HTTP smoke and deliberately failed live feedback query were not run."
+  ],
+  "remaining_work": [
+    "Run a signed-in browser smoke and production build in an environment that permits Turbopack process binding before release.",
+    "Agree and test Developer/QA writer authorization and author_id/author_role consistency before authoring integration.",
+    "Finish task token capture after this orchestrator turn ends, review the draft run, then record it."
+  ],
+  "next_owner": "joseph (release review / future writer integration)"
+}

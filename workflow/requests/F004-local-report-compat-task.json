@@ -1,0 +1,45 @@
+{
+  "task_id": "F004-local-report-compat",
+  "goal": "Restore owned report detail and saves against the older local development schema without changing canonical production behavior",
+  "owner": "joseph",
+  "owned_paths": [
+    "src/lib/reports/legacy-local.ts",
+    "src/lib/reports/legacy-local.test.ts",
+    "src/app/reports/[id]/page.tsx",
+    "src/app/reports/[id]/actions.ts",
+    "src/app/reports/new/actions.ts"
+  ],
+  "spec": "specs/004-reporter-fix-comparison/spec.md",
+  "complexity": "standard",
+  "security_sensitive": true,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "Owned reports in older local schema render instead of 404",
+    "Only local development uses python_code fallback on a confirmed missing code column",
+    "Other database errors are not reported as 404; owner and role checks remain",
+    "Create and update work with older local schema; canonical production writes remain unchanged",
+    "Unit, lint and type checks pass"
+  ],
+  "context_refs": [
+    {
+      "path": "src/app/reports/[id]/page.tsx",
+      "start_line": 16,
+      "end_line": 70
+    },
+    {
+      "path": "src/app/reports/[id]/actions.ts",
+      "start_line": 1,
+      "end_line": 38
+    },
+    {
+      "path": "src/app/reports/new/actions.ts",
+      "start_line": 1,
+      "end_line": 39
+    },
+    {
+      "path": "specs/004-reporter-fix-comparison/spec.md",
+      "start_line": 1,
+      "end_line": 65
+    }
+  ]
+}

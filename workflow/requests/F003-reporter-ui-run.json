@@ -1,0 +1,43 @@
+{
+  "task_id": "F003-reporter-ui",
+  "recorded_at": "2026-11-05T10:05:33.868510Z",
+  "workflow": "task_based",
+  "planned_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "actual_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "model_tiers": {
+    "orchestrator": "lightweight",
+    "generator": "lightweight",
+    "code_reviewer": "lightweight",
+    "security_reviewer": "strong",
+    "verifier": "lightweight"
+  },
+  "model_ids": {},
+  "input_tokens": null,
+  "cached_tokens": null,
+  "reasoning_tokens": null,
+  "output_tokens": null,
+  "context_chars": 13589,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": null,
+  "retries": null,
+  "result": "pass",
+  "evidence_paths": [
+    "workflow/evidence/F003-reporter-ui-handoff.json",
+    "workflow/evidence/usage/F003-reporter-ui.start.json"
+  ],
+  "notes": "Draft pending post-turn usage finish. Unit-level verification passed; browser smoke unavailable; independent build environment-blocked. Initial code-review blocker fixed and rechecked. Context chars are prepared excerpts, not tokens. Do not infer usage or savings from model tiers."
+}

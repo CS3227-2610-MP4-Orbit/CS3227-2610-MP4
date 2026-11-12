@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+__pycache__/
+*.pyc
+workflow/*.lock
 /.pnp
 .pnp.*
 .yarn/*
@@ -23,6 +26,9 @@
 # misc
 .DS_Store
 *.pem
+
+# Personal presentation notes and Agentic SE reflection tracking
+/docs/developer-agentic-se/
 
 # debug
 npm-debug.log*

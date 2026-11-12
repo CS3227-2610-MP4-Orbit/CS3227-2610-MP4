@@ -1,0 +1,68 @@
+{
+  "finished_at": "2026-11-07T05:48:12.437810Z",
+  "responses": 53,
+  "root_session_id": "1fe0e712-7024-4e94-a2b8-3553c0ae4f1a",
+  "schema_version": 1,
+  "sessions": {
+    "a17dec01e36d55a20": {
+      "agent_path": "/root/feature_dev_code_reviewer",
+      "model_ids": [
+        "claude-sonnet-5-5"
+      ],
+      "responses": 5,
+      "tool_calls": 8,
+      "usage": {
+        "cache_write_input_tokens": 37538,
+        "cached_input_tokens": 101766,
+        "input_tokens": 139314,
+        "output_tokens": 6165,
+        "reasoning_output_tokens": 3276,
+        "total_tokens": 145479
+      }
+    },
+    "aea0318f718c67d7e": {
+      "agent_path": "/root/general_purpose",
+      "model_ids": [
+        "claude-sonnet-5"
+      ],
+      "responses": 8,
+      "tool_calls": 15,
+      "usage": {
+        "cache_write_input_tokens": 116987,
+        "cached_input_tokens": 713977,
+        "input_tokens": 830980,
+        "output_tokens": 8387,
+        "reasoning_output_tokens": 4605,
+        "total_tokens": 839367
+      }
+    },
+    "root": {
+      "agent_path": "root",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "responses": 40,
+      "tool_calls": 57,
+      "usage": {
+        "cache_write_input_tokens": 77704,
+        "cached_input_tokens": 13728319,
+        "input_tokens": 13806108,
+        "output_tokens": 51537,
+        "reasoning_output_tokens": 11396,
+        "total_tokens": 13857645
+      }
+    }
+  },
+  "source": "local_claude_code_transcript_window",
+  "started_at": "2026-11-07T05:35:58.778123Z",
+  "task_id": "QA002-ai-gateway",
+  "tool_calls": 80,
+  "total_usage": {
+    "cache_write_input_tokens": 232229,
+    "cached_input_tokens": 14544062,
+    "input_tokens": 14776402,
+    "output_tokens": 66089,
+    "reasoning_output_tokens": 19277,
+    "total_tokens": 14842491
+  }
+}

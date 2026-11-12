@@ -1,0 +1,36 @@
+{
+  "finished_at": "2026-11-12T04:44:11.400130Z",
+  "responses": 175,
+  "root_session_id": "1fe0e712-7024-4e94-a2b8-3553c0ae4f1a",
+  "schema_version": 1,
+  "sessions": {
+    "root": {
+      "agent_path": "root",
+      "model_ids": [
+        "claude-opus-5-5"
+      ],
+      "responses": 175,
+      "tool_calls": 187,
+      "usage": {
+        "cache_write_input_tokens": 719169,
+        "cached_input_tokens": 41850213,
+        "input_tokens": 42569762,
+        "output_tokens": 164509,
+        "reasoning_output_tokens": 29935,
+        "total_tokens": 42734271
+      }
+    }
+  },
+  "source": "local_claude_code_transcript_window",
+  "started_at": "2026-11-11T17:59:20.708000Z",
+  "task_id": "UI001-ui-redesign",
+  "tool_calls": 187,
+  "total_usage": {
+    "cache_write_input_tokens": 719169,
+    "cached_input_tokens": 41850213,
+    "input_tokens": 42569762,
+    "output_tokens": 164509,
+    "reasoning_output_tokens": 29935,
+    "total_tokens": 42734271
+  }
+}

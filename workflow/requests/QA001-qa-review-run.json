@@ -1,0 +1,55 @@
+{
+  "task_id": "QA001-qa-review",
+  "recorded_at": "2026-11-07T05:29:40.929148Z",
+  "workflow": "task_based",
+  "planned_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "actual_agents": [
+    "orchestrator",
+    "generator",
+    "code_reviewer",
+    "security_reviewer",
+    "verifier"
+  ],
+  "model_tiers": {
+    "orchestrator": "strong",
+    "generator": "strong",
+    "verifier": "strong",
+    "code_reviewer": "standard",
+    "security_reviewer": "standard"
+  },
+  "model_ids": {
+    "root": [
+      "claude-opus-5-5"
+    ],
+    "/root/feature_dev_code_reviewer": [
+      "claude-sonnet-5-5"
+    ],
+    "/root/general_purpose": [
+      "claude-sonnet-5"
+    ]
+  },
+  "input_tokens": 17053034,
+  "cached_tokens": 16774644,
+  "reasoning_tokens": 19653,
+  "output_tokens": 77346,
+  "context_chars": null,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": 134,
+  "retries": null,
+  "result": "pass",
+  "evidence_paths": [
+    "supabase/tests/qa_review.test.sql",
+    "src/lib/qa/validation.test.ts",
+    "src/lib/qa/queue.test.ts",
+    "workflow/evidence/usage/QA001-qa-review.usage.json"
+  ],
+  "notes": "Claude Code. One session did orchestration, generation and verification; independent read-only code and security reviewers ran in parallel as subagents. Code review found 1 medium (User Guide overstated History) and 2 low issues; security review found nothing exploitable and 1 low consistency gap (decide_fix did not recheck the current role). All four were fixed before verification. Verified: 104 pgTAP, 34 vitest, lint, typecheck, build, and a browser run of reject and approve paths as QA plus the Reporter feedback view. Usage from local Claude Code transcripts: unique API responses inside the task window; see counts-only evidence file. Missing counters remain null."
+}

@@ -1,0 +1,41 @@
+{
+  "task_id": "006-code-improvement",
+  "goal": "Review the implementation against the approved Developer AI Code Improvement plan and maintainability requirements.",
+  "owner": "code_reviewer",
+  "status": "pass_with_follow_up",
+  "spec": "specs/006-developer-code-improvement/spec.md",
+  "context_paths": [
+    "src/app/ai/actions.ts",
+    "src/lib/ai/prompt.ts",
+    "src/lib/ai/code-improvement.ts",
+    "src/app/developer/[reportId]/ai-code-improvement.tsx",
+    "docs/DeveloperGuide.md",
+    "docs/UserGuide.md"
+  ],
+  "decisions": [
+    "The feature is isolated from the debugging advisor by its own feature key, prompt task, normalizer, action, UI, and tests.",
+    "The normalizer uses a strict schema so the UI receives only bounded categories and fields.",
+    "No database migration or workflow mutation is needed because review results are ephemeral."
+  ],
+  "findings": [],
+  "acceptance_criteria": [
+    "Assigned Developer access is enforced server-side.",
+    "Suggestions are explained and categorized.",
+    "Generated code is advisory and inert.",
+    "Existing shared gateway limits and usage records are reused."
+  ],
+  "artifacts": [
+    "src/lib/ai/code-improvement.ts",
+    "src/app/ai/actions.ts",
+    "src/app/developer/[reportId]/ai-code-improvement.tsx"
+  ],
+  "verification": [
+    "git diff --check passed.",
+    "Lint and typecheck passed.",
+    "Focused tests passed."
+  ],
+  "remaining_work": [
+    "Complete database and manual browser verification before release."
+  ],
+  "next_owner": "verification reviewer"
+}

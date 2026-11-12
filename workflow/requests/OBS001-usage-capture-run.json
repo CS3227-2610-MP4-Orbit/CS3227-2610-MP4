@@ -1,0 +1,22 @@
+{
+  "task_id": "OBS001-usage-capture",
+  "recorded_at": "2026-11-05T07:38:05Z",
+  "workflow": "task_based",
+  "planned_agents": ["orchestrator", "generator", "code_reviewer", "security_reviewer", "verifier"],
+  "actual_agents": ["orchestrator", "generator", "code_reviewer", "security_reviewer", "verifier"],
+  "model_tiers": {"orchestrator":"lightweight", "generator":"lightweight", "code_reviewer":"lightweight", "security_reviewer":"strong", "verifier":"lightweight"},
+  "model_ids": {},
+  "input_tokens": null,
+  "cached_tokens": null,
+  "reasoning_tokens": null,
+  "output_tokens": null,
+  "context_chars": 7331,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": null,
+  "retries": null,
+  "result": "pass",
+  "evidence_paths": ["workflow/evidence/OBS001-usage-capture-handoff.json", "workflow/scripts/test_token_usage.py"],
+  "notes": "Collector setup passed independent tests and privacy review. No token delta for this task: start capture did not precede implementation. Context chars are bounded prepared excerpts, not model tokens."
+}
