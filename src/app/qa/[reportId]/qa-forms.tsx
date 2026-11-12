@@ -6,6 +6,7 @@ import { Check, CircleCheck, CircleX, Loader2, Undo2 } from "lucide-react";
 import { AiOutput, AiPanel, aiButton } from "@/components/app/ai-panel";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { draftView } from "@/lib/qa/feedback-draft";
 import { FEEDBACK_MAX } from "@/lib/qa/validation";
 import { cn } from "@/lib/utils";
 
@@ -79,7 +80,7 @@ export function TestCaseForm({ action, revisionId }: { action: Action; revisionI
 
 export function DecisionForm({ action, draftAction, revisionId, revisionNumber, testsKey }: {
   action: Action; draftAction: SuggestAction; revisionId: string; revisionNumber: number;
-  /** Changes whenever the recorded tests change, so a draft based on older results is discarded. */
+  /** Changes whenever the recorded tests change, so a draft based on older results is hidden. */
   testsKey: string;
 }) {
   const [state, formAction, pending] = useActionState(action, emptyState);
@@ -102,7 +103,7 @@ export function DecisionForm({ action, draftAction, revisionId, revisionNumber, 
         <h3 className="text-sm font-semibold">Decide version {revisionNumber}</h3>
         <p className="mt-0.5 text-xs text-muted-foreground">Approving closes the report. Sending it back reopens it for the Developer with your feedback.</p>
       </div>
-      <div className="p-4 pb-0"><FeedbackDraft key={testsKey} action={draftAction} onUse={applyDraft} /></div>
+      <div className="p-4 pb-0"><FeedbackDraft action={draftAction} testsKey={testsKey} onUse={applyDraft} /></div>
       <form action={formAction}>
         <div className="space-y-2 p-4">
           <input type="hidden" name="revisionId" value={revisionId} />
@@ -137,13 +138,15 @@ export function DecisionForm({ action, draftAction, revisionId, revisionNumber, 
  * suggestion until the tester chooses "Use this draft", which only fills the box; the tester can
  * still edit it, and nothing is sent until they decide.
  */
-function FeedbackDraft({ action, onUse }: { action: SuggestAction; onUse: (text: string) => void }) {
+function FeedbackDraft({ action, testsKey, onUse }: { action: SuggestAction; testsKey: string; onUse: (text: string) => void }) {
   const [state, formAction, pending] = useActionState(action, emptySuggestion);
+  const view = draftView(state, testsKey);
   return (
     <AiPanel level={4} headingId="draft-heading" title="AI feedback draft" description="Uses only the tests recorded on this version. Check it against your results before you send it."
       action={<form action={formAction}><Button variant="outline" size="sm" disabled={pending} className={aiButton}>{pending && <Loader2 className="animate-spin" aria-hidden="true" />}{pending ? "Drafting…" : state.ok ? "Draft again" : "Draft from my test results"}</Button></form>}>
       {state.message && <p role="alert" className="text-sm text-destructive">{state.message}</p>}
-      {state.ok && (
+      {view === "stale" && <p role="status" className="text-sm text-muted-foreground">Your recorded tests changed after this draft, so it is hidden. Draft again for one based on the current results.</p>}
+      {view === "show" && (
         <div className="space-y-2.5">
           <AiOutput label="AI draft · not checked">{state.text}</AiOutput>
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">

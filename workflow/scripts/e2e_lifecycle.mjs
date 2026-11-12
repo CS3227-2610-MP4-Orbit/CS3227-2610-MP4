@@ -145,12 +145,10 @@ try {
     await page.fill('textarea[name="actualResult"]', actual);
     await page.locator(`label:has(input[name="outcome"][value="${outcome}"])`).click();
     await page.getByRole("button", { name: "Save test" }).click();
-    const saved = await shows(description);
-    // The feedback-draft panel is keyed on the recorded tests and remounts when the refreshed page
-    // arrives, so wait for that refresh rather than clicking into a panel that is about to reset.
-    await page.waitForLoadState("networkidle");
-    await page.reload();
-    return saved && shows(description);
+    // The form clears when the save finishes. Waiting for that, rather than for the description
+    // text, matters: the description can also appear in the bug details.
+    return page.waitForFunction(() => document.querySelector('textarea[name="description"]')?.value === "")
+      .then(() => shows(description), () => false);
   };
   check("Failing test recorded", await recordTest("round_half(2.5)", "3", "2", "fail"));
   const [drafted, tDraft] = await timed(async () => {

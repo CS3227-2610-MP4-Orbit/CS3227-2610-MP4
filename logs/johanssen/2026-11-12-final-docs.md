@@ -33,3 +33,22 @@ Owner: Johannsen. Tool: Claude Code (Opus 5.5 main session, plus four review sub
 ## Usage
 
 `workflow/evidence/usage/DOC001-final-docs.usage.json`: 87 responses, 89 tool calls, 15.28M input tokens (96.8% cached), 76.1k output tokens (17.9k thinking). The start time was taken from the transcript timestamp of the request, because `start` was not run before the work began.
+
+## Follow-up: fix the lost QA feedback draft (#41)
+
+Prompt: "can you fix it please, then push to pr"
+
+- **Diagnosed before changing code.** A probe logged every server action and refresh, and tagged the AI panels to detect remounts.
+  - The developer-page case did not reproduce, and that page has no remount path. It is left as unconfirmed, most likely an unparseable LLM reply; see the evidence file.
+  - The QA case did reproduce on the deployed dev app: click **Draft** while **Save test** is in flight, and the draft never appears.
+  - Cause: server actions run one at a time, so the draft ran after the save. The save's refresh then changed the panel's `key`, and the remount discarded the answer after its quota was used.
+- **Tests first.** Added `testsKey` and `draftView` tests in `src/lib/qa/feedback-draft.test.ts` and saw them fail.
+- **Fix:**
+  - The draft returns `basedOn`, the tests it used.
+  - The panel shows it only while those match the tests on the page, and otherwise hides it as stale with a note.
+  - The panel is no longer remounted.
+- **Verified:**
+  - Vitest 156/156, lint, typecheck, build.
+  - The race script: deployed old code lost the draft; the fixed build showed it 3 out of 3 times and still hid a stale draft.
+  - The full E2E passed 35/35 on the fixed build, run locally against the dev database and LLM.
+- The E2E script now waits for the test form to clear rather than for text that also appears in the bug details.
