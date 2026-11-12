@@ -2,7 +2,7 @@
 
 ## Current state
 
-Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. The current role workflow requirements and tasks are in `specs/001-developer-bug-workflow/`, with the shared lifecycle specification in `workflow/specs/001-bug-lifecycle/`.
+Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. Each feature's Spec Kit specification, plan and tasks are in `specs/` (`001` to `006`), checked against the constitution in `.specify/memory/constitution.md`. The original shared lifecycle specification is in `workflow/specs/001-bug-lifecycle/`.
 
 | Area | State |
 |---|---|
@@ -11,7 +11,7 @@ Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-lev
 | QA tester: queue, review, tests, decisions, history (`src/app/qa/`) | Implemented |
 | Developer workspace (`src/app/developer/`) | Implemented |
 | Automatic assignment, role home and navigation, demo accounts | Implemented |
-| AI gateway (`src/lib/ai/`) and role-specific AI features | Implemented, two features per role: Reporter code explanation and pre-submission quality check; Developer debugging advisor and code improvement advisor; QA test suggestions and feedback draft. All six run through the one gateway and were exercised on the deployed dev app (`workflow/evidence/E2E-dev-2026-11-12.md`). |
+| AI gateway (`src/lib/ai/`) and role-specific AI features | Implemented, two features per role: Reporter AI bug explainer and AI report draft checker; Developer debugging advisor and code improvement advisor; QA test suggestions and feedback draft. All six run through the one gateway and were exercised on the deployed dev app (`workflow/evidence/E2E-dev-2026-11-12.md`). |
 
 ## Design
 
@@ -25,6 +25,12 @@ Migration `20261107010000_assign_reports.sql` adds an after-insert trigger to `b
 
 Demo accounts: `DEMO_PASSWORD=... npm run seed:demo -- <local|dev|prod>` (`scripts/seed-demo-accounts.mjs`) creates or updates two accounts per role and sets their roles. It reads `.env.local` or the `DEV_`/`PROD_` keys in `.env.setup`, and prints only emails and roles.
 
+For local AI-enabled development, `.env.local` must use the exact server-side variable names
+`SOCLAAS_BASE_URL`, `SOCLAAS_API_KEY`, and `SOCLAAS_MODEL`, alongside the Supabase URL,
+publishable key, and secret key. Restart the Next.js server after changing these values. The
+Developer fix validator uses the Lezer Python grammar in JavaScript, so a system Python executable
+is not required.
+
 ### Developer workspace
 
 The Developer workspace is implemented under `src/app/developer/` and uses the assigned
@@ -37,8 +43,9 @@ whether another report exists.
 The Developer workflow is:
 
 1. Start an `open` report through the `start_work` security-definer function.
-2. Add investigation notes while the report is `open` or `in_progress`. A note author may edit
-   their own note before QA handoff; notes are read-only after `awaiting_qa` or `closed`.
+2. Add at least one investigation note while the report is `open` or `in_progress`; a note is
+   required before the fix can be handed to QA. A note author may edit their own note before QA
+   handoff; notes are read-only after `awaiting_qa` or `closed`.
 3. Submit corrected Python through the `submit_fix` lifecycle function. The original code is
    never replaced; each submission creates the next immutable revision and moves the report to
    `awaiting_qa`.
@@ -75,7 +82,7 @@ full end-to-end workflow has been manually validated.
 
 All SoC LLM calls go through `runAiFeature` in `src/lib/ai/gateway.ts`, which is server-only. `src/lib/ai/prompt.ts` holds the parts that can be tested on their own.
 
-1. **Each feature belongs to one role.** `FEATURES` binds `reporter_code_explanation` and `reporter_quality_check` to the Reporter, `developer_debugging` and `developer_code_improvement` to the Developer, and `qa_test_suggestions` and `qa_feedback_draft` to QA. The gateway refuses a feature requested for another role. Each caller checks the role before requesting AI. Report-detail callers load context through the user's session, so RLS limits the data to reports the user may see. The draft-quality action accepts only the six current form fields and has no report ID or report read.
+1. **Each feature belongs to one role.** `FEATURES` binds the Reporter's two tools, `reporter_code_explanation` (AI bug explainer) and `reporter_quality_check` (AI report draft checker), `developer_debugging` and `developer_code_improvement` to the Developer, and `qa_test_suggestions` and `qa_feedback_draft` to QA. The gateway refuses a feature requested for another role. Each caller checks the role before requesting AI. Report-detail callers load context through the user's session, so RLS limits the data to reports the user may see. The AI report draft checker accepts only the six current form fields and has no report ID or report read.
 2. **Bounded input and output.** Each context field is at most 20,000 characters, the same limit the database puts on code, and the total is at most 45,000. Larger requests are refused rather than truncated. Each feature caps the tokens the model may return. An answer longer than 6,000 characters, or one the provider cut at the token cap, is marked as shortened.
 3. **Prompt boundaries.** The system prompt holds the fixed rules and the task. It is the same for every request, so the provider can reuse its prompt cache. Report data goes in the user message between a boundary marker that is random for each request. Copies of the marker are removed from the data, so text in a report cannot close the block and add instructions.
 4. **Limits.** Each call first inserts a `pending` row in `ai_usage`. It then counts recent rows: 3 a minute and 20 a day per user and feature, and 20 a minute across the app to stay under the provider's rate. Because the row is inserted before counting, simultaneous requests count against each other. Requests the app refuses (`rate_limited`, `daily_limit`, `busy`) do not use up quota. A provider 429 is recorded as `provider_busy` and does count, because it reached the provider. A row still `pending` after 2 minutes was abandoned and stops counting, so a crash cannot lock a user out.
@@ -86,14 +93,14 @@ All SoC LLM calls go through `runAiFeature` in `src/lib/ai/gateway.ts`, which is
 
 To add a role's feature, write a server action that checks the role, loads the context through the user's session, and calls `runAiFeature({ feature, userId, role, reportId, context })`. Then show `text` labelled as an AI suggestion. `src/app/qa/[reportId]/actions.ts` (`suggestTests`) is the reference. The tests are in `src/lib/ai/gateway.test.ts`.
 
-The New Report quality check is an optional action separate from `createReport`. It checks the signed-in Reporter, validates the six current draft fields, and calls the gateway with `reportId: null`. A blank draft is refused before the gateway. No draft or response is written to `bug_reports` or usage logs. The browser keeps the draft and marks a prior suggestion stale after any field changes, including the Python editor. The normal submission action remains the only way this page creates a report.
+The Reporter has two separate AI tools. The **AI bug explainer** is `explainReport` in `src/app/reports/[id]/ai-actions.ts`. It checks the signed-in Reporter, loads that Reporter's saved report through the session, and calls the gateway with `reporter_code_explanation`. The panel on the report page shows the answer as an unverified suggestion. It does not edit the report or run the code. The **AI report draft checker** is `checkReportQuality` in `src/app/reports/new/check-quality.ts`, an optional action separate from `createReport`. It checks the signed-in Reporter, validates the six current draft fields, and calls the gateway with `reporter_quality_check` and `reportId: null`. A blank draft is refused before the gateway. No draft or response is written to `bug_reports` or usage logs. The browser keeps the draft and marks a prior suggestion stale after any field changes, including the Python editor. The normal submission action remains the only way this page creates a report.
 
 ## Development process
 
-Start at `workflow/README.md`. `.agents/skills/agent-coordination` and `agent-handoff` provide reusable Codex instructions. `workflow/config.json` defines role budgets; `workflow/agents/prompts/` defines specialist boundaries; `workflow/scripts/agent_workflow.py` plans routes, packs bounded context, records real usage and exports a CSV table. `workflow/templates/` holds task, handoff, memory and log formats; `workflow/scripts/check_workflow.py` validates structure and evidence; `workflow/experiments.md` defines comparisons. `workflow/scripts/token_usage.py` (Codex) and `claude_usage.py` (Claude Code) capture counts-only token usage for a task into `workflow/evidence/usage/`. `workflow/scripts/e2e_lifecycle.mjs` drives the whole bug lifecycle, including each role's AI features, through the UI of a deployed environment; its latest results are in `workflow/evidence/E2E-dev-2026-11-12.md`. `.github/workflows/` holds CI (`ci.yml`), the Supabase and Vercel deployment (`deploy.yml`, with separate development and production environments) and the product website (`pages.yml`, which publishes `website/` to GitHub Pages).
+Start at `workflow/README.md`. `.agents/skills/agent-coordination` and `agent-handoff` provide reusable Codex instructions. `workflow/config.json` defines role budgets; `workflow/agents/prompts/` defines specialist boundaries; `workflow/scripts/agent_workflow.py` plans routes, packs bounded context, records real usage and exports a CSV table. `workflow/templates/` holds task, handoff, memory and log formats; `workflow/scripts/check_workflow.py` validates structure and evidence; `workflow/experiments.md` defines comparisons. `workflow/scripts/token_usage.py` (Codex) and `claude_usage.py` (Claude Code) capture counts-only token usage for a task into `workflow/evidence/usage/`, and `workflow/scripts/plot_usage.py` draws the charts in `docs/Reflections.md` from those files (needs matplotlib). `workflow/scripts/e2e_lifecycle.mjs` drives the whole bug lifecycle, including each role's AI features, through the UI of a deployed environment; its latest results are in `workflow/evidence/E2E-dev-2026-11-12.md`. `.github/workflows/` holds CI (`ci.yml`), the Supabase and Vercel deployment (`deploy.yml`, with separate development and production environments) and the product website (`pages.yml`, which publishes `website/` to GitHub Pages).
 
 ## Acknowledgements
 
-The project requirements and three-role feature plan came from the team's supplied assignment text. The agent roles and resource-aware ideas were adapted from the supplied workflow PDF. The repository already contained a Next.js/Supabase/Vercel starter; its origin and any reused code must be cited by the team before release. GitHub Spec Kit is an optional toolkit; installation instructions are in `workflow/SpecKit.md`.
+The project requirements and three-role feature plan came from the team's supplied assignment text. The agent roles and resource-aware ideas were adapted from the supplied workflow PDF. The repository began from a Next.js/Supabase/Vercel scaffold for a hackathon app, committed by Johannsen on 31 Oct 2026 (`81dd011`, "Scaffold HackHub"). Its hackathon tables are dropped by `20261104000000_bug_lifecycle.sql` and its pages were rewritten. What is still used unchanged is infrastructure: the Supabase client helpers and session proxy (`src/lib/supabase/`, `src/proxy.ts`), `supabase/config.toml`, and the TypeScript, ESLint, Next.js and Vercel configuration. Every feature was specified, planned and broken into tasks with [GitHub Spec Kit](https://github.com/github/spec-kit) 1.3.0; installation is recorded in `workflow/SpecKit.md`.
 
 The interface is built with [shadcn/ui](https://ui.shadcn.com) (MIT): its components are copied into `src/components/ui/` and run on [Radix UI](https://www.radix-ui.com) primitives (MIT). Icons are [Lucide](https://lucide.dev) (ISC). Text uses the [Geist and Geist Mono](https://vercel.com/font) typefaces (SIL Open Font License), loaded through `next/font`. The layout drew on public examples rather than copied code: Linear's issue lists, Sentry's issue-details page, GitHub's split diff, the shadcn sidebar and dashboard blocks, and the Testify bug-tracking dashboard concept on Dribbble.
