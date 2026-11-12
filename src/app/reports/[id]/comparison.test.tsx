@@ -19,7 +19,7 @@ describe("FixComparison", () => {
     expect(selectRevision(versions, "revision-1")?.code).toBe("print(1)");
     const html = renderToStaticMarkup(<FixComparison original="print(0)" revisions={versions} />);
     expect(html).toContain("Original versus proposed fix");
-    expect(html).toContain("Version 2 by Developer account dev12345-12345678");
+    expect(html).toContain("Version 2 by the Developer");
     expect(html).toContain("Version 1");
     expect(html).toContain("Original code");
     expect(html).toContain("Proposed fix");

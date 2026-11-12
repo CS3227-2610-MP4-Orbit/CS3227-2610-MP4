@@ -96,7 +96,7 @@ export function FixComparison({ original, revisions, loadError = false }: Props)
     </div>
     {loadError ? <Notice tone="error">Could not load proposed fixes. Please try again later.</Notice> : selected ? <>
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-        <p><span className="font-medium text-foreground">Version {selected.revision_number} by {selected.author_name?.trim() || `Developer account ${selected.author_id}`}</span> · <time dateTime={selected.created_at}>{formatDateTime(selected.created_at)}</time></p>
+        <p><span className="font-medium text-foreground">Version {selected.revision_number} by {selected.author_name?.trim() || "the Developer"}</span> · <time dateTime={selected.created_at}>{formatDateTime(selected.created_at)}</time></p>
         {ordered.length > 1 && <span className="text-xs">Latest version is selected first.</span>}
       </div>
       {selected.note && <p className="rounded-lg border-l-2 border-sky-400 bg-sky-50/60 px-3 py-2 text-sm break-words whitespace-pre-wrap text-foreground"><span className="font-medium">Developer note:</span> {selected.note}</p>}
