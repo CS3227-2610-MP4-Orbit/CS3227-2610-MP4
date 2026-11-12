@@ -48,7 +48,8 @@ The Developer workflow is:
 6. If QA rejects a revision, read the feedback, create another revision, and repeat the cycle.
 
 Developer input is bounded to 20,000 characters for Python code and 5,000 characters for notes
-and submission notes. Corrected Python is syntax-checked as data; submitted code is never
+and submission notes. Corrected Python is syntax-checked as data with the Lezer Python grammar in JavaScript
+(`src/lib/developer/python-validation.ts`), because the Vercel runtime has no Python binary; submitted code is never
 executed or automatically applied. Authentication, role checks, assignment checks, lifecycle
 transitions, immutable revisions and note-edit restrictions are enforced server-side and by
 Supabase RLS rather than only by hidden UI controls.
