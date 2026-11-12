@@ -137,6 +137,10 @@ In EXP001, the arm told to read the whole repository first (arm D) used 2.77× t
 
 ### How does the way context is organized affect finding and following instructions?
 
+![Context loaded in four layers: project rules, role prompt, task pack, and files retrieved on demand](images/context-layers.png)
+
+Each agent's context is loaded in four layers, smallest and most stable first. The first three layers are the same on every call within a task, so they form the cached prefix. Only the fourth layer, files read during the work, grows per step. Most of each role's instructions sit in layers 1 and 2, where every call sees them in the same place.
+
 In our sessions, instructions placed in stable, predictable spots were followed reliably:
 
 - the first lines of `AGENTS.md`
@@ -210,6 +214,10 @@ Every measured task was **95.9–99.6% cached** by input tokens. What kept it hi
 - a stable prefix: system prompt, `AGENTS.md`, role prompt
 - appending rather than editing earlier context
 
+![F005 input tokens per agent, split into cached and uncached input](images/f005-input-by-agent.png)
+
+F005 shows this per agent. Every agent was at least 98.0% cached, but caching did not shrink the totals: the two reviewers still processed about 18.5M input tokens each. Most of that is the same prefix reread on every response. Caching makes rereading cheaper, but it doesn't reduce how much is reread.
+
 The cache misses we can see are the cache writes, when new context first enters the cache. In the Claude Code tasks these equal the uncached input exactly (for example, QA001: 278k).
 
 **How much it saved.** Assume the provider's published pricing: cached reads at 0.1× the input price and cache writes at 1.25×. Then the billed input for each task is **10.4–13.7%** of what it would have been without caching (QA001: 11.9%). In other words, caching cut effective input cost by roughly 86–90%.
@@ -251,6 +259,12 @@ Saved reasoning would help across sessions. Reasoning tokens are not kept betwee
 | Multi-agent feature work with parallel reviewers (F005) | 58.0M |
 | Long single-agent visual work (UI001) | 42.6M |
 | Single features with two reviewers (QA001–QA004, F002) | 8.5–25.2M |
+
+![Input tokens per Reporter feature, split by agent](images/reporter-features-input-by-agent.png)
+
+The three Reporter features used the same workflow and counter, so their split by agent can be compared. In the two features without AI, review was a small share of input: 5.4% for F002 and 9.6% for F004. In F005, which calls the AI gateway, review was 63.9%. Its security reviewer alone read 18.5M input tokens, about 27 times F004's security reviewer and about 90 times F002's. That review found F005's only product defect, a low-severity role-visibility issue: **Check my report** was rendered for Developer and QA users, though the server action already refused them. It was fixed before merge ([evidence](../workflow/evidence/005-check-report-quality-security.md)). Each feature ran once, and the features differ in size, so this compares three cases rather than being a controlled experiment.
+
+The charts are generated from the usage files by `python3 workflow/scripts/plot_usage.py`.
 
 Building a feature costs about **37,000×** one use of it. QA002's log measured the AI gateway build at that ratio to one QA suggestion. In the E2E run each app call averaged under 400 input tokens.
 
