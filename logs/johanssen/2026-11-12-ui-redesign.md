@@ -29,3 +29,8 @@ I asked Claude Code to redesign every screen with shadcn/ui so BugFlow looks lik
 - Fixed a phone hydration mismatch: the sidebar hydrates later inside Suspense, so it now reads the breakpoint itself rather than from context.
 - Credits for shadcn/ui, Radix, Lucide, Geist and the design references were added to the Developer Guide acknowledgements.
 - Usage: `workflow/evidence/usage/UI001-ui-redesign.usage.json`, 42.7M tokens (98% cached), 175 responses, 187 tool calls. `start` was not run when the task began, so the start file uses the timestamp of the request that started the UI task, taken from the session transcript. The window covers the redesign, the browser checks, the PRs and the merge.
+
+## Release and the fix-submission bug
+- Released develop to master (#36). Production Supabase had been paused for inactivity. After it was restored, the deploy applied all 8 migrations, deployed to Vercel and passed the site check. The six demo accounts were seeded on production with the password the User Guide publishes.
+- The lifecycle test against production found that **no Developer could submit a fix**. `isValidPythonSyntax` spawned `python` for `ast.parse`, and Vercel's Node runtime has no Python binary, so every fix got "Corrected code must be valid Python syntax." Dev had the same problem since 7 Nov.
+- Fix: the check now uses the Lezer Python grammar (already installed for the editor) in JavaScript. Compared with `ast.parse` on 39 snippets, it accepted all valid ones and missed 4 invalid ones (Python 2 `print`, an inconsistent dedent, `1 = x`, mixed tab/space indents). It is lenient in the safe direction: code is never run and QA tests every revision. The vitest suite no longer needs `PYTHON_BIN`.
