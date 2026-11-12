@@ -42,8 +42,8 @@ than reported as a successful check.
 6. Edit the note as its author while the report is `in_progress`, then confirm the body and
    `updated_at` change while the author and `created_at` remain unchanged.
 7. Confirm note edits are rejected after the report enters `awaiting_qa`.
-8. Submit corrected code and confirm a new revision is created and the report changes to
-   `awaiting_qa`.
+8. After at least one investigation note exists, submit corrected code and confirm a new revision
+   is created and the report changes to `awaiting_qa`.
 9. Confirm the original code is unchanged and the comparison distinguishes changed lines.
 10. Confirm the Developer cannot approve or reject the handoff.
 11. As QA, reject the latest revision with feedback using the QA feature or approved database

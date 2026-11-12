@@ -23,7 +23,7 @@ export async function submitFix(_previousState: DeveloperActionState, formData: 
   if (!note.success) return { ok: false, message: safeValidationMessage(note.error) };
   const supabase = await createClient();
   const { error } = await supabase.rpc("submit_fix", { report: reportId.data, fixed_code: code.data, submission_note: note.data });
-  if (error) return { ok: false, message: "The fix could not be submitted. Check that the report is assigned to you and in progress." };
+  if (error) return { ok: false, message: "The fix could not be submitted. Check that the report is assigned to you, in progress, and has at least one investigation note." };
   revalidatePath(`/developer/${reportId.data}`);
   return { ok: true, message: "Fix submitted to QA." };
 }

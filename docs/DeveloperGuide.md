@@ -43,8 +43,9 @@ whether another report exists.
 The Developer workflow is:
 
 1. Start an `open` report through the `start_work` security-definer function.
-2. Add investigation notes while the report is `open` or `in_progress`. A note author may edit
-   their own note before QA handoff; notes are read-only after `awaiting_qa` or `closed`.
+2. Add at least one investigation note while the report is `open` or `in_progress`; a note is
+   required before the fix can be handed to QA. A note author may edit their own note before QA
+   handoff; notes are read-only after `awaiting_qa` or `closed`.
 3. Submit corrected Python through the `submit_fix` lifecycle function. The original code is
    never replaced; each submission creates the next immutable revision and moves the report to
    `awaiting_qa`.

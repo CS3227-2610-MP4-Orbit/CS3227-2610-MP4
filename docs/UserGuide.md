@@ -93,7 +93,8 @@ On the report page you can:
 1. Read the original Python code, error message, expected and actual behavior, and reproduction
    steps.
 2. Select **Start investigation** for an `open` report. The status changes to **in progress**.
-3. Add investigation notes while the report is `open` or `in progress`.
+3. Add at least one investigation note while the report is `open` or `in progress`; a note is
+   required before you can submit corrected code to QA.
 4. Edit your own notes while the report is still being investigated. Notes become read-only once
    the fix is sent to QA.
 
