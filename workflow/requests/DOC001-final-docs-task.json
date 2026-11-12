@@ -1,0 +1,30 @@
+{
+  "task_id": "DOC001-final-docs",
+  "goal": "Close the submission gaps: README, Reporter User Guide section, product website, recorded dev E2E run and Reflections (issues #14, #18, #19, #20).",
+  "owner": "johannsen",
+  "owned_paths": [
+    "README.md",
+    "docs/UserGuide.md",
+    "docs/Reflections.md",
+    "website/",
+    ".github/workflows/pages.yml",
+    "workflow/scripts/e2e_lifecycle.mjs",
+    "workflow/evidence/",
+    "src/app/reports/[id]/comparison.tsx",
+    "src/app/reports/[id]/comparison.test.tsx"
+  ],
+  "spec": "workflow/specs/001-bug-lifecycle/spec.md",
+  "complexity": "simple",
+  "security_sensitive": false,
+  "needs_exploration": false,
+  "acceptance_criteria": [
+    "The README links the dev and prod apps, the guides and the website.",
+    "The Reporter section of the User Guide matches the deployed app; checked by the E2E run.",
+    "The website is published with GitHub Pages.",
+    "The dev E2E run is recorded with real results.",
+    "Every Reflections prompt is answered with an example and a measured number, and limitations are stated."
+  ],
+  "context_refs": [
+    { "path": "docs/UserGuide.md", "start_line": 1, "end_line": 80 }
+  ]
+}
