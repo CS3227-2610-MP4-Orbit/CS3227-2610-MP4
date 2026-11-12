@@ -2,7 +2,7 @@
 
 ## Current state
 
-Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. Requirements and tasks are in `specs/001-python-bug-lifecycle/`.
+Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-level security), deployed to Vercel by GitHub Actions. The current role workflow requirements and tasks are in `specs/001-developer-bug-workflow/`, with the shared lifecycle specification in `workflow/specs/001-bug-lifecycle/`.
 
 | Area | State |
 |---|---|
@@ -25,6 +25,47 @@ Migration `20261107010000_assign_reports.sql` adds an after-insert trigger to `b
 
 Demo accounts: `DEMO_PASSWORD=... npm run seed:demo -- <local|dev|prod>` (`scripts/seed-demo-accounts.mjs`) creates or updates two accounts per role and sets their roles. It reads `.env.local` or the `DEV_`/`PROD_` keys in `.env.setup`, and prints only emails and roles.
 
+### Developer workspace
+
+The Developer workspace is implemented under `src/app/developer/` and uses the assigned
+Developer as the access boundary. `/developer` lists only reports assigned to the signed-in
+Developer. `/developer/[reportId]` loads the original report, investigation notes, immutable
+fix revisions, QA decisions and the current lifecycle status through the signed-in Supabase
+session. Unassigned or unknown reports are returned as not found so the page does not disclose
+whether another report exists.
+
+The Developer workflow is:
+
+1. Start an `open` report through the `start_work` security-definer function.
+2. Add investigation notes while the report is `open` or `in_progress`. A note author may edit
+   their own note before QA handoff; notes are read-only after `awaiting_qa` or `closed`.
+3. Submit corrected Python through the `submit_fix` lifecycle function. The original code is
+   never replaced; each submission creates the next immutable revision and moves the report to
+   `awaiting_qa`.
+4. Review the alignment-aware original-versus-revision comparison and revision history.
+5. Wait for QA. The Developer workspace exposes the handoff state but does not expose QA
+   approval or rejection controls.
+6. If QA rejects a revision, read the feedback, create another revision, and repeat the cycle.
+
+Developer input is bounded to 20,000 characters for Python code and 5,000 characters for notes
+and submission notes. Corrected Python is syntax-checked as data; submitted code is never
+executed or automatically applied. Authentication, role checks, assignment checks, lifecycle
+transitions, immutable revisions and note-edit restrictions are enforced server-side and by
+Supabase RLS rather than only by hidden UI controls.
+
+The Developer has two separate AI features. The **AI debugging advisor** reads only the assigned
+report's bounded code/context and recent investigation notes to suggest possible causes and fix
+directions. The **AI code improvement advisor** reviews the same bounded assigned context for
+readability, maintainability, performance, SRP and DRY opportunities. It returns categorized
+structured suggestions with rationale, benefits and trade-offs. Both features are advisory-only:
+they cannot execute code, create revisions, change notes, or change report status. Code
+improvement output is normalized and rejected if it is not valid structured content, and any
+illustrative code is rendered as inert suggested text.
+
+The automated Developer review evidence is stored under `workflow/evidence/`. The authenticated
+manual quickstart remains a separate verification step and must be recorded before claiming the
+full end-to-end workflow has been manually validated.
+
 ### QA workspace
 
 `src/lib/qa/queries.ts` loads the queue and the review page, and only returns reports where the caller is the assigned QA tester. `src/app/qa/[reportId]/actions.ts` records tests by inserting into `test_cases`. The insert policy only accepts the assigned QA tester and the latest revision awaiting QA. Decisions go through `decide_fix`. Migration `20261107000000_qa_feedback_to_reporter.sql` makes `decide_fix` also write non-empty feedback to `bug_feedback`, so the Reporter sees it. Any error is shown to the user as a plain message, never a database error.
@@ -33,7 +74,7 @@ Demo accounts: `DEMO_PASSWORD=... npm run seed:demo -- <local|dev|prod>` (`scrip
 
 All SoC LLM calls go through `runAiFeature` in `src/lib/ai/gateway.ts`, which is server-only. `src/lib/ai/prompt.ts` holds the parts that can be tested on their own.
 
-1. **Each feature belongs to one role.** `FEATURES` binds `reporter_code_explanation` and `reporter_quality_check` to the Reporter, `developer_debugging` to the Developer, and `qa_test_suggestions` and `qa_feedback_draft` to QA. The gateway refuses a feature requested for another role. Each caller checks the role before requesting AI. Report-detail callers load context through the user's session, so RLS limits the data to reports the user may see. The draft-quality action accepts only the six current form fields and has no report ID or report read.
+1. **Each feature belongs to one role.** `FEATURES` binds `reporter_code_explanation` and `reporter_quality_check` to the Reporter, `developer_debugging` and `developer_code_improvement` to the Developer, and `qa_test_suggestions` and `qa_feedback_draft` to QA. The gateway refuses a feature requested for another role. Each caller checks the role before requesting AI. Report-detail callers load context through the user's session, so RLS limits the data to reports the user may see. The draft-quality action accepts only the six current form fields and has no report ID or report read.
 2. **Bounded input and output.** Each context field is at most 20,000 characters, the same limit the database puts on code, and the total is at most 45,000. Larger requests are refused rather than truncated. Each feature caps the tokens the model may return. An answer longer than 6,000 characters, or one the provider cut at the token cap, is marked as shortened.
 3. **Prompt boundaries.** The system prompt holds the fixed rules and the task. It is the same for every request, so the provider can reuse its prompt cache. Report data goes in the user message between a boundary marker that is random for each request. Copies of the marker are removed from the data, so text in a report cannot close the block and add instructions.
 4. **Limits.** Each call first inserts a `pending` row in `ai_usage`. It then counts recent rows: 3 a minute and 20 a day per user and feature, and 20 a minute across the app to stay under the provider's rate. Because the row is inserted before counting, simultaneous requests count against each other. Requests the app refuses (`rate_limited`, `daily_limit`, `busy`) do not use up quota. A provider 429 is recorded as `provider_busy` and does count, because it reached the provider. A row still `pending` after 2 minutes was abandoned and stops counting, so a crash cannot lock a user out.

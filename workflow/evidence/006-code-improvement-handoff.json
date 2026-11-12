@@ -1,0 +1,53 @@
+{
+  "task_id": "006-code-improvement",
+  "goal": "Implement the advisory AI Code Improvement feature for assigned Developer reports.",
+  "owner": "jordan",
+  "status": "not_ready_for_release",
+  "spec": "specs/006-developer-code-improvement/spec.md",
+  "context_paths": [
+    "specs/006-developer-code-improvement/spec.md",
+    "specs/006-developer-code-improvement/plan.md",
+    "specs/006-developer-code-improvement/tasks.md",
+    "developer/skills/ai-security-review/SKILL.md",
+    "developer/skills/developer-feature-implementation/SKILL.md",
+    "developer/skills/verification-review/SKILL.md"
+  ],
+  "decisions": [
+    "Reuse the existing server-only AI gateway and ai_usage accounting; do not add persistence for review results.",
+    "Return a bounded JSON review and reject malformed provider output rather than displaying arbitrary provider text.",
+    "Reject oversized code or supporting context before provider use; do not silently truncate the improvement request.",
+    "Keep the feature advisory-only with no execution, revision, note, assignment, or lifecycle mutation."
+  ],
+  "findings": [
+    "The first coordination context pack exceeded the configured 240-line budget; it was narrowed to 200 lines before claiming the task.",
+    "The build passed with an existing warning about dynamic filesystem tracing in python-validation.ts; this feature does not introduce that warning."
+  ],
+  "acceptance_criteria": [
+    "Only an authenticated assigned Developer can request the review.",
+    "Suggestions include category, rationale, benefit, and trade-off fields.",
+    "Generated code remains inert suggested text and cannot be applied automatically.",
+    "Security and malformed-provider cases are covered by focused tests."
+  ],
+  "artifacts": [
+    "src/lib/ai/code-improvement.ts",
+    "src/lib/ai/prompt.ts",
+    "src/app/ai/actions.ts",
+    "src/app/developer/[reportId]/ai-code-improvement.tsx",
+    "src/lib/ai/code-improvement.test.ts",
+    "src/lib/ai/code-improvement.security.test.ts",
+    "src/app/ai/actions.security.test.ts",
+    "src/app/developer/[reportId]/ai-code-improvement.test.tsx"
+  ],
+  "verification": [
+    "Focused Vitest run: 5 files passed, 18 tests passed after the final redaction change.",
+    "npm run lint passed.",
+    "npm run typecheck passed.",
+    "npm test passed: 28 files, 132 tests.",
+    "npm run build passed with one pre-existing tracing warning."
+  ],
+  "remaining_work": [
+    "Run the database test command in an environment where the local Supabase CLI can write telemetry.",
+    "Complete final security and verification review records, then release the workflow claim."
+  ],
+  "next_owner": "verification reviewer"
+}

@@ -8,6 +8,7 @@ import { FixForm } from "./fix-form";
 import { QaFeedback } from "./qa-feedback";
 import { QaHandoff } from "./qa-handoff";
 import { DeveloperAiAssistant } from "./ai-assistant";
+import { DeveloperCodeImprovement } from "./ai-code-improvement";
 
 export default async function DeveloperReportPage({ params }: { params: Promise<{ reportId: string }> }) {
   const { reportId } = await params;
@@ -60,6 +61,7 @@ export default async function DeveloperReportPage({ params }: { params: Promise<
         submittedAt={revisions.at(-1)?.created_at}
       />
       <DeveloperAiAssistant reportId={report.id} />
+      <DeveloperCodeImprovement reportId={report.id} />
 
       {decisions.filter((decision) => decision.verdict === "reject").map((decision) => {
         const revision = revisions.find((item) => item.id === decision.revision_id);

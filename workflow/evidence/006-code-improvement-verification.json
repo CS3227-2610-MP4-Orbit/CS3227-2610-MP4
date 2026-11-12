@@ -1,0 +1,67 @@
+{
+  "task_id": "006-code-improvement",
+  "goal": "Verify AI Code Improvement against the SDD acceptance criteria and repository quality checks.",
+  "owner": "verifier",
+  "status": "not_ready_for_release",
+  "spec": "specs/006-developer-code-improvement/spec.md",
+  "context_paths": [
+    "specs/006-developer-code-improvement/spec.md",
+    "specs/006-developer-code-improvement/quickstart.md",
+    "workflow/evidence/006-code-improvement-security-review.json",
+    "workflow/evidence/006-code-improvement-code-review.json"
+  ],
+  "decisions": [
+    "Application-level acceptance criteria are verified; the release gate remains open for database and manual checks.",
+    "The existing build warning is recorded as an unrelated pre-existing warning rather than silently ignored."
+  ],
+  "findings": [
+    "Supabase test execution is blocked by a Windows telemetry-file permission error.",
+    "Authenticated browser quickstart evidence has not yet been collected."
+  ],
+  "acceptance_criteria": [
+    {
+      "criterion": "Assigned Developer can request a categorized advisory review.",
+      "evidence": "requestDeveloperCodeImprovement and action tests; focused suite passed.",
+      "status": "pass"
+    },
+    {
+      "criterion": "Unauthorized, non-Developer, stale/closed, and oversized requests are refused safely.",
+      "evidence": "actions.security.test.ts and actions.test.ts; focused suite passed.",
+      "status": "pass"
+    },
+    {
+      "criterion": "Suggestions include rationale, benefit, trade-off, and optional illustrative code.",
+      "evidence": "Strict normalizer and UI rendering tests passed.",
+      "status": "pass"
+    },
+    {
+      "criterion": "No execution, automatic patching, persistence, or workflow mutation occurs.",
+      "evidence": "Server action only reads report context and calls the AI gateway; UI has no apply/execute control.",
+      "status": "pass"
+    },
+    {
+      "criterion": "Release database and manual verification evidence is complete.",
+      "evidence": "Supabase test command failed before database execution due Windows telemetry-file EPERM; browser quickstart not yet run.",
+      "status": "blocked"
+    }
+  ],
+  "verification": [
+    "npm run lint: passed",
+    "npm run typecheck: passed",
+    "npm test: 28 files and 132 tests passed",
+    "npm run build: passed with existing python-validation dynamic filesystem tracing warning",
+    "python workflow/scripts/check_workflow.py: passed",
+    "python workflow/scripts/test_agent_workflow.py: 7 tests passed",
+    "npm run test:db: blocked by Supabase CLI telemetry-file EPERM"
+  ],
+  "artifacts": [
+    "workflow/evidence/006-code-improvement-verification.json",
+    "specs/006-developer-code-improvement/quickstart.md"
+  ],
+  "remaining_work": [
+    "Run database tests successfully.",
+    "Run the authenticated manual quickstart and record its evidence.",
+    "Rerun the full suite and build after final review if any additional changes are made."
+  ],
+  "next_owner": "jordan"
+}

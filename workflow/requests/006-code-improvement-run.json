@@ -1,0 +1,33 @@
+{
+  "task_id": "006-code-improvement",
+  "recorded_at": "2026-11-11T14:47:00Z",
+  "workflow": "task_based",
+  "planned_agents": ["orchestrator", "generator", "code_reviewer", "security_reviewer", "verifier"],
+  "actual_agents": ["orchestrator"],
+  "model_tiers": {
+    "orchestrator": "lightweight",
+    "generator": "lightweight",
+    "code_reviewer": "lightweight",
+    "security_reviewer": "strong",
+    "verifier": "lightweight"
+  },
+  "model_ids": {},
+  "input_tokens": null,
+  "cached_tokens": null,
+  "reasoning_tokens": null,
+  "output_tokens": null,
+  "context_chars": 11545,
+  "latency_ms": null,
+  "idle_ms": null,
+  "blocked_ms": null,
+  "tool_calls": null,
+  "retries": 0,
+  "result": "unmeasured",
+  "evidence_paths": [
+    "workflow/evidence/006-code-improvement-handoff.json",
+    "workflow/evidence/006-code-improvement-code-review.json",
+    "workflow/evidence/006-code-improvement-security-review.json",
+    "workflow/evidence/006-code-improvement-verification.json"
+  ],
+  "notes": "The route selected specialist roles, but no separate subagents were spawned; the orchestrator performed the bounded implementation and recorded the independent review checks without claiming unavailable agent or model measurements."
+}
