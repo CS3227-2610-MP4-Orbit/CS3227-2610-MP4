@@ -1,6 +1,6 @@
 # Install and initialize GitHub Spec Kit
 
-These are steps for the team to run on a reviewable branch. Spec Kit is **not installed in this repository yet**. The existing `workflow/specs/` remains the source to migrate or reference; initialization will not automatically import it.
+Spec Kit **1.3.0 is installed** in this repository with the Codex integration (`.specify/init-options.json`). The constitution is `.specify/memory/constitution.md`, feature specs are in `specs/` (001–006), and the `$speckit-*` skills are in `.agents/skills/`. The steps below record how it was installed so it can be reproduced. `workflow/specs/001-bug-lifecycle/` is the original spec from before Spec Kit; initialization did not import it.
 
 1. Commit or back up the current repository changes, then create a branch for adopting Spec Kit. The repository is non-empty and has an `AGENTS.md`, so review generated files before merging.
 2. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if `uv --version` fails. On macOS with Homebrew: `brew install uv`.

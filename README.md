@@ -27,7 +27,7 @@ Every status change is enforced in the database (row-level security and `SECURIT
 
 | Member | Role in the app | GitHub |
 | --- | --- | --- |
-| Joseph | Reporter | |
+| Joseph | Reporter | josephkwok001 |
 | Jordan | Developer | JordanGoh4 |
 | Johannsen | QA tester | JohannsenLum |
 

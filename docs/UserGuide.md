@@ -2,6 +2,8 @@
 
 The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide covers every feature in the current release, role by role.
 
+**Open the app:** [hackhub-orbit.vercel.app](https://hackhub-orbit.vercel.app)
+
 ## Getting started
 
 ### Test accounts
@@ -53,9 +55,9 @@ Select **New report** and fill in every field:
 
 The other fields can each hold up to 2,000 characters. Your code is stored as text and is never run. Select **Submit report**. You return to **My bug reports** with the message "Your bug report was submitted." The report is assigned to a Developer and a QA tester straight away (see [How a bug moves between roles](#how-a-bug-moves-between-roles)).
 
-### Check a draft before submitting
+### AI report draft checker
 
-On **New report** (`/reports/new`), enter some report details and select **Check my report**. This optional AI check looks at the current title, Python code, error message, expected behavior, actual behavior, and reproduction steps. It can suggest how to make the report clearer or easier to reproduce, including fields you have not filled in yet. An entirely blank draft is not sent to the AI.
+On **New report** (`/reports/new`), the **AI report draft checker** is the panel titled **Check my report with AI**. Enter some report details and select **Check my report**. This optional check looks at the current title, Python code, error message, expected behavior, actual behavior, and reproduction steps. It can suggest how to make the report clearer or easier to reproduce, including fields you have not filled in yet. An entirely blank draft is not sent to the AI.
 
 Suggestions are labeled as AI generated and grouped by report field. They do not edit the form, run your code, or submit a report. If you change the draft after a check, the previous suggestion is marked as based on an earlier version; check again if you want updated advice. Use **Submit report** separately when you are ready. The existing required-field checks still apply to submission.
 
@@ -65,15 +67,15 @@ The check uses the same AI request limits as other features: 3 requests per minu
 
 While a report is **Open**, its page shows "You can still edit this report. Editing locks once a Developer starts work." above the form. Change any field and select **Save changes**; the page shows "Report saved." As soon as the Developer starts work, the report becomes read-only and is shown under **Your report**.
 
-### AI code explanation
+### AI bug explainer
 
-Every report page has an **AI code explanation** panel. Select **Explain this bug** to get a short, plain-language explanation of what is likely wrong with your Python code. The answer is labelled "AI suggestion · not verified": it is a guess based on the code and the error you entered, the code is not run, and nothing is changed. Select **Explain again** for a new answer. The limits are the same as for the draft check (3 a minute, 20 a day). If the AI is unavailable, the panel says "The AI could not produce an explanation. Try again later."
+Every report page has an **AI bug explainer** panel, titled **AI code explanation**. The **AI explanation** tab jumps to it. Select **Explain this bug** to get a short, plain-language explanation of what is likely wrong with your Python code. The answer is labelled "AI suggestion · not verified": it is a guess based on the code and the error you entered, the code is not run, and nothing is changed. Select **Explain again** for a new answer. The limits are the same as for the AI report draft checker (3 a minute, 20 a day). If the AI is unavailable, slow or busy, the panel shows a short message saying so, such as "The AI could not produce a suggestion. Try again later."
 
 ### Follow the fix
 
 Each report page shows where the bug is, with a progress bar: **Reported → In progress → QA review → Closed**. The tabs under it (**Details**, **AI explanation**, **Feedback**, **Fix comparison**) jump to each part of the page.
 
-- **Developer and QA feedback** lists the feedback QA writes when it approves or rejects a fix, newest first, marked **QA Tester**. It says "No feedback yet." until then. The Developer's investigation notes are private to the Developer and QA.
+- **Developer and QA feedback** lists the feedback QA writes when it approves or rejects a fix, newest first, marked **QA Tester**. It says "No feedback yet." until then. The Developer's investigation notes are not shown on your report page.
 - **Fix comparison** shows your original code next to the Developer's proposed fix, line by line. Removed lines are red and added lines are green. The Developer's submission note for that version is shown above it as **Developer note**. If the Developer submitted more than one version, choose the version from the list; the latest is selected first. Until a fix is submitted, it says "No proposed fix yet". Very large snippets are shown side by side as plain text.
 
 When QA approves, the status changes to **Closed** and the report stays read-only.
