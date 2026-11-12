@@ -8,8 +8,13 @@ Python code.
 - Node 24 and npm installed
 - Local Supabase CLI available
 - Local project environment configured from `.env.example`
+- For AI checks, `SOCLAAS_BASE_URL`, `SOCLAAS_API_KEY`, and `SOCLAAS_MODEL` must be set in
+  `.env.local`; restart the Next.js server after changing them.
 - A database reset with the bug-lifecycle migration and test fixtures
 - An authenticated Developer, an unassigned Developer, a Reporter, and a QA tester
+
+The Developer syntax check uses the Lezer Python grammar in JavaScript. A system Python
+executable is not required for submitting a fix.
 
 ## Automated checks
 

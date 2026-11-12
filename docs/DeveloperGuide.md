@@ -25,6 +25,12 @@ Migration `20261107010000_assign_reports.sql` adds an after-insert trigger to `b
 
 Demo accounts: `DEMO_PASSWORD=... npm run seed:demo -- <local|dev|prod>` (`scripts/seed-demo-accounts.mjs`) creates or updates two accounts per role and sets their roles. It reads `.env.local` or the `DEV_`/`PROD_` keys in `.env.setup`, and prints only emails and roles.
 
+For local AI-enabled development, `.env.local` must use the exact server-side variable names
+`SOCLAAS_BASE_URL`, `SOCLAAS_API_KEY`, and `SOCLAAS_MODEL`, alongside the Supabase URL,
+publishable key, and secret key. Restart the Next.js server after changing these values. The
+Developer fix validator uses the Lezer Python grammar in JavaScript, so a system Python executable
+is not required.
+
 ### Developer workspace
 
 The Developer workspace is implemented under `src/app/developer/` and uses the assigned
