@@ -23,3 +23,9 @@ I asked Claude Code to redesign every screen with shadcn/ui so BugFlow looks lik
 - The run found nested `<main>` landmarks: shadcn's `SidebarInset` renders `<main>` and each page renders its own. `SidebarInset` is now a `<div>`.
 - The one remaining error is React's dev-only Performance.measure "negative time stamp" on the 404 route. Production builds don't record it.
 - pgTAP: 141/143 locally. Both failures count every profile and the local database also holds the demo accounts. CI runs them on an empty database.
+
+## Merge with #33 and usage
+- Merged develop after Jordan's #33. His AI code improvement advisor sits under the fix form, restyled with the shared AI panel. His logic and tests are unchanged. 132/132 tests pass.
+- Fixed a phone hydration mismatch: the sidebar hydrates later inside Suspense, so it now reads the breakpoint itself rather than from context.
+- Credits for shadcn/ui, Radix, Lucide, Geist and the design references were added to the Developer Guide acknowledgements.
+- Usage: `workflow/evidence/usage/UI001-ui-redesign.usage.json`, 42.7M tokens (98% cached), 175 responses, 187 tool calls. `start` was not run when the task began, so the start file uses the timestamp of the request that started the UI task, taken from the session transcript. The window covers the redesign, the browser checks, the PRs and the merge.

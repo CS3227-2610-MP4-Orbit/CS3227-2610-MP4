@@ -94,3 +94,5 @@ Start at `workflow/README.md`. `.agents/skills/agent-coordination` and `agent-ha
 ## Acknowledgements
 
 The project requirements and three-role feature plan came from the team's supplied assignment text. The agent roles and resource-aware ideas were adapted from the supplied workflow PDF. The repository already contained a Next.js/Supabase/Vercel starter; its origin and any reused code must be cited by the team before release. GitHub Spec Kit is an optional toolkit; installation instructions are in `workflow/SpecKit.md`.
+
+The interface is built with [shadcn/ui](https://ui.shadcn.com) (MIT): its components are copied into `src/components/ui/` and run on [Radix UI](https://www.radix-ui.com) primitives (MIT). Icons are [Lucide](https://lucide.dev) (ISC). Text uses the [Geist and Geist Mono](https://vercel.com/font) typefaces (SIL Open Font License), loaded through `next/font`. The layout drew on public examples rather than copied code: Linear's issue lists, Sentry's issue-details page, GitHub's split diff, the shadcn sidebar and dashboard blocks, and the Testify bug-tracking dashboard concept on Dribbble.
