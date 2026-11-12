@@ -95,6 +95,62 @@ To add a role's feature, write a server action that checks the role, loads the c
 
 The Reporter has two separate AI tools. The **AI bug explainer** is `explainReport` in `src/app/reports/[id]/ai-actions.ts`. It checks the signed-in Reporter, loads that Reporter's saved report through the session, and calls the gateway with `reporter_code_explanation`. The panel on the report page shows the answer as an unverified suggestion. It does not edit the report or run the code. The **AI report draft checker** is `checkReportQuality` in `src/app/reports/new/check-quality.ts`, an optional action separate from `createReport`. It checks the signed-in Reporter, validates the six current draft fields, and calls the gateway with `reporter_quality_check` and `reportId: null`. A blank draft is refused before the gateway. No draft or response is written to `bug_reports` or usage logs. The browser keeps the draft and marks a prior suggestion stale after any field changes, including the Python editor. The normal submission action remains the only way this page creates a report.
 
+### Context engineering and resource use in the app
+
+The AI features are designed to send the model as little as each task needs and to stay within the SoC LLM's limits:
+
+- **Each feature gets only the fields it needs.** For example, the QA feedback draft leaves out the title, the reported failure and the code (see above), and the report draft checker receives only the six form fields. Counts the app can compute itself, such as tests passed and failed, are computed in code and given to the model as facts.
+- **The system prompt is fixed for each feature**, and everything that varies goes in the user message. This keeps the prompt prefix identical between requests, so the provider can reuse its prompt cache.
+- **Input and output are capped.** Inputs are limited to 20,000 characters per field and 45,000 in total, and output to 400–800 tokens depending on the feature (`FEATURES` in `src/lib/ai/prompt.ts`). The temperature is 0.2.
+- **Quotas match the provider's rate limits:** 3 calls a minute and 20 a day per user and feature, and 20 a minute across the app. A provider 429 is not retried.
+- **Every call is measured.** `ai_usage` records input, output and cached tokens, latency, retries and the outcome for each call, without the prompt or the answer. `docs/Reflections.md` analyses these records. Calls average 317–392 input tokens across the six features.
+
+## Security
+
+- **Roles are enforced in the database.** Every table has row-level security (`supabase/tests/rls_enabled.test.sql` fails if a table does not). Status changes only go through the security-definer functions, which check the caller's role, assignment and the report status.
+- **User code is never executed.** Python is stored as text and rendered as text. A fix is syntax-checked with the Lezer Python grammar in JavaScript, not by running Python.
+- **AI boundaries.** The gateway checks the role for every feature. Report data is wrapped in a random boundary marker for each request. Inputs are bounded, outputs are labelled as unverified, and failure messages never reveal provider, key or URL details (see [AI gateway](#ai-gateway)). The Developer code improvement advisor also removes values that look like credentials before sending code to the provider (`src/lib/ai/code-improvement.ts`).
+- **Secrets stay on the server.** The SoC LLM key and the Supabase secret key are server-only environment variables. `ai_usage` is readable only with the secret key. `.env*` files are git-ignored except `.env.example`.
+- **HTTP headers.** `next.config.ts` sends `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY` and `Referrer-Policy: strict-origin-when-cross-origin` on every page.
+- **Abuse limits.** A Reporter can submit at most 20 reports an hour. The AI quotas above apply to every feature.
+
+**Security in the development process.**
+- Any task marked `security_sensitive` is routed by `workflow/scripts/agent_workflow.py plan` to the security reviewer (`workflow/agents/prompts/security_reviewer.md`). The reviewer runs on the strong model tier, in parallel with the code reviewer and before the verifier. `AGENTS.md` requires this review for any change to auth, database access or AI boundaries.
+- Security review results are kept in `workflow/evidence/`, for example `006-code-improvement-security-review.json`, `developer-ai-security-review.json` and `005-check-report-quality-security.md`.
+- The CI and deploy workflows pin their actions to commit SHAs and have read-only access to the repository. The Pages workflow also gets the permission to publish the site. CI uses placeholder credentials and never holds real ones.
+- Production secrets exist only in the `production` GitHub environment, and every production deployment needs a team member to approve it.
+- The usage collectors write only counts, model IDs and session IDs, never prompts, code or tool output.
+
+## Testing
+
+| Layer | Where | What it covers |
+| --- | --- | --- |
+| Unit and component tests (Vitest) | `src/**/*.test.ts(x)`: 29 files, 156 tests | Validation, the AI gateway (role binding, limits, retries, failure mapping), prompt boundaries, server actions with mocked Supabase, UI states. The `*.security.test.ts` files cover prompt injection, cross-role and unassigned access, and credential redaction. |
+| Database tests (pgTAP) | `supabase/tests/`: 7 files, 143 assertions | RLS for each role, the lifecycle functions and their status rules, automatic assignment and the submission limit, QA feedback reaching the Reporter, and RLS being enabled on every table. |
+| Workflow tests | `workflow/scripts/check_workflow.py`, `test_agent_workflow.py`, `test_token_usage.py`, `test_claude_usage.py` | Workflow structure and evidence, routing and context packing, and the usage collectors. |
+| End-to-end test on a deployed environment | `workflow/scripts/e2e_lifecycle.mjs` | The whole lifecycle through the UI with the demo accounts, including every AI feature. Its latest run passed 35 of 35 checks on dev (`workflow/evidence/E2E-dev-2026-11-12.md`). |
+
+CI (`.github/workflows/ci.yml`) runs on every pull request. It runs lint, the type check, the Vitest tests, the workflow tests and a production build. A separate job applies every migration to a temporary database, runs the pgTAP tests and fails on any Supabase lint warning.
+
+## Deployment and environments
+
+| | Development | Production |
+| --- | --- | --- |
+| Branch | `develop` | `master` |
+| App | https://bugflow-orbit-dev.vercel.app | https://bugflow-orbit.vercel.app |
+| Supabase project | its own dev project | its own prod project |
+| GitHub environment | `development` (deploys only from `develop`) | `production` (deploys only from `master`, needs a reviewer's approval) |
+
+Both environments have secrets with the same names, stored separately in their GitHub environments, so `deploy.yml` never chooses credentials itself. A push to `develop` or `master` runs `deploy.yml`:
+
+1. It runs CI.
+2. It applies the migrations to that environment's Supabase project (`supabase db push`).
+3. It builds the app on GitHub Actions with the pinned Vercel CLI.
+4. It deploys the prebuilt output. For `develop`, the result is aliased to the dev address (`VERCEL_DEV_ALIAS`).
+5. It checks that `/login` loads and that `/` redirects to it. This also shows the Supabase settings reached the app.
+
+Vercel's own Git deployments are turned off (`vercel.json`), so every deployment goes through this workflow. Work reaches `develop` through pull requests, and a release is a pull request from `develop` to `master`. `scripts/setup-environments.mjs` sets up both environments from `.env.setup`: the Vercel environment variables, the Supabase auth URLs, and the GitHub environments, secrets and reviewers. `npm run seed:demo` creates the demo accounts.
+
 ## Development process
 
 Role-specific Developer process assets are tracked under `workflow/developer/`: `context/` contains bounded role context, `skills/` contains reusable implementation and review instructions, `sdd/` contains the feature SDD template, `workflows/` contains the Developer workflow, and `reflection/` contains tracked process notes. The ignored `docs/developer-agentic-se/` directory is separate personal presentation tracking and is intentionally excluded from commits.
