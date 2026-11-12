@@ -19,9 +19,9 @@ artifacts:
 - `specs/001-developer-bug-workflow/spec.md`
 - `plan.md`, `data-model.md`, `contracts/developer-workflow.md`, and `tasks.md`
 - `.specify/memory/constitution.md` and `checklists/security.md`
-- `developer/context/developer-role.md`
-- `developer/context/developer-feature-context.md`
-- `developer/workflows/developer-feature-workflow.md`
+- `workflow/developer/context/developer-role.md`
+- `workflow/developer/context/developer-feature-context.md`
+- `workflow/developer/workflows/developer-feature-workflow.md`
 
 The context pack separated trusted SDD and permission rules from untrusted bug content, submitted
 code, notes, and future AI suggestions. Resource-aware decisions were to use the existing Next.js,

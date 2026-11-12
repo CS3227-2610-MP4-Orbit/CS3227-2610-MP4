@@ -42,9 +42,9 @@
 
 ## Phase 6: Review, verification, and documentation
 
-- [X] T023 Run the AI security review using `developer/skills/ai-security-review/SKILL.md` and resolve findings.
-- [X] T024 Run the developer feature review using `developer/skills/developer-feature-implementation/SKILL.md` and resolve findings.
-- [X] T025 Run the verification review using `developer/skills/verification-review/SKILL.md` and resolve findings.
+- [X] T023 Run the AI security review using `workflow/developer/skills/ai-security-review/SKILL.md` and resolve findings.
+- [X] T024 Run the developer feature review using `workflow/developer/skills/developer-feature-implementation/SKILL.md` and resolve findings.
+- [X] T025 Run the verification review using `workflow/developer/skills/verification-review/SKILL.md` and resolve findings.
 - [X] T026 Update `docs/DeveloperGuide.md`, `docs/UserGuide.md`, and the relevant `docs/developer-agentic-se/` evidence file to describe verified behavior.
 - [X] T027 Run `npm run lint`, `npm run typecheck`, `npm test`, and `npm run build` from the repository root.
 - [X] T028 Run the repository CI-equivalent workflow checks and database tests when applicable.
