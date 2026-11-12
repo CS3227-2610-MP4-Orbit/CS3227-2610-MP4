@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Browser run of the full bug lifecycle on a deployed BugFlow environment, through the UI only.
 //
-//   NODE_PATH="$(npm root -g)" node workflow/scripts/e2e_lifecycle.mjs https://hackhub-orbit-dev.vercel.app
+//   NODE_PATH="$(npm root -g)" node workflow/scripts/e2e_lifecycle.mjs https://bugflow-orbit-dev.vercel.app
 //
 // Uses the public demo accounts from docs/UserGuide.md (override the password with DEMO_PASSWORD).
 // Needs Playwright and a local Chrome. It needs no keys: every check reads what a user would see.
@@ -13,7 +13,7 @@ import path from "node:path";
 const require = createRequire(process.env.NODE_PATH ? path.join(process.env.NODE_PATH, "noop.js") : import.meta.url);
 const { chromium } = require("playwright");
 
-const BASE = (process.argv[2] ?? "https://hackhub-orbit-dev.vercel.app").replace(/\/$/, "");
+const BASE = (process.argv[2] ?? "https://bugflow-orbit-dev.vercel.app").replace(/\/$/, "");
 const PASSWORD = process.env.DEMO_PASSWORD ?? "BugFlow-Demo-2026";
 const AI_TIMEOUT = 90_000;
 const stamp = new Date().toISOString().slice(0, 16).replace("T", " ");
