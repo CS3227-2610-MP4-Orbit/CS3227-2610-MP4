@@ -4,8 +4,8 @@ BugFlow tracks a Python bug from report to verified fix. A **Reporter** submits 
 
 | | |
 | --- | --- |
-| Production app | https://hackhub-orbit.vercel.app |
-| Development app | https://hackhub-orbit-dev.vercel.app |
+| Production app | https://bugflow-orbit.vercel.app |
+| Development app | https://bugflow-orbit-dev.vercel.app |
 | Product website | https://cs3227-2610-mp4-orbit.github.io/CS3227-2610-MP4/ |
 | User Guide | [docs/UserGuide.md](docs/UserGuide.md) (features, demo accounts, how to test) |
 | Developer Guide | [docs/DeveloperGuide.md](docs/DeveloperGuide.md) (design, security, deployment, agent workflow) |

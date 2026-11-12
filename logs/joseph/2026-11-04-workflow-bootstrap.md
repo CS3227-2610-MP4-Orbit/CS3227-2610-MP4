@@ -5,7 +5,7 @@ Owner: Joseph. Source: the Codex session for this repository on 2026-11-04; summ
 ## Goal and decisions
 
 - Read the supplied assignment text and workflow PDF. Chose the team's Python bug tracking product as the target and treated the PDF as a proposed process.
-- Found that the current repository is a HackHub starter with hackathon roles and tables. Documented the mismatch instead of claiming the new app exists.
+- Found that the current repository was a legacy hackathon starter with hackathon roles and tables. Documented the mismatch instead of claiming the new BugFlow app existed.
 - Initialized `workflow/` with a draft spec, task plan, specialized agent roles and structured handoff template. Added initial reflection and log templates and a README transition notice.
 
 ## Agent usage and verification

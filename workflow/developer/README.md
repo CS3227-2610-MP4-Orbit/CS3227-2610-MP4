@@ -1,6 +1,6 @@
 # Developer workflow package
 
-This directory contains the tracked, role-specific process assets for the HackHub Developer role.
+This directory contains the tracked, role-specific process assets for the BugFlow Developer role.
 
 - `context/` defines the bounded role and feature context supplied to agents.
 - `skills/` contains reusable instructions for implementation, security, RBAC and verification reviews.

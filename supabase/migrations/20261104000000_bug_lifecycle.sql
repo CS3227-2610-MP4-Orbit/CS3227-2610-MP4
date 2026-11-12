@@ -1,5 +1,5 @@
 -- Bug lifecycle schema (specs/001-python-bug-lifecycle, task T001).
--- Replaces the earlier HackHub schema: the project moved to a three-role Python bug tracker.
+-- Replaces the earlier legacy schema: the project moved to a three-role Python bug tracker.
 -- Roles: reporter submits a bug, developer submits fix revisions, qa tests and decides.
 -- Status: open -> in_progress -> awaiting_qa -> closed, or awaiting_qa -> in_progress on rejection.
 -- Lifecycle changes happen only through the security-definer functions below, so every
@@ -7,7 +7,7 @@
 -- Row-level security is enabled on every table and access is denied unless a policy allows it.
 
 -- ---------------------------------------------------------------------------
--- Remove the HackHub schema (applied by 20261031000000_initial_schema.sql)
+-- Remove the legacy scaffold schema (applied by 20261031000000_initial_schema.sql)
 -- ---------------------------------------------------------------------------
 
 drop trigger if exists on_auth_user_created on auth.users;

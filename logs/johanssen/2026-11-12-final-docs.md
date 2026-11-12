@@ -13,7 +13,7 @@ Owner: Johannsen. Tool: Claude Code (Opus 5.5 main session, plus four review sub
 - **User Guide, Reporter section:** added the reports list, the status meanings, submitting, editing, the AI explanation and following the fix, using the exact labels from the code.
   - The E2E run then caught one wrong sentence: Reporters do not see investigation notes, only the submission note on each fix. Corrected.
 - **Product website:** `website/index.html` with screenshots of the dev app, published by `.github/workflows/pages.yml`.
-- **Dev E2E (#20):** `workflow/scripts/e2e_lifecycle.mjs` covers the full lifecycle with every role's AI features, through the UI only. It passed 35/35 on https://hackhub-orbit-dev.vercel.app after 7 attempts; see `workflow/evidence/E2E-dev-2026-11-12.md`.
+- **BugFlow Dev E2E (#20):** `workflow/scripts/e2e_lifecycle.mjs` covers the full lifecycle with every role's AI features, through the UI only. It passed 35/35 on https://hackhub-orbit-dev.vercel.app after 7 attempts; see `workflow/evidence/E2E-dev-2026-11-12.md`.
   - **Defect found:** an AI answer can be lost when the page refreshes during the call. The `ai_usage` table shows the call succeeded and counted against the quota while the panel showed nothing. Recorded as a follow-up, not fixed.
 - **Fix:** the Reporter's comparison showed "Developer account <uuid>" because Reporters can't read Developer names. It now says "the Developer". Test updated.
 - **EXP001:** four parallel reviewer subagents (Haiku, Sonnet and Opus with a focused bundle, and Sonnet with the full repository) reviewed the pre-#37 syntax check.
