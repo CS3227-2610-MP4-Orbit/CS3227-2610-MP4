@@ -11,7 +11,7 @@ Next.js 16 (App Router, Cache Components) with Supabase (Postgres, Auth, row-lev
 | QA tester: queue, review, tests, decisions, history (`src/app/qa/`) | Implemented |
 | Developer workspace (`src/app/developer/`) | Implemented |
 | Automatic assignment, role home and navigation, demo accounts | Implemented |
-| AI gateway (`src/lib/ai/`) and role-specific AI features | Implemented. The Reporter has a report-detail code explanation and a separate pre-submission quality check; QA has test suggestions. Check the Developer workspace separately for its current AI UI. |
+| AI gateway (`src/lib/ai/`) and role-specific AI features | Implemented, two features per role: Reporter code explanation and pre-submission quality check; Developer debugging advisor and code improvement advisor; QA test suggestions and feedback draft. All six run through the one gateway and were exercised on the deployed dev app (`workflow/evidence/E2E-dev-2026-11-12.md`). |
 
 ## Design
 
