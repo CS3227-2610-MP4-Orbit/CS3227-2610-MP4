@@ -12,6 +12,22 @@ const LINK = /\b(?:https?:\/\/|www\.)\S+/gi;
 
 type DraftReport = { expected_behavior: string };
 
+/** Identifies the tests recorded on one version, so a draft can say which results it was based on. */
+export function testsKey(tests: readonly Pick<TestCase, "id" | "revision_id">[], revisionId: string): string {
+  return tests.filter((test) => test.revision_id === revisionId).map((test) => test.id).join(",");
+}
+
+/**
+ * Whether to show a draft against the tests currently on screen. A draft based on other results
+ * is "stale": it could contradict them, so it is hidden until the tester drafts again.
+ * The draft is matched by content rather than by remounting the panel when the tests change,
+ * because a remount also discards a draft that is still on its way, after its quota is spent.
+ */
+export function draftView(state: { ok: boolean; basedOn?: string }, currentKey: string): "show" | "stale" | "none" {
+  if (!state.ok) return "none";
+  return state.basedOn === currentKey ? "show" : "stale";
+}
+
 /**
  * The draft is grounded in what QA observed, so the context is the expected behavior, the
  * developer's note and the latest version's test results. The title, the reported failure and the

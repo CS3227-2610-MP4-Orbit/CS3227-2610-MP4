@@ -12,6 +12,7 @@ import { StatusStepper } from "@/components/app/status";
 import { TopBar } from "@/components/app/top-bar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatDateTime } from "@/lib/format";
+import { testsKey } from "@/lib/qa/feedback-draft";
 import { getQaReview, type QaReview, type StatusEvent } from "@/lib/qa/queries";
 import { idSchema } from "@/lib/qa/validation";
 import { cn } from "@/lib/utils";
@@ -100,7 +101,7 @@ async function Review({ params, searchParams }: {
                   <TestSuggestions action={suggestTests.bind(null, report.id)} />
                   <TestCaseForm action={recordTestCase.bind(null, report.id)} revisionId={latest.id} />
                   <DecisionForm action={decideFix.bind(null, report.id)} draftAction={draftFeedback.bind(null, report.id)}
-                    revisionId={latest.id} revisionNumber={latest.revision_number} testsKey={latestTests.map((test) => test.id).join(",")} />
+                    revisionId={latest.id} revisionNumber={latest.revision_number} testsKey={testsKey(testCases, latest.id)} />
                 </>
               ) : (
                 <p className="rounded-xl border border-dashed bg-card/60 px-4 py-5 text-sm text-muted-foreground">{report.status === "closed" ? "This report is closed." : "No fix is awaiting QA. It is with the Developer."}</p>

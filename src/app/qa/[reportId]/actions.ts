@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { runAiFeature } from "@/lib/ai/gateway";
-import { feedbackDraftContext, fitFeedback } from "@/lib/qa/feedback-draft";
+import { feedbackDraftContext, fitFeedback, testsKey } from "@/lib/qa/feedback-draft";
 import { getQaReview } from "@/lib/qa/queries";
 import { createClient } from "@/lib/supabase/server";
 import { decisionSchema, fieldErrors, formFields, idSchema, testCaseSchema } from "@/lib/qa/validation";
@@ -115,7 +115,9 @@ export async function draftFeedback(reportId: string): Promise<AiSuggestionState
     const context = feedbackDraftContext(fix.report, fix.latest, fix.testCases);
     if (!context) return failed("Record at least one test first. The draft is based on your test results.");
     const result = await runAiFeature({ feature: "qa_feedback_draft", userId: fix.userId, role: "qa", reportId, context });
-    return result.ok ? { ok: true, text: fitFeedback(result.text), message: "" } : failed(result.message);
+    return result.ok
+      ? { ok: true, text: fitFeedback(result.text), message: "", basedOn: testsKey(fix.testCases, fix.latest.id) }
+      : failed(result.message);
   } catch {
     return failed("The AI could not produce a draft. Try again later.");
   }

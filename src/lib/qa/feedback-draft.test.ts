@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DRAFT_SHORTENED, feedbackDraftContext, fitFeedback } from "./feedback-draft";
+import { DRAFT_SHORTENED, draftView, feedbackDraftContext, fitFeedback, testsKey } from "./feedback-draft";
 import type { TestCase } from "./queries";
 import { FEEDBACK_MAX } from "./validation";
 
@@ -68,5 +68,37 @@ describe("fitFeedback", () => {
 
   it("marks a draft the provider cut short as a shortened draft", () => {
     expect(fitFeedback("Test 2 failed because\n[Suggestion shortened]")).toBe(`Test 2 failed because${DRAFT_SHORTENED}`);
+  });
+});
+
+describe("testsKey", () => {
+  it("identifies the latest version's recorded tests, ignoring other versions", () => {
+    const tests = [test("a", "rev-1", "fail"), test("b", "rev-2", "fail"), test("c", "rev-2", "pass")];
+    expect(testsKey(tests, "rev-2")).toBe("b,c");
+    expect(testsKey(tests, "rev-3")).toBe("");
+  });
+
+  it("changes when a test is recorded", () => {
+    const before = [test("b", "rev-2", "fail")];
+    expect(testsKey([...before, test("c", "rev-2", "pass")], "rev-2")).not.toBe(testsKey(before, "rev-2"));
+  });
+});
+
+describe("draftView", () => {
+  const draft = { ok: true, basedOn: "b,c" };
+
+  // Server actions run one at a time, so a draft requested while "Save test" is still saving runs
+  // after the save and is based on the new test too. Its basedOn then matches the refreshed page.
+  it("shows a draft that was based on the tests now on screen", () => {
+    expect(draftView(draft, "b,c")).toBe("show");
+  });
+
+  it("marks a draft stale once the tests change, so it cannot contradict the results", () => {
+    expect(draftView(draft, "b,c,d")).toBe("stale");
+  });
+
+  it("shows nothing when there is no successful draft", () => {
+    expect(draftView({ ok: false }, "b,c")).toBe("none");
+    expect(draftView({ ok: true }, "b,c")).toBe("stale");
   });
 });
