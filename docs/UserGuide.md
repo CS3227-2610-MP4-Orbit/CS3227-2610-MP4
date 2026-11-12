@@ -73,7 +73,7 @@ Every report page has an **AI bug explainer** panel, titled **AI code explanatio
 
 Each report page shows where the bug is, with a progress bar: **Reported → In progress → QA review → Closed**. The tabs under it (**Details**, **AI explanation**, **Feedback**, **Fix comparison**) jump to each part of the page.
 
-- **Developer and QA feedback** lists the feedback QA writes when it approves or rejects a fix, newest first, marked **QA Tester**. It says "No feedback yet." until then. The Developer's investigation notes are private to the Developer and QA.
+- **Developer and QA feedback** lists the feedback QA writes when it approves or rejects a fix, newest first, marked **QA Tester**. It says "No feedback yet." until then. The Developer's investigation notes are not shown on your report page.
 - **Fix comparison** shows your original code next to the Developer's proposed fix, line by line. Removed lines are red and added lines are green. The Developer's submission note for that version is shown above it as **Developer note**. If the Developer submitted more than one version, choose the version from the list; the latest is selected first. Until a fix is submitted, it says "No proposed fix yet". Very large snippets are shown side by side as plain text.
 
 When QA approves, the status changes to **Closed** and the report stays read-only.
