@@ -1,11 +1,11 @@
 ---
 name: developer-feature-implementation
-description: Implement an approved HackHub Developer-role feature from its SDD, including workflow states, server/client boundaries, UI states, and focused tests.
+description: Implement an approved BugFlow Developer-role feature from its SDD, including workflow states, server/client boundaries, UI states, and focused tests.
 ---
 
 # Developer feature implementation
 
-Use this skill when implementing or revising the Developer workflow in HackHub. Read the
+Use this skill when implementing or revising the Developer workflow in BugFlow. Read the
 Developer context and the feature SDD first.
 
 ## Required behavior

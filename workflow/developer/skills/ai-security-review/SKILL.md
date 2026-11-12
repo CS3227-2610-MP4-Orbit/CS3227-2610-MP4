@@ -1,6 +1,6 @@
 ---
 name: ai-security-review
-description: Review HackHub AI features for prompt injection, data leakage, unsafe code handling, secret exposure, and resource abuse.
+description: Review BugFlow AI features for prompt injection, data leakage, unsafe code handling, secret exposure, and resource abuse.
 ---
 
 # AI security review

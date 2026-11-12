@@ -4,14 +4,16 @@ BugFlow tracks a Python bug from report to verified fix. A **Reporter** submits 
 
 | | |
 | --- | --- |
-| Production app | https://hackhub-orbit.vercel.app |
-| Development app | https://hackhub-orbit-dev.vercel.app |
+| Production app | https://bugflow-orbit.vercel.app |
+| Development app | https://bugflow-orbit-dev.vercel.app |
 | Product website | https://cs3227-2610-mp4-orbit.github.io/CS3227-2610-MP4/ |
 | User Guide | [docs/UserGuide.md](docs/UserGuide.md) (features, demo accounts, how to test) |
 | Developer Guide | [docs/DeveloperGuide.md](docs/DeveloperGuide.md) (design, security, deployment, agent workflow) |
 | Reflections | [docs/Reflections.md](docs/Reflections.md) (multi-agent SE, context engineering, measured usage) |
 | Agent workflow | [workflow/README.md](workflow/README.md) and the [feature spec](workflow/specs/001-bug-lifecycle/spec.md) |
 | Interaction logs | [logs/](logs/) (one folder per team member) |
+
+The production app is also still served at its old address, `hackhub-orbit.vercel.app`.
 
 Demo accounts and their password are listed in the [User Guide](docs/UserGuide.md#test-accounts).
 

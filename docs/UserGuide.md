@@ -2,7 +2,7 @@
 
 The app tracks a Python bug from report to verified fix. Each account has one role: **Reporter**, **Developer** or **QA tester**. This guide covers every feature in the current release, role by role.
 
-**Open the app:** [hackhub-orbit.vercel.app](https://hackhub-orbit.vercel.app)
+**Open the app:** [bugflow-orbit.vercel.app](https://bugflow-orbit.vercel.app)
 
 ## Getting started
 

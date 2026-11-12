@@ -8,9 +8,9 @@
     "specs/006-developer-code-improvement/spec.md",
     "specs/006-developer-code-improvement/plan.md",
     "specs/006-developer-code-improvement/tasks.md",
-    "developer/skills/ai-security-review/SKILL.md",
-    "developer/skills/developer-feature-implementation/SKILL.md",
-    "developer/skills/verification-review/SKILL.md"
+    "workflow/developer/skills/ai-security-review/SKILL.md",
+    "workflow/developer/skills/developer-feature-implementation/SKILL.md",
+    "workflow/developer/skills/verification-review/SKILL.md"
   ],
   "decisions": [
     "Reuse the existing server-only AI gateway and ai_usage accounting; do not add persistence for review results.",
