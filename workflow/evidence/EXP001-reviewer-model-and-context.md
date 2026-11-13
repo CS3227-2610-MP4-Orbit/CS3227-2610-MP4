@@ -52,7 +52,7 @@ The Agent tool's own summary reported only 93–101k "tokens" per arm. That is r
   - It added one finding that needed a file outside the bundle.
   - It did not read every document it was told to; it stopped after four tool calls. A larger instruction set is not the same as a larger read.
 - **The original reviews missed it because of missing context, not model strength.** The 7 Nov reviews were never told where the code would run.
-  - The symptom was visible on 9 Nov: `logs/johanssen/2026-11-09-qa-feedback-draft.md` says the tests only pass with `PYTHON_BIN=python3`.
+  - The symptom was visible on 9 Nov: `logs/johannsen/2026-11-09-qa-feedback-draft.md` says the tests only pass with `PYTHON_BIN=python3`.
   - It was worked around locally instead of being asked about for production.
   - The one sentence "deployed to Vercel's Node.js runtime" is what made every reviewer here find it.
 
